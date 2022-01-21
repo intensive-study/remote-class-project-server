@@ -6,9 +6,15 @@
 ```shell
   git flow feature start ${feature_branch}
 ```
+- 코드 스타일 수정: style/*
+```shell
+  git checkout -b stylefix/${stylefix_branch}
+```
+**style 브랜치는 권장 사항입니다!**  
+
 - 버그 픽스 on develop branch: bugfix/*
 ```shell
-  git checkout -b bugfix/fix-content
+  git checkout -b bugfix/${bugfix_branch}
 ```
 
 - 버그 픽스 on main branch: hotfix/*
@@ -21,12 +27,17 @@
 **기능 커밋**  
 `feat: ` 으로 시작, 이후 커밋 메세지를 정의합니다.  
 
-**ex) feat: initialize project**
+**ex) feat: initialize project**  
+
+**기능 커밋**  
+`style: ` 으로 시작, 이후 커밋 메세지를 정의합니다.
+
+**ex) style: fix-code-style**  
 
 **버그 픽스 커밋**  
-`fix: ` 으로 시작, 이후 커밋 메세지를 정의합니다.  
+`[bug|hot]fix: ` 으로 시작, 이후 커밋 메세지를 정의합니다.  
 
-**ex) fix: bug fix**
+**ex) bugfix: bug fix**
 
 <br/>
 
