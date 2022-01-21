@@ -1,0 +1,33 @@
+name: auto-create-pullrequest
+
+env:
+  FEATURE_BRANCH: "^feature*"
+
+on:
+  push:
+    branches: 
+    - feature/*
+    
+jobs:
+  createPullRequest:
+      runs-on: ubuntu-latest
+      
+      steps:
+        - uses: actions/checkout@v2
+
+        - name: Create Pull Request
+          uses: peter-evans/create-pull-request@v3
+          with:
+            token: ${{ github.token }}
+            signoff: false
+            delete-branch: true
+            title: '[FEATURE]'
+            body: 'update report 👣'
+            
+            labels: |
+              feature
+
+            reviewers: zmfl1230, gusdn3477, yijinKim
+            team-reviewers: |
+              owners
+              maintainers
