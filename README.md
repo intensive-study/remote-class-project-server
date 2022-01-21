@@ -12,9 +12,13 @@
 
 📒 **주요 기능**
 
-[여기를 클릭해 주세요!](https://github.com/intensive-study/RemoteClass_project/wiki)
+- [API 문서](https://github.com/intensive-study/RemoteClass_project/wiki)
+- [ERD](https://www.erdcloud.com/d/i7zQEfy8F5vT8oJSq)
 
 🌱 **프레임워크 및 라이브러리**
 
 - 백엔드 : Spring Boot JPA Spring Security
 - 협업 툴 : github discord
+
+* 참고페이지
+
