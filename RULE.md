@@ -6,13 +6,16 @@
 ```shell
   git flow feature start ${feature_branch}
 ```
+- 버그 픽스 on develop branch: bugfix/*
+```shell
+  git checkout -b bugfix/fix-content
+```
 
-- 버그 픽스: hotfix/*
+- 버그 픽스 on main branch: hotfix/*
 ```shell
   git flow hotfix start ${hotfix_branch}
 ```
-
-
+<br/>
 
 ### 커밋 메세지
 **기능 커밋**  
@@ -25,6 +28,7 @@
 
 **ex) fix: bug fix**
 
+<br/>
 
 ### 충돌 방지 요청 사항
 충돌이 발생하더라도 수정하면 됩니다만, 충돌이 발생할 가능성을 최대한 줄이도록 합시다 :)  
