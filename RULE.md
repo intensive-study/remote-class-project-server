@@ -10,7 +10,7 @@
 ```
 - 코드 스타일 수정: style/*
 ```shell
-  git checkout -b stylefix/${stylefix_branch}
+  git checkout -b style/${style_branch}
 ```
 
 - 버그 픽스 on develop branch: bugfix/*
@@ -22,7 +22,7 @@
 ```shell
   git flow hotfix start ${hotfix_branch}
 ```
-- 리펙토링: refactor/*
+- 리팩토링: refactor/*
 ```shell
   git checkout -b refactor/${refactor_branch}
 ```
