@@ -1,26 +1,16 @@
 # Getting Started
 
-### Reference Documentation
-For further reference, please consider the following sections:
+### docker compose로 실행 환경 세팅하기
+1. `dev-tools/`의 경로에 .env 파일 생성하고, 아래의 환경 변수를 정의합니다.
+   - MYSQL_DATABASE
+   - MYSQL_USER
+   - MYSQL_PASSWORD   
+   - MYSQL_ROOT_PASSWORD
 
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.6.3/gradle-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.6.3/gradle-plugin/reference/html/#build-image)
-* [Spring Boot DevTools](https://docs.spring.io/spring-boot/docs/2.6.3/reference/htmlsingle/#using-boot-devtools)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/2.6.3/reference/htmlsingle/#boot-features-developing-web-applications)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.6.3/reference/htmlsingle/#boot-features-jpa-and-spring-data)
-
-### Guides
-The following guides illustrate how to use some features concretely:
-
-* [Accessing data with MySQL](https://spring.io/guides/gs/accessing-data-mysql/)
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-
-### Additional Links
-These additional references should also help you:
-
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
-
+**ex)MYSQL_DATABASE=REMOTE_CLASS** 
+   
+2. `dev-tools` 의 경로에서 아래의 명령어로 docker compose를 실행합니다.  
+*모든 실행은 `docker desktop`이 실행된 상태에서 이루어져야 합니다.*
+```shell
+docker compose up -d
+```
