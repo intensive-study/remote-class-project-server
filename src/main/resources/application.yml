@@ -1,9 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/REMOTE_CLASS?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-
-    username: remote
-    password: Remote1234#
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
