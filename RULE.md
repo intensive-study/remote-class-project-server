@@ -6,7 +6,7 @@
 
 - 기능 구현: feature/*
 ```shell
-  git flow feature start ${feature_branch}
+  git flow feature start ${feature_branch} ${기반 브랜치명}
 ```
 - 코드 스타일 수정: style/*
 ```shell
