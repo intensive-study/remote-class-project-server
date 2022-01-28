@@ -14,7 +14,6 @@
 ```shell
 docker compose up -d
 ```
-<br/>
 
 ### TokenProvider의 @Value 인식 에러 시
 1. file-settings를 클릭합니다.
