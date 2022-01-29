@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Iterable<UserEntity> getUsersByAll(){
         return userRepository.findAll();
     }
