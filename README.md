@@ -11,7 +11,7 @@
 📒 **주요 기능**
 
 - [API 문서](https://github.com/intensive-study/RemoteClass_project/wiki)
-- [ERD](https://www.erdcloud.com/d/i7zQEfy8F5vT8oJSq)
+- [ERD](https://www.erdcloud.com/d/ttvhShpwtTn5x64PL)
 
 🌱 **프레임워크 및 라이브러리**
 
