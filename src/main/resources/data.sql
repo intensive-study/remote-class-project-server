@@ -1,0 +1,2 @@
+INSERT INTO authority (AUTHORITY_NAME) values ('ROLE_USER');
+INSERT INTO authority (AUTHORITY_NAME) values ('ROLE_ADMIN');
