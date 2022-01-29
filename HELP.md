@@ -24,7 +24,7 @@ docker compose up -d
 ![env issue2](https://user-images.githubusercontent.com/46596758/151531772-556d8438-2294-4ec4-80f1-5619d514e859.png)
 
 ### TokenProvider의 @Value 인식 에러 시
-1. 인텔리제이에서 File-Settings를 클릭합니다.
+1. 인텔리제이에서 File-Settings를 클릭합니다. (MAC의 경우 preference)
 2. Build, Execution, Deployment를 클릭합니다.
 3. Annotation Processors에서 Enable annotation processing을 체크합니다.
 4. apply 후 OK를 누르시면 됩니다.
