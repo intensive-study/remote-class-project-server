@@ -6,10 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.server.remoteclass.entity.UserEntity;
+import org.server.remoteclass.entity.UserRole;
 
 import java.sql.Timestamp;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -22,6 +22,7 @@ public class UserDto {
     private String email;
     private String name;
     private String password;
+    private UserRole userRole;
     private Timestamp registerDate;
     private Set<AuthorityDto> authorityDtoSet;
 
@@ -32,9 +33,7 @@ public class UserDto {
                 .name(user.getName())
                 .password(user.getPassword())
                 .registerDate(user.getRegisterDate())
-                .authorityDtoSet(user.getAuthorities().stream()
-                        .map(authority -> AuthorityDto.builder().authorityName(authority.getAuthorityName()).build())
-                        .collect(Collectors.toSet()))
+                .userRole(user.getUserRole())
                 .build();
     }
 }

@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Data
 @Entity
@@ -30,17 +28,10 @@ public class UserEntity {
     private String name;
     @Column(name="password", nullable = false)
     private String password;
-    @Column(name = "auth")
-    @ColumnDefault("0") // 강의자가 되면 B로 변경하게끔 하겠습니다. default, both입니다.
-    private int auth;
+    @Enumerated(EnumType.STRING) // Enumerated로 느려지는 단점이 있는데, 공부 후에 개선하겠습니다.
+    private UserRole userRole;
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
     @Column(name="register_date", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp registerDate;
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_authority",
-            joinColumns = {@JoinColumn(name="user_id", referencedColumnName = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")}
-    )
-    private Set<Authority> authorities;
 }
