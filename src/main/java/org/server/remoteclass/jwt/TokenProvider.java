@@ -2,6 +2,7 @@ package org.server.remoteclass.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.server.remoteclass.dto.TokenDto;
 import org.server.remoteclass.jpa.UserRepository;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class TokenProvider implements InitializingBean {
 
@@ -45,7 +47,8 @@ public class TokenProvider implements InitializingBean {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
-
+        log.info("authorities" + authorities);
+        log.info("authentication" + authentication);
         long now = (new Date()).getTime();
         Date validity = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
 
@@ -56,6 +59,7 @@ public class TokenProvider implements InitializingBean {
                 .signWith(key, SignatureAlgorithm.HS512) // header "alg": "HS512"
                 .compact();
 
+        log.info("access token : " + accessToken);
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
