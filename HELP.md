@@ -15,7 +15,7 @@
 docker compose up -d
 ```
 
-3. .env파일을 등록시킵니다.
+3. .env파일을 등록시킵니다. (JUnit TEST 시에도 마찬가지입니다!)
 - 인텔리제이에서 Edit configuration을 클릭합니다.
 - envfile란을 클릭합니다.
 - [만약 envfile 기능이 없다면 여기를 눌러 플러그인을 설치해 주세요](https://plugins.jetbrains.com/plugin/7861-envfile)
