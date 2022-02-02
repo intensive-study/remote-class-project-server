@@ -1,20 +1,17 @@
 package org.server.remoteclass.service;
 
 import lombok.RequiredArgsConstructor;
-import org.server.remoteclass.entity.UserEntity;
+import org.server.remoteclass.entity.User;
 import org.server.remoteclass.jpa.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,9 +28,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     // DB에 User 값이 존재한다면 UserDetails 객체로 만들어서 리턴
-    private UserDetails createUserDetails(UserEntity user){
+    private UserDetails createUserDetails(User user){
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(user.getAuthority().toString());
-        return new User(
+        return new org.springframework.security.core.userdetails.User(
                 String.valueOf(user.getEmail()),
                         user.getPassword(),
                         Collections.singleton(grantedAuthority)

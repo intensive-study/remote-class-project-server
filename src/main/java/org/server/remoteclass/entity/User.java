@@ -12,11 +12,10 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Builder
-@Table(name="user")
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+public class User {
 
     @Id
     @Column(name = "user_id")

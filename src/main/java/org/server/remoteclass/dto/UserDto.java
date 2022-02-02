@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.server.remoteclass.entity.UserEntity;
+import org.server.remoteclass.entity.User;
 import org.server.remoteclass.entity.UserRole;
 
 import java.sql.Timestamp;
@@ -26,7 +26,7 @@ public class UserDto {
     private Timestamp registerDate;
     private Set<AuthorityDto> authorityDtoSet;
 
-    public static UserDto from(UserEntity user){
+    public static UserDto from(User user){
         if(user == null) return null;
         return UserDto.builder()
                 .email(user.getEmail())

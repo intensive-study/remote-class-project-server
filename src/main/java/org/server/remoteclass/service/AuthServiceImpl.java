@@ -7,7 +7,7 @@ import org.server.remoteclass.dto.TokenRequestDto;
 import org.server.remoteclass.dto.UserDto;
 import org.server.remoteclass.entity.Authority;
 import org.server.remoteclass.entity.RefreshToken;
-import org.server.remoteclass.entity.UserEntity;
+import org.server.remoteclass.entity.User;
 import org.server.remoteclass.entity.UserRole;
 import org.server.remoteclass.jpa.RefreshTokenRepository;
 import org.server.remoteclass.jpa.UserRepository;
@@ -16,16 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -57,7 +50,7 @@ public class AuthServiceImpl implements AuthService{
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
 
-        UserEntity user = UserEntity.builder()
+        User user = User.builder()
                 .email(userDto.getEmail())
                 .name(userDto.getName())
                 .password(bCryptPasswordEncoder.encode(userDto.getPassword()))
