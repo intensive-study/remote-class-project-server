@@ -29,4 +29,9 @@ public class Lecture {
     @JoinColumn(name="category_id")
     private Category category;       //강의 카테고리
 
+    @ManyToOne
+    @JoinColumn(name="author")
+    private UserEntity user;
+
+
 }

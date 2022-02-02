@@ -24,4 +24,5 @@ public class LectureFormDto {
     private LocalDate endDate;
     @NotNull(message="카테고리 선택, 숫자로 입력")
     private Long categoryId;
+    private Long userId;
 }
