@@ -5,10 +5,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 
-@ Data
-@ Entity
-@ Getter
-@ Setter
+@Entity
+@Getter @Setter
 public class Lecture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

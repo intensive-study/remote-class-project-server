@@ -137,22 +137,22 @@ public class LectureServiceImpl implements LectureService{
 
     /**
      * 카테고리별 강의 조회
-     * @return
      */
     @Override
     @Transactional(readOnly = true)
     public List<Lecture> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
-        Collection<Lecture> lecture;
+        Collection<Lecture> lectures;
         //categoryId가 0이하일 경우, 존재하지 않는다
         if(categoryId > 0){
-            lecture = lectureRepository.findByCategoryId(categoryId);
+            lectures = lectureRepository.findByCategoryId(categoryId);
         }
         else{
             throw new IdNotExistException("존재하지 않는 카테고리", ResultCode.ID_NOT_EXIST);
         }
-        if(lecture.isEmpty()){
+        if(lectures.isEmpty()){
             throw new IdNotExistException("존재하지 않는 강의", ResultCode.ID_NOT_EXIST);
         }
-        return lecture.stream().collect(Collectors.toList());
+        return lectures.stream().collect(Collectors.toList());
     }
+
 }
