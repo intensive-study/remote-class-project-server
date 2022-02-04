@@ -15,6 +15,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     //수강생 별 수강강좌 리스트
 //    @Query(value = "select * from student s where s.user_id = :userId", nativeQuery = true)
-    Collection<Lecture> findByUserId(Long userId);
+    Collection<Lecture> findByStudentId(Long userId);
 
 }

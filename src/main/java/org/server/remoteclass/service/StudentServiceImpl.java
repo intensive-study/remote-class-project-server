@@ -81,7 +81,7 @@ public class StudentServiceImpl implements StudentService{
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
         // 현재 사용자의 userId를 가진 student들을 조회
         ModelMapper mapper = new ModelMapper();
-        Collection<Lecture> lectures = studentRepository.findByUserId(user.getUserId());
+        Collection<Lecture> lectures = studentRepository.findByStudentId(user.getUserId());
         return lectures.stream().map(lecture -> mapper.map(lecture, LectureDto.class)).collect(Collectors.toList());
     }
 

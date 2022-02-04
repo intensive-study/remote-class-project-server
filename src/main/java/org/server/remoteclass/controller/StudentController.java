@@ -37,4 +37,10 @@ public class StudentController {
     public ResponseEntity<Iterable<LectureDto>> getAllLectureByUserId() throws IdNotExistException {
         return ResponseEntity.ok(studentService.getLecturesByUserId());
     }
+
+    //수강생 전체 조회 /강의자 권한
+    @GetMapping("/{lectureId}/list")
+    public ResponseEntity<Iterable<StudentDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+        return ResponseEntity.ok(studentService.getStudentsByLectureId(lectureId));
+    }
 }
