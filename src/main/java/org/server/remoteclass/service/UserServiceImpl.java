@@ -41,10 +41,10 @@ public class UserServiceImpl implements UserService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<UserDto> getUsersByAll(){
+    public Iterable<UserDto> getUsersByAll(){
         ModelMapper mapper = new ModelMapper();
         List<User> users = userRepository.findAll();
-        List<UserDto> userList = users.stream().map(user -> mapper.map(user, UserDto.class)).collect(Collectors.toList());
+        Iterable<UserDto> userList = users.stream().map(user -> mapper.map(user, UserDto.class)).collect(Collectors.toList());
         return userList;
 //        return userRepository.findAll();
     }

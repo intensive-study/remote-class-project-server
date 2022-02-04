@@ -25,7 +25,7 @@ public class StudentController {
     }
 
     //수강 신청 학생 권한
-    @PostMapping()
+    @PostMapping
     public ResponseEntity applyLecture(@RequestBody @Valid StudentFormDto studentFormDto) throws IdNotExistException {
         Student student = studentService.applyLecture(studentFormDto);
         StudentDto studentDto = new StudentDto(student);
@@ -36,13 +36,6 @@ public class StudentController {
     @GetMapping("/list")
     public List<StudentDto> getAllLectureByUserId() throws IdNotExistException {
         return this.studentService.getLecturesByUserId().stream()
-                .map(StudentDto::new).collect(Collectors.toList());
-    }
-
-    //수강생 전체 조회 /강의자 권한
-    @GetMapping("{lectureId}/list")
-    public List<StudentDto> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException{
-        return this.studentService.getStudentsByLectureId(lectureId).stream()
                 .map(StudentDto::new).collect(Collectors.toList());
     }
 }
