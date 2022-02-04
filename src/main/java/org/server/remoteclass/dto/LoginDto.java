@@ -14,13 +14,11 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class LoginDto {
 
-    private String name;
-
     @NotNull
-    @Size(min=8, max=50)
+    @Size(max=20)
     private String email;
 
     @NotNull
-    @Size(min=8, max=100)
+    @Size(min=8, max=30)
     private String password;
 }

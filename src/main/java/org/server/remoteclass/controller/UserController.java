@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 
 @RestController
 public class UserController {
@@ -28,8 +27,4 @@ public class UserController {
         return "Welcome test";
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<UserDto> signup(@Valid @RequestBody UserDto userDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.signup(userDto));
-    }
 }

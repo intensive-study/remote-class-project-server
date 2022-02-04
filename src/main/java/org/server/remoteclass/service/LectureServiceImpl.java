@@ -5,7 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.LectureFormDto;
 import org.server.remoteclass.entity.Category;
 import org.server.remoteclass.entity.Lecture;
-import org.server.remoteclass.entity.UserEntity;
+import org.server.remoteclass.entity.User;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
 import org.server.remoteclass.jpa.CategoryRepository;
@@ -42,7 +42,7 @@ public class LectureServiceImpl implements LectureService{
      */
     @Override
     public Lecture createLecture(LectureFormDto lectureFormDto) throws IdNotExistException {
-        UserEntity user = SecurityUtil.getCurrentUserEmail()
+        User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findOneWithAuthoritiesByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
@@ -79,7 +79,7 @@ public class LectureServiceImpl implements LectureService{
     @Transactional
     public Lecture updateLecture(LectureFormDto lectureFormDto) throws IdNotExistException{
         //check user and authorities
-        UserEntity user = SecurityUtil.getCurrentUserEmail()
+        User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findOneWithAuthoritiesByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
@@ -114,7 +114,7 @@ public class LectureServiceImpl implements LectureService{
     @Transactional
     public void deleteLecture(Long lectureId) throws IdNotExistException{
         //check user and check if user has delete authority
-        UserEntity user = SecurityUtil.getCurrentUserEmail()
+        User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findOneWithAuthoritiesByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 

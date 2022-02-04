@@ -4,7 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.StudentFormDto;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.Student;
-import org.server.remoteclass.entity.UserEntity;
+import org.server.remoteclass.entity.User;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
 import org.server.remoteclass.jpa.LectureRepository;
@@ -36,7 +36,7 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public Student applyLecture(StudentFormDto studentFormDto) throws IdNotExistException{
-        UserEntity user = SecurityUtil.getCurrentUserEmail()
+        User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findOneWithAuthoritiesByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
@@ -63,7 +63,7 @@ public class StudentServiceImpl implements StudentService{
     public List<Student> getStudentsByLectureId(Long lectureId) throws IdNotExistException{
         Collection<Student> students;
 
-        UserEntity user = SecurityUtil.getCurrentUserEmail()
+        User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findOneWithAuthoritiesByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
         Lecture lecture = lectureRepository.findById(lectureId)
@@ -89,7 +89,7 @@ public class StudentServiceImpl implements StudentService{
     public List<Student> getLecturesByUserId() throws IdNotExistException{
         Collection<Student> students;
         //현재 사용자 확인
-        UserEntity user = SecurityUtil.getCurrentUserEmail()
+        User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findOneWithAuthoritiesByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
         // 현재 사용자의 userId를 가진 student들을 조회

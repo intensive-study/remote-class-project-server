@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.server.remoteclass.entity.Category;
 import org.server.remoteclass.entity.Lecture;
-import org.server.remoteclass.entity.UserEntity;
+import org.server.remoteclass.entity.User;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ public class LectureDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
     private Category category;
-    private UserEntity user;
+    private User user;
 
     public LectureDto(Lecture lecture){
         this.lectureId = lecture.getLectureId();

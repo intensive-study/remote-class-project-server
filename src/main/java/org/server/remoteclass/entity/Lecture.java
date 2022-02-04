@@ -29,7 +29,7 @@ public class Lecture {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="lecturer") //강의자
-    private UserEntity user;
+    private User user;
 
 
 }

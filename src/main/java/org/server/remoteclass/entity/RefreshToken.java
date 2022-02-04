@@ -18,7 +18,8 @@ public class RefreshToken {
 
     @Id
     @Column(name = "key_name") // key가 예약어라 테이블 자동 생성이 안되서 key_name으로 변경
-    private Long key;
+    private String key;
+//    private Long key;
 
     @Column(name="value")
     private String value;
@@ -29,7 +30,7 @@ public class RefreshToken {
     }
 
     @Builder
-    public RefreshToken(Long key, String value){
+    public RefreshToken(String key, String value){
         this.key = key;
         this.value = value;
     }

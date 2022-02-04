@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.Student;
-import org.server.remoteclass.entity.UserEntity;
+import org.server.remoteclass.entity.User;
 
 
 @Getter
@@ -12,7 +12,7 @@ import org.server.remoteclass.entity.UserEntity;
 public class StudentDto {
     private Long studentId;
     private Lecture lecture;
-    private UserEntity user;
+    private User user;
 
     public StudentDto(Student student){
         this.studentId = student.getStudentId();
