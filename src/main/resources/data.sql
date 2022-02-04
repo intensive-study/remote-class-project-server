@@ -1,2 +1,3 @@
-INSERT INTO authority (AUTHORITY_NAME) values ('ROLE_USER');
-INSERT INTO authority (AUTHORITY_NAME) values ('ROLE_ADMIN');
+INSERT INTO category (CATEGORY_NAME) VALUES ('Back-end');
+INSERT INTO category (CATEGORY_NAME) VALUES ('Front-end');
+INSERT INTO category (CATEGORY_NAME) VALUES ('Data');
