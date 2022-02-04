@@ -31,6 +31,7 @@ public class User {
     private UserRole userRole;
     @Enumerated(EnumType.STRING)
     private Authority authority;
+    // 자료형 LocalDateTime과 호환 고려해 볼게요
     @Column(name="register_date", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp registerDate;
 }

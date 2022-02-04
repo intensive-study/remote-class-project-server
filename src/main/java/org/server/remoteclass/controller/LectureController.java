@@ -58,16 +58,15 @@ public class LectureController {
 
     // 강의 전체 목록 조회
     @GetMapping("/list")
-    public List<LectureDto> getAllLecture(){
+    public Iterable<LectureDto> getAllLecture(){
         return this.lectureService.getLectureByAll().stream()
                 .map(LectureDto::new).collect(Collectors.toList());
     }
 
     //카테고리별 강의 목록 조회
     @GetMapping("/list/{categoryId}")
-    public List<LectureDto> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
+    public Iterable<LectureDto> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
         return this.lectureService.getLectureByCategoryId(categoryId).stream()
                 .map(LectureDto::new).collect(Collectors.toList());
     }
-
 }

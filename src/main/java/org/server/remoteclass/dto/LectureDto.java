@@ -1,5 +1,6 @@
 package org.server.remoteclass.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.server.remoteclass.entity.Category;
@@ -10,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 @Getter @Setter
+@Builder
 public class LectureDto {
     private Long lectureId;
     private String title;
@@ -31,5 +33,18 @@ public class LectureDto {
         this.endDate = lecture.getEndDate();
         this.category = lecture.getCategory();
         this.user = lecture.getUser();
+    }
+
+    public static LectureDto from(Lecture lecture){
+        if(lecture == null) return null;
+        return LectureDto.builder()
+                .title(lecture.getTitle())
+                .description(lecture.getDescription())
+                .price(lecture.getPrice())
+                .startDate(lecture.getStartDate())
+                .endDate(lecture.getEndDate())
+                .category(lecture.getCategory())
+                .user(lecture.getUser())
+                .build();
     }
 }
