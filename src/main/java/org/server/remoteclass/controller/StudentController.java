@@ -1,7 +1,9 @@
 package org.server.remoteclass.controller;
 
+import org.server.remoteclass.dto.LectureDto;
 import org.server.remoteclass.dto.StudentDto;
 import org.server.remoteclass.dto.StudentFormDto;
+import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.Student;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.StudentService;
@@ -32,8 +34,7 @@ public class StudentController {
 
     //수강하는 강좌 전체 조회
     @GetMapping("/list")
-    public List<StudentDto> getAllLectureByUserId() throws IdNotExistException {
-        return this.studentService.getLecturesByUserId().stream()
-                .map(StudentDto::new).collect(Collectors.toList());
+    public ResponseEntity<Iterable<LectureDto>> getAllLectureByUserId() throws IdNotExistException {
+        return ResponseEntity.ok(studentService.getLecturesByUserId());
     }
 }

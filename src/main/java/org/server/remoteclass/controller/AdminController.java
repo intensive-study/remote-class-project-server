@@ -6,6 +6,7 @@ import org.server.remoteclass.jpa.UserRepository;
 import org.server.remoteclass.service.StudentService;
 import org.server.remoteclass.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +28,8 @@ public class AdminController {
 
     //수강생 전체 조회 /강의자 권한
     @GetMapping("/{lectureId}/list")
-    public Iterable<StudentDto> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
-        return this.studentService.getStudentsByLectureId(lectureId).stream()
-                .map(StudentDto::new).collect(Collectors.toList());
+    public ResponseEntity<Iterable<StudentDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+        return ResponseEntity.ok(studentService.getStudentsByLectureId(lectureId));
     }
 
 }

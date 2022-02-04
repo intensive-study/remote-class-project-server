@@ -51,15 +51,13 @@ public class LectureController {
 
     // 강의 전체 목록 조회
     @GetMapping("/list")
-    public Iterable<LectureDto> getAllLecture(){
-        return this.lectureService.getLectureByAll().stream()
-                .map(LectureDto::new).collect(Collectors.toList());
+    public ResponseEntity<Iterable<LectureDto>> getAllLecture(){
+        return ResponseEntity.ok(lectureService.getLectureByAll());
     }
 
     //카테고리별 강의 목록 조회
     @GetMapping("/list/{categoryId}")
-    public Iterable<LectureDto> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
-        return this.lectureService.getLectureByCategoryId(categoryId).stream()
-                .map(LectureDto::new).collect(Collectors.toList());
+    public ResponseEntity<Iterable<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
+        return ResponseEntity.ok(lectureService.getLectureByCategoryId(categoryId));
     }
 }
