@@ -4,7 +4,6 @@ import org.modelmapper.ModelMapper;
 
 import org.server.remoteclass.dto.LectureDto;
 import org.server.remoteclass.dto.LectureFormDto;
-import org.server.remoteclass.dto.UserDto;
 import org.server.remoteclass.entity.Category;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.User;
@@ -13,6 +12,7 @@ import org.server.remoteclass.exception.ResultCode;
 import org.server.remoteclass.jpa.CategoryRepository;
 import org.server.remoteclass.jpa.LectureRepository;
 import org.server.remoteclass.jpa.UserRepository;
+import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -30,12 +30,17 @@ public class LectureServiceImpl implements LectureService{
     UserRepository userRepository;
     LectureRepository lectureRepository;
     CategoryRepository categoryRepository;
+    BeanConfiguration beanConfiguration;
 
     @Autowired
-    public LectureServiceImpl(UserRepository userRepository, LectureRepository lectureRepository,CategoryRepository categoryRepository){
+    public LectureServiceImpl(UserRepository userRepository,
+                              LectureRepository lectureRepository,
+                              CategoryRepository categoryRepository,
+                              BeanConfiguration beanConfiguration){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.categoryRepository = categoryRepository;
+        this.beanConfiguration = beanConfiguration;
     }
 
     /**
@@ -53,7 +58,7 @@ public class LectureServiceImpl implements LectureService{
 //        if(user.getUserRole() != USER_LECTURER){
 //            throw new InvalidDataAccessApiUsageException("권한 없음");
 //        }
-        Lecture lecture = new ModelMapper().map(lectureFormDto, Lecture.class);
+        Lecture lecture = beanConfiguration.modelMapper().map(lectureFormDto, Lecture.class);
         Category category = categoryRepository.findById(lectureFormDto.getCategoryId())
                 .orElseThrow(() -> new IdNotExistException("카테고리 존재하지 않음", ResultCode.ID_NOT_EXIST));
         lecture.setCategory(category);
@@ -132,9 +137,9 @@ public class LectureServiceImpl implements LectureService{
      */
     @Override
     public List<LectureDto> getLectureByAll() {
-        ModelMapper mapper = new ModelMapper();
         List<Lecture> lectures = lectureRepository.findAll();
-        return lectures.stream().map(lecture -> mapper.map(lecture, LectureDto.class)).collect(Collectors.toList());
+        return lectures.stream().map(lecture -> beanConfiguration.modelMapper()
+                .map(lecture, LectureDto.class)).collect(Collectors.toList());
     }
 
     /**
@@ -142,9 +147,9 @@ public class LectureServiceImpl implements LectureService{
      */
     @Override
     public List<LectureDto> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
-        ModelMapper mapper = new ModelMapper();
         categoryRepository.findById(categoryId).orElseThrow(()->new IdNotExistException("존재하지 않는 카테고리", ResultCode.ID_NOT_EXIST));
-        Collection<Lecture> lectures = lectureRepository.findByCategoryId(categoryId);
-        return lectures.stream().map(lecture -> mapper.map(lecture, LectureDto.class)).collect(Collectors.toList());
+        List<Lecture> lectures = lectureRepository.findByCategoryId(categoryId);
+        return lectures.stream().map(lecture -> beanConfiguration.modelMapper()
+                .map(lecture, LectureDto.class)).collect(Collectors.toList());
     }
 }

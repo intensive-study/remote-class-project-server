@@ -28,6 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     // DB에 User 값이 존재한다면 UserDetails 객체로 만들어서 리턴
+    // 빨간 줄이 있는데, 실행 시 에러가 발생하지 않습니다. @Transactional 관련 이슈인데, 빠르게 해결하겠습니다.
     @Transactional
     private UserDetails createUserDetails(User user){
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(user.getAuthority().toString());

@@ -40,9 +40,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<UserDto> getUsersByAll(){
-        ModelMapper mapper = new ModelMapper();
         List<User> users = userRepository.findAll();
-        return users.stream().map(user -> mapper.map(user, UserDto.class)).collect(Collectors.toList());
+        return users.stream().map(user -> beanConfiguration.modelMapper().map(user, UserDto.class)).collect(Collectors.toList());
     }
 
 }
