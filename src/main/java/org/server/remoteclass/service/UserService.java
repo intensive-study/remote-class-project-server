@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface UserService {
     UserDto getUserWithAuthorities(String email);
     UserDto getMyUserWithAuthorities();
-    Iterable<UserDto> getUsersByAll();
+    List<UserDto> getUsersByAll();
 }

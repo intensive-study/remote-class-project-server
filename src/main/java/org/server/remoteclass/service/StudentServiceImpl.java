@@ -57,7 +57,7 @@ public class StudentServiceImpl implements StudentService{
 
     //강좌별 전체 수강생 목록
     @Override
-    public Iterable<StudentDto> getStudentsByLectureId(Long lectureId) throws IdNotExistException{
+    public List<StudentDto> getStudentsByLectureId(Long lectureId) throws IdNotExistException{
 
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
@@ -74,7 +74,7 @@ public class StudentServiceImpl implements StudentService{
 
     //현재 수강생의 수강 강좌 리스트 조회
     @Override
-    public Iterable<LectureDto> getLecturesByUserId() throws IdNotExistException{
+    public List<LectureDto> getLecturesByUserId() throws IdNotExistException{
         //현재 사용자 확인
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)

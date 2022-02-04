@@ -3,8 +3,6 @@ package org.server.remoteclass.controller;
 import org.server.remoteclass.dto.LectureDto;
 import org.server.remoteclass.dto.StudentDto;
 import org.server.remoteclass.dto.StudentFormDto;
-import org.server.remoteclass.entity.Lecture;
-import org.server.remoteclass.entity.Student;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/student")
@@ -34,13 +31,13 @@ public class StudentController {
 
     //수강하는 강좌 전체 조회
     @GetMapping("/list")
-    public ResponseEntity<Iterable<LectureDto>> getAllLectureByUserId() throws IdNotExistException {
+    public ResponseEntity<List<LectureDto>> getAllLectureByUserId() throws IdNotExistException {
         return ResponseEntity.ok(studentService.getLecturesByUserId());
     }
 
     //수강생 전체 조회 /강의자 권한
     @GetMapping("/{lectureId}/list")
-    public ResponseEntity<Iterable<StudentDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+    public ResponseEntity<List<StudentDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
         return ResponseEntity.ok(studentService.getStudentsByLectureId(lectureId));
     }
 }

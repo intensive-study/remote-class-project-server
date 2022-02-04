@@ -39,12 +39,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Iterable<UserDto> getUsersByAll(){
+    public List<UserDto> getUsersByAll(){
         ModelMapper mapper = new ModelMapper();
         List<User> users = userRepository.findAll();
-        //Iterable 형태로 반환하는 게 맞겠죠?(최대한 추상적인 자료형으로 반환하는 것으로 반환시켰어요)
-        Iterable<UserDto> userList = users.stream().map(user -> mapper.map(user, UserDto.class)).collect(Collectors.toList());
-        return userList;
+        return users.stream().map(user -> mapper.map(user, UserDto.class)).collect(Collectors.toList());
     }
 
 }

@@ -131,7 +131,7 @@ public class LectureServiceImpl implements LectureService{
      * 강의 전체 조회
      */
     @Override
-    public Iterable<LectureDto> getLectureByAll() {
+    public List<LectureDto> getLectureByAll() {
         ModelMapper mapper = new ModelMapper();
         List<Lecture> lectures = lectureRepository.findAll();
         return lectures.stream().map(lecture -> mapper.map(lecture, LectureDto.class)).collect(Collectors.toList());
@@ -141,7 +141,7 @@ public class LectureServiceImpl implements LectureService{
      * 카테고리별 강의 조회
      */
     @Override
-    public Iterable<LectureDto> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
+    public List<LectureDto> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
         ModelMapper mapper = new ModelMapper();
         categoryRepository.findById(categoryId).orElseThrow(()->new IdNotExistException("존재하지 않는 카테고리", ResultCode.ID_NOT_EXIST));
         Collection<Lecture> lectures = lectureRepository.findByCategoryId(categoryId);

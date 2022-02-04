@@ -2,7 +2,6 @@ package org.server.remoteclass.service;
 
 import org.server.remoteclass.dto.LectureDto;
 import org.server.remoteclass.dto.LectureFormDto;
-import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.exception.IdNotExistException;
 
 import java.util.List;
@@ -19,9 +18,9 @@ public interface LectureService {
     void deleteLecture(Long lectureId) throws IdNotExistException;
 
     //전체 강의 조회
-    Iterable<LectureDto> getLectureByAll();
+    List<LectureDto> getLectureByAll();
 
     //카테고리별 조회
-    Iterable<LectureDto> getLectureByCategoryId(Long CategoryId) throws IdNotExistException;
+    List<LectureDto> getLectureByCategoryId(Long CategoryId) throws IdNotExistException;
 
 }

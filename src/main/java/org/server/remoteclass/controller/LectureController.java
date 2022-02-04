@@ -2,7 +2,6 @@ package org.server.remoteclass.controller;
 
 import org.server.remoteclass.dto.LectureDto;
 import org.server.remoteclass.dto.LectureFormDto;
-import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.LectureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/lecture")
@@ -51,13 +49,13 @@ public class LectureController {
 
     // 강의 전체 목록 조회
     @GetMapping("/list")
-    public ResponseEntity<Iterable<LectureDto>> getAllLecture(){
+    public ResponseEntity<List<LectureDto>> getAllLecture(){
         return ResponseEntity.ok(lectureService.getLectureByAll());
     }
 
     //카테고리별 강의 목록 조회
     @GetMapping("/list/{categoryId}")
-    public ResponseEntity<Iterable<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
+    public ResponseEntity<List<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
         return ResponseEntity.ok(lectureService.getLectureByCategoryId(categoryId));
     }
 }
