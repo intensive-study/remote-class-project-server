@@ -1,9 +1,4 @@
 spring:
-  profiles:
-    include:
-      - aws
-      - local
-  #      - prod
   servlet:
     multipart:
       max-file-size: 10MB
@@ -11,3 +6,10 @@ spring:
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
+
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+

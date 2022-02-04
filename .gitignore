@@ -2,4 +2,5 @@
 .gradle/*
 build
 dev-tools/.env
+application-aws.yml
 /out/
