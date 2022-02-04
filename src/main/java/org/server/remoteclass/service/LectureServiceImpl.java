@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 
 import org.server.remoteclass.dto.LectureDto;
 import org.server.remoteclass.dto.LectureFormDto;
+import org.server.remoteclass.dto.UserDto;
 import org.server.remoteclass.entity.Category;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.User;
@@ -48,7 +49,7 @@ public class LectureServiceImpl implements LectureService{
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
-        // 스프링 시큐리티 컨텍스트에 저장된 User의 Role이 Lecturer인 경우 강의 생성, 아니면 403 반환
+        // User의 Role이 Lecturer인 경우 강의 생성, 아니면 403 코드 반환
 //        if(user.getUserRole() != USER_LECTURER){
 //            throw new InvalidDataAccessApiUsageException("권한 없음");
 //        }
@@ -65,9 +66,9 @@ public class LectureServiceImpl implements LectureService{
      * @param : lectureId
      */
     @Override
-    public LectureDto getLectureByLectureId(Long lectureId) throws IdNotExistException {
-        return lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ResultCode.ID_NOT_EXIST));
+    public LectureDto getLectureByLectureId(Long lectureId) {
+        //예외처리보다 빈 값을 넘기는 게 맞다고 생각했습니다.
+        return LectureDto.from(lectureRepository.findById(lectureId).orElse(null));
     }
 
     /**
@@ -119,8 +120,9 @@ public class LectureServiceImpl implements LectureService{
 
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ResultCode.ID_NOT_EXIST));
+
         if(user.getUserId() != lecture.getUser().getUserId()){
-            throw new InvalidDataAccessApiUsageException("수정 권한이 없습니다.");
+            throw new InvalidDataAccessApiUsageException("삭제 권한이 없습니다.");
         }
         lectureRepository.deleteById(lectureId);
     }
@@ -130,7 +132,9 @@ public class LectureServiceImpl implements LectureService{
      */
     @Override
     public Iterable<LectureDto> getLectureByAll() {
-        return lectureRepository.findAll();
+        ModelMapper mapper = new ModelMapper();
+        List<Lecture> lectures = lectureRepository.findAll();
+        return lectures.stream().map(lecture -> mapper.map(lecture, LectureDto.class)).collect(Collectors.toList());
     }
 
     /**
@@ -138,10 +142,9 @@ public class LectureServiceImpl implements LectureService{
      */
     @Override
     public Iterable<LectureDto> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
-
-        Category category = categoryRepository.findById(categoryId).orElseThrow(()->new IdNotExistException("존재하지 않는 카테고리", ResultCode.ID_NOT_EXIST));
+        ModelMapper mapper = new ModelMapper();
+        categoryRepository.findById(categoryId).orElseThrow(()->new IdNotExistException("존재하지 않는 카테고리", ResultCode.ID_NOT_EXIST));
         Collection<Lecture> lectures = lectureRepository.findByCategoryId(categoryId);
-
-        return lectures.stream().collect(Collectors.toList());
+        return lectures.stream().map(lecture -> mapper.map(lecture, LectureDto.class)).collect(Collectors.toList());
     }
 }
