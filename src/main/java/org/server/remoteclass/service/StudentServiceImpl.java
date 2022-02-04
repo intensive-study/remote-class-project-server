@@ -36,7 +36,7 @@ public class StudentServiceImpl implements StudentService{
     @Override
     public Student applyLecture(StudentFormDto studentFormDto) throws IdNotExistException{
         User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findOneWithAuthoritiesByEmail)
+                .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
 //        //학생 권한인지 확인하고
