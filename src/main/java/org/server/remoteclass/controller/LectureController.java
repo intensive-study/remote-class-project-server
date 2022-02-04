@@ -26,7 +26,7 @@ public class LectureController {
     }
 
     //강의 생성
-    @PostMapping()
+    @PostMapping
     public ResponseEntity createLecture(@RequestBody @Valid LectureFormDto lectureFormDto) throws IdNotExistException {
         Lecture lecture = lectureService.createLecture(lectureFormDto);
         LectureDto lectureDto = new LectureDto(lecture);
@@ -41,7 +41,7 @@ public class LectureController {
     }
 
     //강의 수정
-    @PutMapping()
+    @PutMapping
     public ResponseEntity updateLecture(@RequestBody @Valid LectureFormDto lectureFormDto) throws IdNotExistException {
         Lecture lecture = lectureService.updateLecture(lectureFormDto);
         LectureDto responseLecture = new LectureDto(lecture);

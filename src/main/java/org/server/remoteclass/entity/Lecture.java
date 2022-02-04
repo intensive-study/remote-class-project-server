@@ -23,12 +23,12 @@ public class Lecture {
     @Column(name = "end_date")
     private LocalDate endDate;          //강의 종료일
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="category_id")
     private Category category;       //강의 카테고리
 
-    @ManyToOne
-    @JoinColumn(name="author")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="lecturer") //강의자
     private UserEntity user;
 
 

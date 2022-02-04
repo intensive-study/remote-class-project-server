@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class LectureServiceImpl implements LectureService{
 
     UserRepository userRepository;
@@ -64,7 +65,6 @@ public class LectureServiceImpl implements LectureService{
      * @param : lectureId
      */
     @Override
-    @Transactional(readOnly = true)
     public Lecture getLectureByLectureId(Long lectureId) throws IdNotExistException {
         return lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ResultCode.ID_NOT_EXIST));
@@ -130,7 +130,6 @@ public class LectureServiceImpl implements LectureService{
      * 강의 전체 조회
      */
     @Override
-    @Transactional(readOnly = true)
     public List<Lecture> getLectureByAll() {
         return lectureRepository.findAll();
     }
@@ -139,20 +138,11 @@ public class LectureServiceImpl implements LectureService{
      * 카테고리별 강의 조회
      */
     @Override
-    @Transactional(readOnly = true)
     public List<Lecture> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
-        Collection<Lecture> lectures;
-        //categoryId가 0이하일 경우, 존재하지 않는다
-        if(categoryId > 0){
-            lectures = lectureRepository.findByCategoryId(categoryId);
-        }
-        else{
-            throw new IdNotExistException("존재하지 않는 카테고리", ResultCode.ID_NOT_EXIST);
-        }
-        if(lectures.isEmpty()){
-            throw new IdNotExistException("존재하지 않는 강의", ResultCode.ID_NOT_EXIST);
-        }
+
+        Category category = categoryRepository.findById(categoryId).orElseThrow(()->new IdNotExistException("존재하지 않는 카테고리", ResultCode.ID_NOT_EXIST));
+        Collection<Lecture> lectures = lectureRepository.findByCategoryId(categoryId);
+
         return lectures.stream().collect(Collectors.toList());
     }
-
 }
