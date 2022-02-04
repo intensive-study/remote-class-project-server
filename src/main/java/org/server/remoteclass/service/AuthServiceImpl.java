@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
+@Transactional
 public class AuthServiceImpl implements AuthService{
 
     private final UserRepository userRepository;
@@ -43,7 +44,6 @@ public class AuthServiceImpl implements AuthService{
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    @Transactional
     @Override
     public UserDto signup(UserDto userDto){
         if(userRepository.existsByEmail(userDto.getEmail())){
@@ -61,7 +61,6 @@ public class AuthServiceImpl implements AuthService{
         return UserDto.from(userRepository.save(user));
     }
 
-    @Transactional
     @Override
     public TokenDto login(LoginDto loginDto) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
@@ -83,7 +82,6 @@ public class AuthServiceImpl implements AuthService{
         return tokenDto;
     }
 
-    @Transactional
     @Override
     public TokenDto reissue(TokenRequestDto tokenRequestDto){
         // 1. Refresh Token 검증

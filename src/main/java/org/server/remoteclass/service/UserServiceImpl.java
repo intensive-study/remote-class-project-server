@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
@@ -26,20 +27,17 @@ public class UserServiceImpl implements UserService{
         this.beanConfiguration = beanConfiguration;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public UserDto getUserWithAuthorities(String email){
         return UserDto.from(userRepository.findByEmail(email).orElse(null));
     }
 
     //현재 스프링 시큐리티 컨텍스트에 있는 유저 반환
-    @Transactional(readOnly = true)
     @Override
     public UserDto getMyUserWithAuthorities(){
         return UserDto.from(SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findByEmail).orElse(null));
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Iterable<UserDto> getUsersByAll(){
         ModelMapper mapper = new ModelMapper();

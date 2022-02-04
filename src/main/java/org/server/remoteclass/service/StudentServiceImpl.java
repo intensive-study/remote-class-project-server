@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class StudentServiceImpl implements StudentService{
 
     UserRepository userRepository;
@@ -35,6 +36,7 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
+    @Transactional
     public StudentDto applyLecture(StudentFormDto studentFormDto) throws IdNotExistException{
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
@@ -49,17 +51,11 @@ public class StudentServiceImpl implements StudentService{
             Student student = new ModelMapper().map(studentFormDto, Student.class);
             student.setUser(user);
             student.setLecture(lecture);
-            Student result = studentRepository.save(student);
-            return result;
+            return StudentDto.from(studentRepository.save(student));
         }
-//        else{
-//            throw new InvalidDataAccessApiUsageException("수강 신청 권한 없음");
-//        }
-//    }
 
     //강좌별 전체 수강생 목록
     @Override
-    @Transactional(readOnly = true)
     public Iterable<StudentDto> getStudentsByLectureId(Long lectureId) throws IdNotExistException{
         Collection<Student> students;
 
@@ -75,17 +71,12 @@ public class StudentServiceImpl implements StudentService{
             if(students.isEmpty()){
                 throw new IllegalStateException("수강생이 존재하지 않는 강의");
             }
-//        }
-//        else{
-//            throw new InvalidDataAccessApiUsageException("조회 권한이 없습니다.");
-//        }
         return students.stream().collect(Collectors.toList());
     }
 
 
     //현재 수강생의 수강 강좌 리스트 조회
     @Override
-    @Transactional(readOnly = true)
     public Iterable<StudentDto> getLecturesByUserId() throws IdNotExistException{
         Collection<Student> students;
         //현재 사용자 확인

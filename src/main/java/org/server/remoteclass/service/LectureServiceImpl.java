@@ -42,12 +42,13 @@ public class LectureServiceImpl implements LectureService{
      * USER_LECTURER만 가능
      */
     @Override
+    @Transactional
     public LectureDto createLecture(LectureFormDto lectureFormDto) throws IdNotExistException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
-        // 현재로그인한 userRole이 user lecturer일때 강의 생성, 아니면 권한없음.
+        // 스프링 시큐리티 컨텍스트에 저장된 User의 Role이 Lecturer인 경우 강의 생성, 아니면 403 반환
 //        if(user.getUserRole() != USER_LECTURER){
 //            throw new InvalidDataAccessApiUsageException("권한 없음");
 //        }
@@ -57,17 +58,8 @@ public class LectureServiceImpl implements LectureService{
         lecture.setCategory(category);
         lecture.setUser(user);
 
-        Lecture result = lectureRepository.save(lecture);
-        return LectureDto.from(
-                result.getDescription(),
-                result.getPrice(),
-                result.getStartDate(),
-                result.getEndDate(),
-                result.getCategory(),
-                result.getUser()
-        );
+        return LectureDto.from(lectureRepository.save(lecture));
     }
-
     /**
      * 특정 강의 조회
      * @param : lectureId
@@ -108,7 +100,7 @@ public class LectureServiceImpl implements LectureService{
         lecture.setCategory(category);
         lecture.setUser(user);
 
-        return lecture;
+        return LectureDto.from(lecture);
     }
 
     /**
