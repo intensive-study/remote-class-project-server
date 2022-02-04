@@ -27,7 +27,7 @@ public class AdminController {
 
     //수강생 전체 조회 /강의자 권한
     @GetMapping("/{lectureId}/list")
-    public List<StudentDto> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+    public Iterable<StudentDto> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
         return this.studentService.getStudentsByLectureId(lectureId).stream()
                 .map(StudentDto::new).collect(Collectors.toList());
     }

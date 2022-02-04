@@ -27,9 +27,7 @@ public class StudentController {
     //수강 신청 학생 권한
     @PostMapping
     public ResponseEntity<StudentDto> applyLecture(@RequestBody @Valid StudentFormDto studentFormDto) throws IdNotExistException {
-        Student student = studentService.applyLecture(studentFormDto);
-        StudentDto studentDto = new StudentDto(student);
-        return ResponseEntity.status(HttpStatus.CREATED).body(studentDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.applyLecture(studentFormDto));
     }
 
     //수강하는 강좌 전체 조회

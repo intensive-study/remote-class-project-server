@@ -44,9 +44,9 @@ public class UserServiceImpl implements UserService{
     public Iterable<UserDto> getUsersByAll(){
         ModelMapper mapper = new ModelMapper();
         List<User> users = userRepository.findAll();
+        //Iterable 형태로 반환하는 게 맞는지..?
         Iterable<UserDto> userList = users.stream().map(user -> mapper.map(user, UserDto.class)).collect(Collectors.toList());
         return userList;
-//        return userRepository.findAll();
     }
 
 }

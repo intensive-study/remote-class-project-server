@@ -2,6 +2,7 @@ package org.server.remoteclass.service;
 
 import org.modelmapper.ModelMapper;
 
+import org.server.remoteclass.dto.LectureDto;
 import org.server.remoteclass.dto.LectureFormDto;
 import org.server.remoteclass.entity.Category;
 import org.server.remoteclass.entity.Lecture;
@@ -41,7 +42,7 @@ public class LectureServiceImpl implements LectureService{
      * USER_LECTURER만 가능
      */
     @Override
-    public Lecture createLecture(LectureFormDto lectureFormDto) throws IdNotExistException {
+    public LectureDto createLecture(LectureFormDto lectureFormDto) throws IdNotExistException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
@@ -57,7 +58,14 @@ public class LectureServiceImpl implements LectureService{
         lecture.setUser(user);
 
         Lecture result = lectureRepository.save(lecture);
-        return result;
+        return LectureDto.from(
+                result.getDescription(),
+                result.getPrice(),
+                result.getStartDate(),
+                result.getEndDate(),
+                result.getCategory(),
+                result.getUser()
+        );
     }
 
     /**
@@ -65,7 +73,7 @@ public class LectureServiceImpl implements LectureService{
      * @param : lectureId
      */
     @Override
-    public Lecture getLectureByLectureId(Long lectureId) throws IdNotExistException {
+    public LectureDto getLectureByLectureId(Long lectureId) throws IdNotExistException {
         return lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ResultCode.ID_NOT_EXIST));
     }
@@ -76,7 +84,7 @@ public class LectureServiceImpl implements LectureService{
      */
     @Override
     @Transactional
-    public Lecture updateLecture(LectureFormDto lectureFormDto) throws IdNotExistException{
+    public LectureDto updateLecture(LectureFormDto lectureFormDto) throws IdNotExistException{
         //check user and authorities
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
@@ -129,7 +137,7 @@ public class LectureServiceImpl implements LectureService{
      * 강의 전체 조회
      */
     @Override
-    public List<Lecture> getLectureByAll() {
+    public Iterable<LectureDto> getLectureByAll() {
         return lectureRepository.findAll();
     }
 
@@ -137,7 +145,7 @@ public class LectureServiceImpl implements LectureService{
      * 카테고리별 강의 조회
      */
     @Override
-    public List<Lecture> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
+    public Iterable<LectureDto> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
 
         Category category = categoryRepository.findById(categoryId).orElseThrow(()->new IdNotExistException("존재하지 않는 카테고리", ResultCode.ID_NOT_EXIST));
         Collection<Lecture> lectures = lectureRepository.findByCategoryId(categoryId);

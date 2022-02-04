@@ -1,6 +1,7 @@
 package org.server.remoteclass.service;
 
 import org.modelmapper.ModelMapper;
+import org.server.remoteclass.dto.StudentDto;
 import org.server.remoteclass.dto.StudentFormDto;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.Student;
@@ -34,9 +35,9 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
-    public Student applyLecture(StudentFormDto studentFormDto) throws IdNotExistException{
+    public StudentDto applyLecture(StudentFormDto studentFormDto) throws IdNotExistException{
         User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findOneWithAuthoritiesByEmail)
+                .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
 //        //학생 권한인지 확인하고
@@ -59,7 +60,7 @@ public class StudentServiceImpl implements StudentService{
     //강좌별 전체 수강생 목록
     @Override
     @Transactional(readOnly = true)
-    public List<Student> getStudentsByLectureId(Long lectureId) throws IdNotExistException{
+    public Iterable<StudentDto> getStudentsByLectureId(Long lectureId) throws IdNotExistException{
         Collection<Student> students;
 
         User user = SecurityUtil.getCurrentUserEmail()
@@ -85,7 +86,7 @@ public class StudentServiceImpl implements StudentService{
     //현재 수강생의 수강 강좌 리스트 조회
     @Override
     @Transactional(readOnly = true)
-    public List<Student> getLecturesByUserId() throws IdNotExistException{
+    public Iterable<StudentDto> getLecturesByUserId() throws IdNotExistException{
         Collection<Student> students;
         //현재 사용자 확인
         User user = SecurityUtil.getCurrentUserEmail()

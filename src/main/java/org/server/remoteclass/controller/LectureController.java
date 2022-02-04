@@ -28,25 +28,18 @@ public class LectureController {
     //강의 생성
     @PostMapping
     public ResponseEntity<LectureDto> createLecture(@RequestBody @Valid LectureFormDto lectureFormDto) throws IdNotExistException {
-        Lecture lecture = lectureService.createLecture(lectureFormDto);
-        LectureDto lectureDto = new LectureDto(lecture);
-        return ResponseEntity.status(HttpStatus.CREATED).body(lectureDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.createLecture(lectureFormDto));
     }
     //강의 조회
     @GetMapping("/{lectureId}")
     public ResponseEntity<LectureDto> readLecture(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
-        Lecture lecture = lectureService.getLectureByLectureId(lectureId);
-        LectureDto lectureDto = new LectureDto(lecture);
-        return ResponseEntity.status(HttpStatus.OK).body(lectureDto);
+        return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByLectureId(lectureId));
     }
 
     //강의 수정
     @PutMapping
     public ResponseEntity<LectureDto> updateLecture(@RequestBody @Valid LectureFormDto lectureFormDto) throws IdNotExistException {
-        Lecture lecture = lectureService.updateLecture(lectureFormDto);
-        LectureDto responseLecture = new LectureDto(lecture);
-        System.out.println(lectureFormDto.getLectureId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseLecture);
+        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.updateLecture(lectureFormDto));
     }
 
     //강의 삭제
