@@ -1,5 +1,6 @@
 package org.server.remoteclass.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import org.server.remoteclass.entity.User;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class StudentDto {
     private Long studentId;
     private Lecture lecture;
