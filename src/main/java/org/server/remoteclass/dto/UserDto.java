@@ -26,6 +26,7 @@ public class UserDto {
     private Timestamp registerDate;
     private Set<AuthorityDto> authorityDtoSet;
 
+    // 본인이 본인 정보 조회 or 관리자가 조회 시 사용할 함수
     public static UserDto from(User user){
         if(user == null) return null;
         return UserDto.builder()

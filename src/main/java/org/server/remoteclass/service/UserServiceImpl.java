@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -31,13 +32,14 @@ public class UserServiceImpl implements UserService{
     //현재 스프링 시큐리티 컨텍스트에 있는 유저 반환
     @Transactional(readOnly = true)
     @Override
-    public Optional<User> getMyUserWithAuthorities(){
-        return SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findByEmail);
+    public UserDto getMyUserWithAuthorities(){
+        return UserDto.from(SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findByEmail).orElse(null));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Iterable<User> getUsersByAll(){
+    public Iterable<UserDto> getUsersByAll(){
+        Iterable<UserDto> userDtoIterable = userRepository.findAll().stream().map(user -> model)
         return userRepository.findAll();
     }
 

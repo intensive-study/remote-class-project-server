@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface UserService {
     UserDto getUserWithAuthorities(String email);
-    Optional<User> getMyUserWithAuthorities();
-    Iterable<User> getUsersByAll();
+    UserDto getMyUserWithAuthorities();
+    Iterable<UserDto> getUsersByAll()
 }
