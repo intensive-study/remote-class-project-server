@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 @RestController
@@ -36,5 +37,12 @@ public class UserController {
     public ResponseEntity<UserDto> getUser(){
         return ResponseEntity.ok(userService.getMyUserWithAuthorities());
     }
+
+    @GetMapping
+    public ResponseEntity<List<UserDto>> getAllUsers(){
+        return ResponseEntity.ok(userService.getUsersByAll());
+//        return ResponseEntity.ok(userService.getMyUserWithAuthorities());
+    }
+
 
 }
