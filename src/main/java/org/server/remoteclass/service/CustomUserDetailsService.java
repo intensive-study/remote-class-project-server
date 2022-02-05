@@ -15,11 +15,11 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
@@ -28,8 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     // DB에 User 값이 존재한다면 UserDetails 객체로 만들어서 리턴
-    // 빨간 줄이 있는데, 실행 시 에러가 발생하지 않습니다. @Transactional 관련 이슈인데, 빠르게 해결하겠습니다.
-    @Transactional
+    // @Transactional 있으면 오류 떠서 지웠습니다.
     private UserDetails createUserDetails(User user){
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(user.getAuthority().toString());
         return new org.springframework.security.core.userdetails.User(

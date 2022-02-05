@@ -28,7 +28,7 @@ public class StudentServiceImpl implements StudentService{
     private final UserRepository userRepository;
     private final LectureRepository lectureRepository;
     private final StudentRepository studentRepository;
-    private final BeanConfiguration beanConfiguration;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public StudentServiceImpl(UserRepository userRepository, LectureRepository lectureRepository,
@@ -36,7 +36,7 @@ public class StudentServiceImpl implements StudentService{
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.studentRepository = studentRepository;
-        this.beanConfiguration = beanConfiguration;
+        this.modelMapper = beanConfiguration.modelMapper();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class StudentServiceImpl implements StudentService{
 //        if(user.getUserRole() == USER_STUDENT){
 //            //학생 권한이면 강의번호 있는지 확인한다.
             ////강의도 존재하면
-            Student student = beanConfiguration.modelMapper().map(studentFormDto, Student.class);
+            Student student = modelMapper.map(studentFormDto, Student.class);
             student.setUser(user);
             student.setLecture(lectureRepository.findById(studentFormDto.getLectureId()).orElse(null));
             return StudentDto.from(studentRepository.save(student));
@@ -69,7 +69,7 @@ public class StudentServiceImpl implements StudentService{
 //        if(user.getRole()==USER_LECTURER && user.getUserId() == lecture.getUser().getUserId()){
         List<Student> students = studentRepository.findAll();
         //수강생이 없는 강의도 있다고 생각해서 예외처리 부분 지웠어요. 새로 만든 강의의 경우 수강생이 0명일 수 밖에 없다고 생각했어요.
-        return students.stream().map(student -> beanConfiguration.modelMapper().map(student, StudentDto.class))
+        return students.stream().map(student -> modelMapper.map(student, StudentDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -83,7 +83,7 @@ public class StudentServiceImpl implements StudentService{
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
         // 현재 사용자의 userId를 가진 student들을 조회
         List<Lecture> lectures = studentRepository.findByStudentId(user.getUserId());
-        return lectures.stream().map(lecture -> beanConfiguration.modelMapper().map(lecture, LectureDto.class)).collect(Collectors.toList());
+        return lectures.stream().map(lecture -> modelMapper.map(lecture, LectureDto.class)).collect(Collectors.toList());
     }
 
 }

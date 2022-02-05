@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
-    private final BeanConfiguration beanConfiguration;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, BeanConfiguration beanConfiguration){
         this.userRepository = userRepository;
-        this.beanConfiguration = beanConfiguration;
+        this.modelMapper = beanConfiguration.modelMapper();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<UserDto> getUsersByAll(){
         List<User> users = userRepository.findAll();
-        return users.stream().map(user -> beanConfiguration.modelMapper().map(user, UserDto.class)).collect(Collectors.toList());
+        return users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
     }
 
 }
