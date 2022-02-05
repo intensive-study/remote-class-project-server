@@ -22,7 +22,6 @@ public class CouponDto {
     private boolean couponUsed;
     private int couponValidTime;
     private LocalDate startDate;
-    private LocalDate endDate;
 
     public CouponDto(){
 
