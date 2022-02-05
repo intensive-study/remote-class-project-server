@@ -40,7 +40,7 @@ public class CouponServiceImpl implements CouponService {
         Coupon coupon = modelMapper.map(couponDto, Coupon.class);
         coupon.setCouponCode(UUID.randomUUID().toString());
         coupon.setStartDate(couponDto.getStartDate());
-        coupon.setEndDate(couponDto.getEndDate());
+        coupon.setCouponValidTime(coupon.getCouponValidTime());
         return CouponDto.from(couponRepository.save(coupon));
     }
 }
