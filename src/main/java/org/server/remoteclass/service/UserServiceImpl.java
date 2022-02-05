@@ -25,14 +25,14 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     @Override
     public UserDto getUserWithAuthorities(String email){
-        return UserDto.from(userRepository.findOneWithAuthoritiesByEmail(email).orElse(null));
+        return UserDto.from(userRepository.findByEmail(email).orElse(null));
     }
 
-
+    //현재 스프링 시큐리티 컨텍스트에 있는 유저 반환
     @Transactional(readOnly = true)
     @Override
     public Optional<User> getMyUserWithAuthorities(){
-        return SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findOneWithAuthoritiesByEmail);
+        return SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findByEmail);
     }
 
     @Transactional(readOnly = true)

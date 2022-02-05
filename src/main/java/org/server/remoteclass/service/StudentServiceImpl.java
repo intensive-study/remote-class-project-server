@@ -33,11 +33,10 @@ public class StudentServiceImpl implements StudentService{
         this.studentRepository = studentRepository;
     }
 
-
     @Override
     public Student applyLecture(StudentFormDto studentFormDto) throws IdNotExistException{
         User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findOneWithAuthoritiesByEmail)
+                .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
 //        //학생 권한인지 확인하고
@@ -64,7 +63,7 @@ public class StudentServiceImpl implements StudentService{
         Collection<Student> students;
 
         User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findOneWithAuthoritiesByEmail)
+                .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ResultCode.ID_NOT_EXIST));
@@ -90,7 +89,7 @@ public class StudentServiceImpl implements StudentService{
         Collection<Student> students;
         //현재 사용자 확인
         User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findOneWithAuthoritiesByEmail)
+                .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
         // 현재 사용자의 userId를 가진 student들을 조회
         students = studentRepository.findByUserId(user.getUserId());

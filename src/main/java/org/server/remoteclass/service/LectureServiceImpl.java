@@ -43,7 +43,7 @@ public class LectureServiceImpl implements LectureService{
     @Override
     public Lecture createLecture(LectureFormDto lectureFormDto) throws IdNotExistException {
         User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findOneWithAuthoritiesByEmail)
+                .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
         // 현재로그인한 userRole이 user lecturer일때 강의 생성, 아니면 권한없음.
@@ -70,7 +70,6 @@ public class LectureServiceImpl implements LectureService{
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ResultCode.ID_NOT_EXIST));
     }
 
-
     /**
      * 강의 수정
      * 생성자만 수정 가능
@@ -80,7 +79,7 @@ public class LectureServiceImpl implements LectureService{
     public Lecture updateLecture(LectureFormDto lectureFormDto) throws IdNotExistException{
         //check user and authorities
         User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findOneWithAuthoritiesByEmail)
+                .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
         Lecture lecture = lectureRepository.findById(lectureFormDto.getLectureId())
@@ -115,7 +114,7 @@ public class LectureServiceImpl implements LectureService{
     public void deleteLecture(Long lectureId) throws IdNotExistException{
         //check user and check if user has delete authority
         User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findOneWithAuthoritiesByEmail)
+                .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
         Lecture lecture = lectureRepository.findById(lectureId)
