@@ -20,6 +20,7 @@ public class CouponDto {
     private Long couponId;
     private String couponCode;
     private boolean couponUsed;
+    private int couponValidTime;
     private LocalDate startDate;
     private LocalDate endDate;
 
@@ -33,8 +34,8 @@ public class CouponDto {
                 .couponId(coupon.getCouponId())
                 .couponCode(coupon.getCouponCode())
                 .couponUsed(coupon.isCouponUsed())
+                .couponValidTime(coupon.getCouponValidTime())
                 .startDate(coupon.getStartDate())
-                .endDate(coupon.getEndDate())
                 .build();
     }
 }
