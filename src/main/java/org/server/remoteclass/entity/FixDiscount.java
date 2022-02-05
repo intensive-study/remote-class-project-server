@@ -11,6 +11,9 @@ import javax.persistence.*;
 public class FixDiscount {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long fixDiscountId;
+
     @OneToOne(fetch = FetchType.LAZY)
     private Coupon coupon;
 

@@ -1,5 +1,6 @@
 package org.server.remoteclass.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,13 +16,14 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class CouponDto {
 
     private Long couponId;
     private String couponCode;
-    private boolean couponUsed;
+    private boolean couponValid;
     private int couponValidTime;
-    private LocalDate startDate;
+    private LocalDate createdDate;
 
     public CouponDto(){
 
@@ -32,9 +34,9 @@ public class CouponDto {
         return CouponDto.builder()
                 .couponId(coupon.getCouponId())
                 .couponCode(coupon.getCouponCode())
-                .couponUsed(coupon.isCouponUsed())
+                .couponValid(coupon.isCouponValid())
                 .couponValidTime(coupon.getCouponValidTime())
-                .startDate(coupon.getStartDate())
+                .createdDate(coupon.getCratedDate())
                 .build();
     }
 }
