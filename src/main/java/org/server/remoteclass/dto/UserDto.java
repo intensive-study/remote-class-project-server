@@ -9,6 +9,7 @@ import org.server.remoteclass.entity.User;
 import org.server.remoteclass.entity.UserRole;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -23,9 +24,10 @@ public class UserDto {
     private String name;
     private String password;
     private UserRole userRole;
-    private Timestamp registerDate;
+    private LocalDateTime registerDate;
     private Set<AuthorityDto> authorityDtoSet;
 
+    // 본인이 본인 정보 조회 or 관리자가 조회 시 사용할 함수
     public static UserDto from(User user){
         if(user == null) return null;
         return UserDto.builder()

@@ -25,16 +25,11 @@ public class Content {
     @Id @GeneratedValue
     @Column(name = "file_id")
     private Long id;
-
     private String fileUri;
-
     private String fileName;
-
     private String originalFilename;
-
     @Nullable
     private String contentType;
-
     @Override
     public String toString() {
         return "Content{" +
