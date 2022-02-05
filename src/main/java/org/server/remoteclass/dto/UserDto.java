@@ -6,9 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.server.remoteclass.entity.User;
-import org.server.remoteclass.entity.UserRole;
+import org.server.remoteclass.constant.UserRole;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Set;
 
