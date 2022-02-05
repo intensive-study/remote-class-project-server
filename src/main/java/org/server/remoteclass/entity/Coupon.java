@@ -1,9 +1,12 @@
 package org.server.remoteclass.entity;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@DynamicInsert
 public class Coupon {
 
     @Id
@@ -11,6 +14,7 @@ public class Coupon {
     private Long couponId;
 
     private String couponCode;
+    @Column(columnDefinition = "boolean default 0")
     private boolean couponUsed;
     @Column(name = "coupon_start_date")
     private LocalDate startDate;        //강의 시작일
