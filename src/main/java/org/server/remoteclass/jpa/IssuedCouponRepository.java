@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface IssuedCouponRepository extends JpaRepository<IssuedCouponRepository, Long> {
+public interface IssuedCouponRepository extends JpaRepository<IssuedCoupon, Long> {
 
     // 내가 가지고 있는 쿠폰 조회 기능
-    List<IssuedCoupon> findByUserId(Long userId);
+    List<IssuedCoupon> findByUser(Long userId);
 }
