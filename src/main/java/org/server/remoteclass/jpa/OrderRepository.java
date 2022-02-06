@@ -14,4 +14,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // 회원이 주문한 주문 목록 최신순으로
     @Query(value = "select o from Order o where o.user.userId = :userId order by o.orderDate desc", nativeQuery = true)
     List<Order> findByUserId(Long userId);
+
 }

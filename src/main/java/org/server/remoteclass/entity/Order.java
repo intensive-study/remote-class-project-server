@@ -5,11 +5,15 @@ import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Getter
 @Setter
+
 public class Order {
 
     @Id
@@ -21,11 +25,14 @@ public class Order {
     @JoinColumn(name="user_id")
     private User user;       //주문하는 회원
 
+    @OneToMany(mappedBy = "order")
+    private List<OrderLecture> orderLectures = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus; //주문상태
 
     @Column(name="order_date", nullable = false)
-    private LocalDateTime orderDate;
+    private LocalDate orderDate;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="coupon_id")

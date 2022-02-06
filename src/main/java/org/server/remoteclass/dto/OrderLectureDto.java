@@ -12,13 +12,13 @@ public class OrderLectureDto {
 
     private Long id;
     private Lecture lecture;
-    private Order order;
+//    private Order order;
 
     public OrderLectureDto(){}
 
     public OrderLectureDto(OrderLecture orderLecture){
         this.id = orderLecture.getId();
         this.lecture = orderLecture.getLecture();
-        this.order = orderLecture.getOrder();
+//        this.order = orderLecture.getOrder();
     }
 }
