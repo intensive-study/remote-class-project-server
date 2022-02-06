@@ -42,4 +42,9 @@ public class CouponServiceImpl implements CouponService {
         coupon.setCouponValidTime(coupon.getCouponValidTime());
         return CouponDto.from(couponRepository.save(coupon));
     }
+
+    @Override
+    public CouponDto getCouponByCouponCode(String couponCode) {
+        return CouponDto.from(couponRepository.findByCouponCode(couponCode).orElse(null));
+    }
 }

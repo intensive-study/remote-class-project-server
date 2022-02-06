@@ -24,7 +24,7 @@ public class Coupon {
     private boolean couponValid;
     // 쿠폰 유효기간 -> 종료 날짜보다 유효일을 두는 게 맞다고 생각했어요. 각기 다른 회원이 다른 날짜에 쿠폰을 발급받을 수 있기 때문입니다.
     // 쿠폰 종료일은 두 회원이 달라야 하므로, 유효일을 두는 게 맞다고 생각했습니다.
-    private int couponValidTime;
+    private int couponValidTime; // couponValidDays 중에 무엇이 적합한 지 생각중입니다.
 
     // 쿠폰 생성일입니다.
     @Column(name = "coupon_created_date")
