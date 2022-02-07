@@ -97,7 +97,7 @@ public class OrderServiceImpl implements OrderService{
         }
         // 사용자 권한일때는 현재 회원의 주문내역을 조회 가능
         else{
-            orders = orderRepository.findByUserId(user.getUserId());
+            orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(user.getUserId());
         }
         return orders.stream().map(order -> modelMapper.map(order, OrderDto.class)).collect(Collectors.toList());
     }
