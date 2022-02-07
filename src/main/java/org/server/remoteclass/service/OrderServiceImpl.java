@@ -19,7 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,8 +58,8 @@ public class OrderServiceImpl implements OrderService{
 
         Order order = modelMapper.map(orderFormDto, Order.class);
         order.setUser(user);
-        order.setOrderStatus(OrderStatus.ORDER);
-        order.setOrderDate(LocalDate.now());
+        order.setOrderStatus(OrderStatus.PENDING);
+        order.setOrderDate(LocalDateTime.now());
         order.setPayment(orderFormDto.getPayment());
         order.setOrderLectures(orderLectures);
 

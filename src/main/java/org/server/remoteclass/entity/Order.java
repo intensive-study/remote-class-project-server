@@ -5,11 +5,11 @@ import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Table(name = "orders")
 @Entity
 @Getter
 @Setter
@@ -32,7 +32,7 @@ public class Order {
     private OrderStatus orderStatus; //주문상태
 
     @Column(name="order_date", nullable = false)
-    private LocalDate orderDate;
+    private LocalDateTime orderDate;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="coupon_id")

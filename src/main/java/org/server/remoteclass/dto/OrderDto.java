@@ -7,7 +7,7 @@ import org.server.remoteclass.entity.Order;
 import org.server.remoteclass.entity.OrderLecture;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -19,7 +19,7 @@ public class OrderDto {
     private List<OrderLecture> orderLectures;
     private OrderStatus orderStatus;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate orderDate;
+    private LocalDateTime orderDate;
     //    private Long couponId;       //적용하는 쿠폰 아이디
 //    private String bank;
 //    private String account;
