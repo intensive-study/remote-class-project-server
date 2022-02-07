@@ -7,6 +7,8 @@ import org.server.remoteclass.dto.LectureFormDto;
 import org.server.remoteclass.entity.Category;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.User;
+import org.server.remoteclass.entity.UserRole;
+import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
 import org.server.remoteclass.jpa.CategoryRepository;
@@ -19,6 +21,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,15 +51,15 @@ public class LectureServiceImpl implements LectureService{
      */
     @Override
     @Transactional
-    public LectureDto createLecture(LectureFormDto lectureFormDto) throws IdNotExistException {
+    public LectureDto createLecture(LectureFormDto lectureFormDto) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
         // User의 Role이 Lecturer인 경우 강의 생성, 아니면 403 코드 반환
-//        if(user.getUserRole() != USER_LECTURER){
-//            throw new InvalidDataAccessApiUsageException("권한 없음");
-//        }
+        if(user.getUserRole() != UserRole.ROLE_LECTURER){
+            throw new ForbiddenException("접근 권한이 없습니다.", ResultCode.FORBIDDEN);
+        }
         Lecture lecture = modelMapper.map(lectureFormDto, Lecture.class);
         Category category = categoryRepository.findById(lectureFormDto.getCategoryId())
                 .orElseThrow(() -> new IdNotExistException("카테고리 존재하지 않음", ResultCode.ID_NOT_EXIST));
@@ -100,8 +103,8 @@ public class LectureServiceImpl implements LectureService{
         lecture.setTitle(lectureFormDto.getTitle());
         lecture.setDescription(lectureFormDto.getDescription());
         lecture.setPrice(lectureFormDto.getPrice());
-        lecture.setStartDate(lectureFormDto.getStartDate());
-        lecture.setEndDate(lectureFormDto.getEndDate());
+        lecture.setStartDate(LocalDate.from(lectureFormDto.getStartDate()));
+        lecture.setEndDate(LocalDate.from(lectureFormDto.getEndDate()));
         lecture.setCategory(category);
         lecture.setUser(user);
 
@@ -147,7 +150,7 @@ public class LectureServiceImpl implements LectureService{
     @Override
     public List<LectureDto> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
         categoryRepository.findById(categoryId).orElseThrow(()->new IdNotExistException("존재하지 않는 카테고리", ResultCode.ID_NOT_EXIST));
-        List<Lecture> lectures = lectureRepository.findByCategoryId(categoryId);
+        List<Lecture> lectures = lectureRepository.findByCategory_CategoryId(categoryId);
         return lectures.stream().map(lecture -> modelMapper
                 .map(lecture, LectureDto.class)).collect(Collectors.toList());
     }

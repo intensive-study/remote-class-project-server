@@ -9,7 +9,6 @@ import java.util.List;
 public interface LectureRepository extends JpaRepository<Lecture, Long>{
 
     //카테고리별 강의 조회
-    @Query(value = "select * from lecture l where l.category_id = :categoryId", nativeQuery = true)
-    List<Lecture> findByCategoryId(Long categoryId);
+    List<Lecture> findByCategory_CategoryId(Long categoryId);
 
 }

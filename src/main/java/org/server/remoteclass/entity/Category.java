@@ -4,7 +4,7 @@ package org.server.remoteclass.entity;
 import lombok.*;
 import javax.persistence.*;
 
-@ Entity
+@Entity
 @Getter @Setter
 public class Category {
     @Id
