@@ -2,6 +2,7 @@ package org.server.remoteclass.controller;
 
 import org.server.remoteclass.dto.LectureDto;
 import org.server.remoteclass.dto.LectureFormDto;
+import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.LectureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class LectureController {
 
     //강의 생성
     @PostMapping
-    public ResponseEntity<LectureDto> createLecture(@RequestBody @Valid LectureFormDto lectureFormDto) throws IdNotExistException {
+    public ResponseEntity<LectureDto> createLecture(@RequestBody @Valid LectureFormDto lectureFormDto) throws IdNotExistException, ForbiddenException {
         return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.createLecture(lectureFormDto));
     }
     //강의 조회
