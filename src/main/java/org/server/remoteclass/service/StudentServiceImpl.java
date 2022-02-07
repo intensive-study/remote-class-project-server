@@ -68,7 +68,7 @@ public class StudentServiceImpl implements StudentService{
         Lecture lecture = lectureRepository.findById(lectureId).orElse(null);
         List<Student> students = null;
         if(user.getUserRole() == UserRole.ROLE_LECTURER && Objects.equals(user.getUserId(), lecture.getUser().getUserId())){
-            students = studentRepository.findByLectureId(lectureId);
+            students = studentRepository.findByLecture_LectureId(lectureId);
         }
         //수강생이 없는 강의도 있다고 생각해서 예외처리 부분 지웠어요. 새로 만든 강의의 경우 수강생이 0명일 수 밖에 없다고 생각했어요.
         return students.stream().map(student -> modelMapper.map(student, StudentDto.class))

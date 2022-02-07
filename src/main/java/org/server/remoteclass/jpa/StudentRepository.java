@@ -10,9 +10,11 @@ import java.util.List;
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
     // 강좌별 수강생 전체 리스트
-     List<Student> findByLectureId(Long lectureId);
+    //    @Query("select s from Student s where s.lecture.lectureId = ?1")
+    List<Student> findByLecture_LectureId(Long lectureId);
     //수강생 별 수강강좌 리스트
     List<Student> findByUser_UserIdOrderByLecture_StartDateDesc(Long userId);
+
 
     //수강생 별 수강강좌 리스트
 //    List<Lecture> findByStudentId(Long userId);
