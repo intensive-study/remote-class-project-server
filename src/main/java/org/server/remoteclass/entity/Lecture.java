@@ -3,6 +3,7 @@ package org.server.remoteclass.entity;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -19,9 +20,9 @@ public class Lecture {
     @Column(name = "price", nullable=false)
     private Integer price;      //수강료
     @Column(name = "start_date")
-    private LocalDate startDate;        //강의 시작일
+    private LocalDateTime startDate;        //강의 시작일
     @Column(name = "end_date")
-    private LocalDate endDate;          //강의 종료일
+    private LocalDateTime endDate;          //강의 종료일
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="category_id")

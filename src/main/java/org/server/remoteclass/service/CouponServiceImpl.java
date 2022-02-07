@@ -39,7 +39,7 @@ public class CouponServiceImpl implements CouponService {
     public CouponDto createCoupon(CouponDto couponDto) {
         Coupon coupon = modelMapper.map(couponDto, Coupon.class);
         coupon.setCouponCode(UUID.randomUUID().toString());
-        coupon.setCouponValidTime(coupon.getCouponValidTime());
+        coupon.setCouponValidDays(coupon.getCouponValidDays());
         return CouponDto.from(couponRepository.save(coupon));
     }
 

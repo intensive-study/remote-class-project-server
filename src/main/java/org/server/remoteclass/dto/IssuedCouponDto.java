@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.server.remoteclass.entity.IssuedCoupon;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class IssuedCouponDto {
     private Long userId;
     private Long couponId;
     private boolean couponUsed;
-    private LocalDate couponEndDate;
+    private LocalDateTime couponValidDate;
     private String title;
 
     public IssuedCouponDto(){
@@ -31,7 +32,7 @@ public class IssuedCouponDto {
                 .userId(issuedCoupon.getUser().getUserId())
                 .couponId(issuedCoupon.getCoupon().getCouponId())
                 .couponUsed(issuedCoupon.isCouponUsed())
-                .couponEndDate(issuedCoupon.getEndDate())
+                .couponValidDate(issuedCoupon.getCouponValidDate())
                 .build();
         // 쿠폰 종류를 식별할 수 있는 컬럼 필요.
     }

@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,9 +20,9 @@ public class LectureFormDto {
     @NotNull(message="수강료 필수입력")
     private Integer price;
     @NotNull(message="수강시작 : yyyy-MM-dd")
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @NotNull(message="수강종료 : yyyy-MM-dd")
-    private LocalDate endDate;
+    private LocalDateTime endDate;
     @NotNull(message="카테고리 선택, 숫자로 입력")
     private Long categoryId;
     private Long userId;

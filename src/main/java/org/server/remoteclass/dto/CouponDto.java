@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,8 +23,8 @@ public class CouponDto {
     private Long couponId;
     private String couponCode;
     private boolean couponValid;
-    private int couponValidTime;
-    private LocalDate createdDate;
+    private int couponValidDays;
+    private LocalDateTime createdDate;
 
     public CouponDto(){
 
@@ -35,7 +36,7 @@ public class CouponDto {
                 .couponId(coupon.getCouponId())
                 .couponCode(coupon.getCouponCode())
                 .couponValid(coupon.isCouponValid())
-                .couponValidTime(coupon.getCouponValidTime())
+                .couponValidDays(coupon.getCouponValidDays())
                 .createdDate(coupon.getCratedDate())
                 .build();
     }
