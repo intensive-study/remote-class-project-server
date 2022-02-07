@@ -28,3 +28,9 @@ docker compose up -d
 2. Build, Execution, Deployment를 클릭합니다.
 3. Annotation Processors에서 Enable annotation processing을 체크합니다.
 4. apply 후 OK를 누르시면 됩니다.
+
+### Test 관련 issue 입니다.(추후에 HELP.MD 등에 옮기겠습니다)
+
+1. 이슈 내용 : org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name
+일단 테스트 시에는 스프링 부트에서 자체적으로 **test폴더** 안에 있는 application.yml 파일을 우선 참조합니다. 거기서 profile에 적어둔 aws, test이라는 패턴을 파악한 뒤 application-aws.yml, application-test.yml 파일을 참조합니다. application-aws.yml의 경우 test 파일에 없기 때문에 main 폴더의 application-aws.yml를 참조하고, application-test.yml의 경우 test 폴더 안의 파일을 참조합니다. 하지만 참조하는 application-test.yml에 jpa 및 db 관련 설정이 없었습니다. 관련 내용을 application-test.yml에 추가해 주었고, 해결되었습니다.
+2. mysql access denied 이슈가 발생하였습니다. configuration에서 .env 추가해 줌으로써 해결하였습니다.
