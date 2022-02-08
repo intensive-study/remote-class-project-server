@@ -1,18 +1,21 @@
-package org.server.remoteclass.user;
+package org.server.remoteclass.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.server.remoteclass.controller.AuthController;
+import org.server.remoteclass.dto.LoginDto;
 import org.server.remoteclass.dto.UserDto;
+import org.server.remoteclass.entity.User;
+import org.server.remoteclass.service.AuthService;
+import org.server.remoteclass.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -21,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserServiceTest {
+public class AuthServiceTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -29,13 +32,16 @@ public class UserServiceTest {
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    AuthService authService;
+
     @Test
     public void testA(){
         Assertions.assertThat(5).isEqualTo(5);
     }
 
     @Test
-    @DisplayName("정상적인 Post요청시, 서버에서 상태코드 201을 받는다.")
+    @DisplayName("회원가입 : 정상적인 Post요청시, 서버에서 상태코드 201을 받는다.")
     public void 회원가입() throws Exception{
         UserDto userDto = new UserDto();
         userDto.setEmail("park12345@naver.com");
@@ -46,6 +52,29 @@ public class UserServiceTest {
         String URL = "/signup";
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post(URL).contentType(MediaType.APPLICATION_JSON).content(json);
         mockMvc.perform(requestBuilder).andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("로그인 : 정상적인 Post요청시, 서버에서 상태코드 200을 받는다.")
+    public void 로그인() throws Exception{
+        UserDto userDto = new UserDto();
+        userDto.setEmail("gusdn3477@naver.com");
+        userDto.setName("박현우");
+        userDto.setPassword("12345678");
+        authService.signup(userDto);
+        String json = mapper.writeValueAsString(new LoginDto("gusdn3477@naver.com", "12345678"));
+        System.out.println(json);
+        String URL = "/login";
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post(URL).contentType(MediaType.APPLICATION_JSON).content(json);
+        MvcResult requestResult = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        System.out.println(requestBuilder.toString());
+        String token = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
+        String token2 = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.refreshToken");
+        System.out.println("access token : " + token);
+        System.out.println("refresh token" + token2);
     }
 
 }
