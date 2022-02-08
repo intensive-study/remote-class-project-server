@@ -1,13 +1,13 @@
 package org.server.remoteclass.service;
 
 import org.modelmapper.ModelMapper;
+import org.server.remoteclass.constant.UserRole;
 import org.server.remoteclass.dto.LectureDto;
 import org.server.remoteclass.dto.StudentDto;
 import org.server.remoteclass.dto.StudentFormDto;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.Student;
 import org.server.remoteclass.entity.User;
-import org.server.remoteclass.entity.UserRole;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
 import org.server.remoteclass.jpa.LectureRepository;

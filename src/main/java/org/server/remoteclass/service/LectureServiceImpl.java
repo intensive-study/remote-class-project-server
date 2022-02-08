@@ -2,12 +2,12 @@ package org.server.remoteclass.service;
 
 import org.modelmapper.ModelMapper;
 
+import org.server.remoteclass.constant.UserRole;
 import org.server.remoteclass.dto.LectureDto;
 import org.server.remoteclass.dto.LectureFormDto;
 import org.server.remoteclass.entity.Category;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.User;
-import org.server.remoteclass.entity.UserRole;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,8 +104,8 @@ public class LectureServiceImpl implements LectureService{
         lecture.setTitle(lectureFormDto.getTitle());
         lecture.setDescription(lectureFormDto.getDescription());
         lecture.setPrice(lectureFormDto.getPrice());
-        lecture.setStartDate(LocalDate.from(lectureFormDto.getStartDate()));
-        lecture.setEndDate(LocalDate.from(lectureFormDto.getEndDate()));
+        lecture.setStartDate(LocalDateTime.from(lectureFormDto.getStartDate()));
+        lecture.setEndDate(LocalDateTime.from(lectureFormDto.getEndDate()));
         lecture.setCategory(category);
         lecture.setUser(user);
 
