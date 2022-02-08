@@ -7,7 +7,7 @@ plugins {
 
 group = 'org.server'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = "1.9"
 
 configurations {
 	compileOnly {
@@ -36,6 +36,7 @@ dependencies {
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.6.2'
+//	compileOnly('com.fasterxml.jackson.datatype:jackson-datatype-jsr310')
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
 //	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
@@ -67,3 +68,4 @@ tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
 }
+targetCompatibility = JavaVersion.VERSION_1_9

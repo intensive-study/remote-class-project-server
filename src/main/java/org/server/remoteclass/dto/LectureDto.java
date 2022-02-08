@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.server.remoteclass.entity.Category;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.User;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,9 +19,7 @@ public class LectureDto {
     private String title;
     private String description;
     private Integer price;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime startDate;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime endDate;
     private Category category;
     private User user;

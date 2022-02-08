@@ -1,8 +1,8 @@
 package org.server.remoteclass.entity;
 
 import lombok.*;
+
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -19,6 +19,7 @@ public class Lecture {
     private String description;     //강의상세설명
     @Column(name = "price", nullable=false)
     private Integer price;      //수강료
+    //    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     @Column(name = "start_date")
     private LocalDateTime startDate;        //강의 시작일
     @Column(name = "end_date")
