@@ -32,8 +32,8 @@ public class LectureDto {
         this.title = lecture.getTitle();
         this.description = lecture.getDescription();
         this.price = lecture.getPrice();
-        this.startDate = lecture.getStartDate();
-        this.endDate = lecture.getEndDate();
+        this.startDate = LocalDateTime.from(lecture.getStartDate());
+        this.endDate = LocalDateTime.from(lecture.getEndDate());
         this.category = lecture.getCategory();
         this.user = lecture.getUser();
     }
@@ -44,8 +44,8 @@ public class LectureDto {
                 .title(lecture.getTitle())
                 .description(lecture.getDescription())
                 .price(lecture.getPrice())
-                .startDate(lecture.getStartDate())
-                .endDate(lecture.getEndDate())
+                .startDate(LocalDateTime.from(lecture.getStartDate()))
+                .endDate(LocalDateTime.from(lecture.getEndDate()))
                 .category(lecture.getCategory())
                 .user(lecture.getUser())
                 .build();

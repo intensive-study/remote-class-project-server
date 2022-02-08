@@ -2,6 +2,7 @@ package org.server.remoteclass.service;
 
 import org.server.remoteclass.dto.LectureDto;
 import org.server.remoteclass.dto.LectureFormDto;
+import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 public interface LectureService {
 
     //강의 생성
-    LectureDto createLecture(LectureFormDto lectureFormDto) throws IdNotExistException;
+    LectureDto createLecture(LectureFormDto lectureFormDto) throws IdNotExistException, ForbiddenException;
     //강의 조회
     LectureDto getLectureByLectureId(Long lectureId) throws IdNotExistException;
     //강의 수정

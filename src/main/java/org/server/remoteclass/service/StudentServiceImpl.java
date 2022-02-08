@@ -7,6 +7,7 @@ import org.server.remoteclass.dto.StudentFormDto;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.Student;
 import org.server.remoteclass.entity.User;
+import org.server.remoteclass.entity.UserRole;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
 import org.server.remoteclass.jpa.LectureRepository;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,15 +49,13 @@ public class StudentServiceImpl implements StudentService{
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
-//        //학생 권한인지 확인하고
-//        if(user.getUserRole() == USER_STUDENT){
-//            //학생 권한이면 강의번호 있는지 확인한다.
-            ////강의도 존재하면
-            Student student = modelMapper.map(studentFormDto, Student.class);
+        Student student = modelMapper.map(studentFormDto, Student.class);
+        if(user.getUserRole() == UserRole.ROLE_STUDENT){
             student.setUser(user);
             student.setLecture(lectureRepository.findById(studentFormDto.getLectureId()).orElse(null));
-            return StudentDto.from(studentRepository.save(student));
         }
+        return StudentDto.from(studentRepository.save(student));
+    }
 
     //강좌별 전체 수강생 목록
     @Override
@@ -65,9 +65,11 @@ public class StudentServiceImpl implements StudentService{
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
-        //현재 사용자 권한이 강의자이고, 해당 강의의 author와 같다면 조회 가능
-//        if(user.getRole()==USER_LECTURER && user.getUserId() == lecture.getUser().getUserId()){
-        List<Student> students = studentRepository.findAll();
+        Lecture lecture = lectureRepository.findById(lectureId).orElse(null);
+        List<Student> students = null;
+        if(user.getUserRole() == UserRole.ROLE_LECTURER && Objects.equals(user.getUserId(), lecture.getUser().getUserId())){
+            students = studentRepository.findByLecture_LectureId(lectureId);
+        }
         //수강생이 없는 강의도 있다고 생각해서 예외처리 부분 지웠어요. 새로 만든 강의의 경우 수강생이 0명일 수 밖에 없다고 생각했어요.
         return students.stream().map(student -> modelMapper.map(student, StudentDto.class))
                 .collect(Collectors.toList());
@@ -82,8 +84,12 @@ public class StudentServiceImpl implements StudentService{
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
         // 현재 사용자의 userId를 가진 student들을 조회
-        List<Lecture> lectures = studentRepository.findByStudentId(user.getUserId());
-        return lectures.stream().map(lecture -> modelMapper.map(lecture, LectureDto.class)).collect(Collectors.toList());
+        List<Student> students = null;
+        if(user.getUserRole() == UserRole.ROLE_STUDENT){
+            students = studentRepository.findByUser_UserIdOrderByLecture_StartDateDesc(user.getUserId());
+        }
+//        List<Lecture> lectures = studentRepository.findByStudentId(user.getUserId());
+        return students.stream().map(lecture -> modelMapper.map(lecture, LectureDto.class)).collect(Collectors.toList());
     }
 
 }
