@@ -25,6 +25,7 @@ public class CouponDto {
     private boolean couponValid;
     private int couponValidDays;
     private LocalDateTime createdDate;
+    private LocalDateTime endDate;
 
     public CouponDto(){
 
@@ -38,6 +39,7 @@ public class CouponDto {
                 .couponValid(coupon.isCouponValid())
                 .couponValidDays(coupon.getCouponValidDays())
                 .createdDate(coupon.getCratedDate())
+                .endDate(coupon.getEndDate())
                 .build();
     }
 }
