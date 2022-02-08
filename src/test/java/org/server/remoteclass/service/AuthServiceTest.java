@@ -6,6 +6,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.server.remoteclass.dto.LoginDto;
+import org.server.remoteclass.dto.TokenDto;
+import org.server.remoteclass.dto.TokenRequestDto;
 import org.server.remoteclass.dto.UserDto;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.service.AuthService;
@@ -13,6 +15,7 @@ import org.server.remoteclass.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -73,6 +76,45 @@ public class AuthServiceTest {
         System.out.println(requestBuilder.toString());
         String token = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
         String token2 = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.refreshToken");
+        System.out.println("access token : " + token);
+        System.out.println("refresh token" + token2);
+    }
+
+    @Test
+    @DisplayName("토큰 재발급 : 정상적인 Post요청시, 서버에서 상태코드 200을 받는다.")
+    public void 토큰_재발급() throws Exception{
+        UserDto userDto = new UserDto();
+        userDto.setEmail("gusdn3477@naver.com");
+        userDto.setName("박현우");
+        userDto.setPassword("12345678");
+        authService.signup(userDto);
+        String json = mapper.writeValueAsString(new LoginDto("gusdn3477@naver.com", "12345678"));
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login").contentType(MediaType.APPLICATION_JSON).content(json);
+
+        MvcResult requestResult = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        System.out.println("실행됨");
+        String accessToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
+        String refreshToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.refreshToken");
+        TokenRequestDto tokenRequestDto = new TokenRequestDto();
+        tokenRequestDto.setAccessToken(accessToken);
+        tokenRequestDto.setRefreshToken(refreshToken);
+        String json2 = mapper.writeValueAsString(tokenRequestDto);
+        System.out.println(accessToken);
+        System.out.println(refreshToken);
+        RequestBuilder requestBuilder2 = MockMvcRequestBuilders.post("/reissue")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // "Bearer "를 붙여 줘야 함
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json2);
+
+        MvcResult requestResult2 = mockMvc.perform(requestBuilder2)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String token = JsonPath.read(requestResult2.getResponse().getContentAsString(), "$.accessToken");
+        String token2 = JsonPath.read(requestResult2.getResponse().getContentAsString(), "$.refreshToken");
         System.out.println("access token : " + token);
         System.out.println("refresh token" + token2);
     }

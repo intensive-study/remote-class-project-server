@@ -9,6 +9,7 @@ spring:
     properties:
       hibernate:
         format-sql: true
+    defer-datasource-initialization: true
   h2:
     console:
       enabled: true
@@ -25,7 +26,6 @@ spring:
     url: jdbc:h2:mem:testdb;
     username: sa
     password:
-    defer-datasource-initialization: true
 #  datasource:
 #    url: jdbc:mysql://localhost:3306/REMOTE_CLASS?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
 #    username: ${MYSQL_USER}
