@@ -57,11 +57,9 @@ public class CouponServiceTest {
         String accessToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
         TokenRequestDto tokenRequestDto = new TokenRequestDto();
         tokenRequestDto.setAccessToken(accessToken);
-        String json2 = mapper.writeValueAsString(tokenRequestDto);
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders.get("/coupons")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // "Bearer "를 붙여 줘야 함
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json2);
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder2)
                 .andExpect(status().isOk())
@@ -84,7 +82,7 @@ public class CouponServiceTest {
         TokenRequestDto tokenRequestDto = new TokenRequestDto();
         tokenRequestDto.setAccessToken(accessToken);
         String json2 = mapper.writeValueAsString(tokenRequestDto);
-        RequestBuilder requestBuilder2 = MockMvcRequestBuilders.get("/coupons")
+        RequestBuilder requestBuilder2 = MockMvcRequestBuilders.post("/coupons")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // "Bearer "를 붙여 줘야 함
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json2);

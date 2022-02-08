@@ -31,6 +31,11 @@ public class CouponDto {
 
     }
 
+    public CouponDto(int couponValidDays, LocalDateTime endDate){
+        this.couponValidDays = couponValidDays;
+        this.endDate = endDate;
+    }
+
     public static CouponDto from(Coupon coupon){
         if(coupon == null) return null;
         return CouponDto.builder()
