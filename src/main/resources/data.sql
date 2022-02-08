@@ -1,3 +1,3 @@
-INSERT INTO category (CATEGORY_NAME) VALUES ('Back-end');
-INSERT INTO category (CATEGORY_NAME) VALUES ('Front-end');
-INSERT INTO category (CATEGORY_NAME) VALUES ('Data');
+INSERT INTO Category (CATEGORY_NAME) VALUES ('Back-end');
+INSERT INTO Category (CATEGORY_NAME) VALUES ('Front-end');
+INSERT INTO Category (CATEGORY_NAME) VALUES ('Data');
