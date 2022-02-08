@@ -3,9 +3,35 @@ spring:
     multipart:
       max-file-size: 10MB
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format-sql: true
+    database: mysql
+#    database: h2
+    generate-ddl: true
+    show-sql: true
+#    defer-datasource-initialization: false
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/REMOTE_CLASS?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#  datasource:
+#    url: jdbc:h2:mem:test
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
+#  h2:
+#    console:
+#      enabled: true
 
 
 logging:
@@ -13,3 +39,7 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
 
+jwt:
+  header: Authorization
+  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+  token-validity-in-seconds: 86400

@@ -10,6 +10,7 @@ import org.server.remoteclass.entity.User;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter @Setter
 @Builder
@@ -20,9 +21,9 @@ public class LectureDto {
     private String description;
     private Integer price;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate endDate;
+    private LocalDateTime endDate;
     private Category category;
     private User user;
 

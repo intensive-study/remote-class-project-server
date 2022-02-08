@@ -23,7 +23,7 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    //수강 신청 학생 권한
+    //수강 신청 (학생 권한)
     @PostMapping
     public ResponseEntity<StudentDto> applyLecture(@RequestBody @Valid StudentFormDto studentFormDto) throws IdNotExistException {
         return ResponseEntity.status(HttpStatus.CREATED).body(studentService.applyLecture(studentFormDto));
@@ -35,7 +35,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getLecturesByUserId());
     }
 
-    //수강생 전체 조회 /강의자 권한
+    //수강생 전체 조회 (강의자 권한)
     @GetMapping("/{lectureId}/list")
     public ResponseEntity<List<StudentDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
         return ResponseEntity.ok(studentService.getStudentsByLectureId(lectureId));
