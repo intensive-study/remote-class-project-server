@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+import org.server.remoteclass.constant.Authority;
+import org.server.remoteclass.constant.UserRole;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
