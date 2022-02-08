@@ -27,13 +27,13 @@ public class JacksonConfig {
         module.addDeserializer(LocalTime.class, new JsonDeserializer<LocalTime>() {
             @Override
             public LocalTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-                return LocalTime.parse(jsonParser.getValueAsString(), DateTimeFormatter.ofPattern("kk:mm:ss"));
+                return LocalTime.parse(jsonParser.getValueAsString(), DateTimeFormatter.ofPattern("hh:mm:ss"));
             }
         });
         module.addDeserializer(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
             @Override
             public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-                return LocalDateTime.parse(jsonParser.getValueAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss"));
+                return LocalDateTime.parse(jsonParser.getValueAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
             }
         });
         return module;
