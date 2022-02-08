@@ -16,7 +16,6 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: true
-#    database: mysql
     database: h2
     generate-ddl: true
     show-sql: true
@@ -26,18 +25,10 @@ spring:
     url: jdbc:h2:mem:testdb;
     username: sa
     password:
-#  datasource:
-#    url: jdbc:mysql://localhost:3306/REMOTE_CLASS?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-#    username: ${MYSQL_USER}
-#    password: ${MYSQL_PASSWORD}
-#    driver-class-name: com.mysql.cj.jdbc.Driver
 
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
-#  h2:
-#    console:
-#      enabled: true
 
 
 logging:
