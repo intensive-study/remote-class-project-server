@@ -36,6 +36,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
+    @Transactional
     public CouponDto createCoupon(CouponDto couponDto) {
         Coupon coupon = modelMapper.map(couponDto, Coupon.class);
         coupon.setCouponCode(UUID.randomUUID().toString());
