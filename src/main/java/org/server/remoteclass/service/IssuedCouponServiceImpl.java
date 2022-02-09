@@ -34,6 +34,11 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
         this.userRepository = userRepository;
     }
 
+    @Override
+    public IssuedCouponDto issueCoupon(String couponCode) {
+        return null;
+    }
+
     // 테스트 해 봐야 합니다.
     @Override
     public List<IssuedCouponDto> getAllMyCoupons() throws IdNotExistException{

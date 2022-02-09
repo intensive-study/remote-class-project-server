@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface IssuedCouponService {
 
+    //쿠폰 발급받기
+    IssuedCouponDto issueCoupon(String couponCode);
     //내가 발급받은 모든 쿠폰 조회
     List<IssuedCouponDto> getAllMyCoupons() throws IdNotExistException;
 }

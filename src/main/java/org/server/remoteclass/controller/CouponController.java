@@ -40,4 +40,10 @@ public class CouponController {
     public ResponseEntity<CouponDto> createCoupon(@RequestBody @Valid CouponDto couponDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(couponService.createCoupon(couponDto));
     }
+
+    //쿠폰 비활성화(관리자 권한)
+    @PutMapping("/deactivate/{couponId}")
+    public ResponseEntity<CouponDto> createCoupon(@PathVariable("couponId") Long couponId) throws IdNotExistException {
+        return ResponseEntity.status(HttpStatus.OK).body(couponService.deactivateCoupon(couponId));
+    }
 }
