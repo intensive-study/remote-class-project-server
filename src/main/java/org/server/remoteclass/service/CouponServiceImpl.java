@@ -42,7 +42,7 @@ public class CouponServiceImpl implements CouponService {
     @Transactional
     public CouponDto deactivateCoupon(Long couponId) throws IdNotExistException{
         Coupon coupon = couponRepository.findByCouponId(couponId)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호", ResultCode.ID_NOT_EXIST)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다.", ResultCode.ID_NOT_EXIST)
         );
         coupon.setCouponValid(false);
         // 스프링 데이터 JPA가 알아서 해 주는 것 같긴 한데, 일단 save로 업데이트 하였습니다.
@@ -66,5 +66,16 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public CouponDto getCouponByCouponCode(String couponCode) {
         return CouponDto.from(couponRepository.findByCouponCode(couponCode).orElse(null));
+    }
+
+    //쿠폰 삭제
+    @Override
+    @Transactional
+    public CouponDto deleteCoupon(Long couponId) throws IdNotExistException{
+        Coupon coupon = couponRepository
+                .findByCouponId(couponId)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다", ResultCode.ID_NOT_EXIST));
+        couponRepository.deleteByCouponId(couponId);
+        return CouponDto.from(coupon);
     }
 }

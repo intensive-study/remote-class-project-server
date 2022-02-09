@@ -46,4 +46,9 @@ public class CouponController {
     public ResponseEntity<CouponDto> createCoupon(@PathVariable("couponId") Long couponId) throws IdNotExistException {
         return ResponseEntity.status(HttpStatus.OK).body(couponService.deactivateCoupon(couponId));
     }
+
+    @DeleteMapping("/{couponId}")
+    public ResponseEntity<CouponDto> deleteCoupon(@PathVariable("couponId") Long couponId) throws IdNotExistException {
+        return ResponseEntity.status(HttpStatus.OK).body(couponService.deleteCoupon(couponId));
+    }
 }

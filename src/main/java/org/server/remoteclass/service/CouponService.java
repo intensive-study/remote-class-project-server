@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CouponService {
 
-    //쿠폰 상세보기(관리자/사용자 역할을 나눠야 할 것 같습니다.)
+    //일단 다 관리자 권한이라 가정하겠습니다.
     CouponDto getCouponByCouponId(Long couponId);
     //쿠폰 생성
     CouponDto createCoupon(CouponDto couponDto);
@@ -17,4 +17,6 @@ public interface CouponService {
     List<CouponDto> getAllCoupons();
     //쿠폰 코드로 쿠폰 조회
     CouponDto getCouponByCouponCode(String couponCode);
+    //쿠폰 삭제
+    CouponDto deleteCoupon(Long couponId) throws IdNotExistException;
 }

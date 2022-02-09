@@ -128,4 +128,39 @@ public class CouponServiceTest {
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
+
+
+    @Test
+    @DisplayName("쿠폰 삭제")
+    public void 쿠폰삭제() throws Exception{
+        // 일단 유저가 만드는 걸로(나중에 관리자로 해야 함)
+        authService.signup(new UserDto("gusdn3477@naver.com", "박현우", "12345678"));
+        String json = mapper.writeValueAsString(new LoginDto("gusdn3477@naver.com", "12345678"));
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login").contentType(MediaType.APPLICATION_JSON).content(json);
+
+        MvcResult requestResult = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String accessToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
+        TokenRequestDto tokenRequestDto = new TokenRequestDto();
+        tokenRequestDto.setAccessToken(accessToken);
+        String json2 = mapper.writeValueAsString(new CouponDto(5, LocalDateTime.parse("2022-03-02T13:30:00")));
+        RequestBuilder requestBuilder2 = MockMvcRequestBuilders.post("/coupons")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // "Bearer "를 붙여 줘야 함
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json2);
+
+        mockMvc.perform(requestBuilder2)
+                .andExpect(status().isCreated())
+                .andDo(MockMvcResultHandlers.print());
+
+        RequestBuilder requestBuilder3 = MockMvcRequestBuilders.delete("/coupons/1")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // "Bearer "를 붙여 줘야 함
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder3)
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
 }
