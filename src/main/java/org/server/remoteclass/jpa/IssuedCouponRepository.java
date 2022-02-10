@@ -11,4 +11,6 @@ public interface IssuedCouponRepository extends JpaRepository<IssuedCoupon, Long
 
     // 내가 가지고 있는 쿠폰 조회 기능
     List<IssuedCoupon> findByUser(Long userId);
+    // 쿠폰 발급번호로 쿠폰 찾기
+    Optional<IssuedCoupon> findByUserAndIssuedCouponId(Long userId, Long issuedCouponId);
 }

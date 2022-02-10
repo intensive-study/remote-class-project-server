@@ -19,8 +19,8 @@ public class IssuedCouponDto {
     private Long userId;
     private Long couponId;
     private boolean couponUsed;
-    private LocalDateTime couponValidDate;
-    private String title;
+    private String couponCode;
+    private LocalDateTime couponValidDate; // 쿠폰 유효기간이라 봐주시면 됩니다.
 
     public IssuedCouponDto(){
     }
