@@ -21,6 +21,9 @@ spring:
   sql:
     init:
       mode: always
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
 
 logging:
   level:

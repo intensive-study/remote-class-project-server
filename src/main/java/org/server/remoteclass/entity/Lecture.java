@@ -1,5 +1,6 @@
 package org.server.remoteclass.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,10 +26,12 @@ public class Lecture {
 
     @ManyToOne
     @JoinColumn(name="category_id")
+    @JsonIgnore
     private Category category;       //강의 카테고리
 
     @ManyToOne
     @JoinColumn(name="lecturer") //강의자
+    @JsonIgnore
     private User user;
 
 
