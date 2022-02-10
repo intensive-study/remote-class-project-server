@@ -2,7 +2,6 @@ package org.server.remoteclass.entity;
 
 import lombok.*;
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -24,11 +23,11 @@ public class Lecture {
     @Column(name = "end_date")
     private LocalDateTime endDate;          //강의 종료일
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="category_id")
     private Category category;       //강의 카테고리
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="lecturer") //강의자
     private User user;
 
