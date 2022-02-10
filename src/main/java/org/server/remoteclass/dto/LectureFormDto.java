@@ -26,11 +26,12 @@ public class LectureFormDto {
     private LocalDateTime endDate;
     @NotNull(message="카테고리 선택, 숫자로 입력")
     private Long categoryId;
-    private Long userId;
+//    private Long userId;
 
     public static LectureFormDto from(Lecture lecture){
         if(lecture == null) return null;
         return LectureFormDto.builder()
+                .lectureId(lecture.getLectureId())
                 .title(lecture.getTitle())
                 .description(lecture.getDescription())
                 .price(lecture.getPrice())
