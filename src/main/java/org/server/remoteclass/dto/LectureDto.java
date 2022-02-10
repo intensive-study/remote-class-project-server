@@ -41,6 +41,7 @@ public class LectureDto {
     public static LectureDto from(Lecture lecture){
         if(lecture == null) return null;
         return LectureDto.builder()
+                .lectureId(lecture.getLectureId())
                 .title(lecture.getTitle())
                 .description(lecture.getDescription())
                 .price(lecture.getPrice())
