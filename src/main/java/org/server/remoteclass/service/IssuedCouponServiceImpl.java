@@ -51,7 +51,8 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
         Coupon coupon = couponRepository.findByCouponCode(issuedCouponDto.getCouponCode())
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다.", ResultCode.ID_NOT_EXIST));
 
-        IssuedCoupon issuedCoupon = modelMapper.map(issuedCouponDto, IssuedCoupon.class);
+        //발급 쿠폰 중복 조회 필요
+       IssuedCoupon issuedCoupon = modelMapper.map(issuedCouponDto, IssuedCoupon.class);
         issuedCoupon.setCouponUsed(false);
         issuedCoupon.setCouponValidDate(LocalDateTime.now().plusDays(coupon.getCouponValidDays()));
         issuedCoupon.setUser(user);
@@ -68,7 +69,10 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
 
         List<IssuedCoupon> issuedCouponList = issuedCouponRepository.findByUser(user.getUserId());
         return issuedCouponList.stream()
-                .map(issuedCoupon -> modelMapper.map(issuedCoupon, IssuedCouponDto.class)).collect(Collectors.toList());
+                .map(issuedCoupon ->
+                        IssuedCouponDto.from(issuedCoupon)
+//                        modelMapper.map(issuedCoupon, IssuedCouponDto.class)
+                ).collect(Collectors.toList());
     }
 
     @Override

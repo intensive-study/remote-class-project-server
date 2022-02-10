@@ -31,6 +31,7 @@ public class IssuedCouponDto {
                 .issuedCouponId(issuedCoupon.getIssuedCouponId())
                 .userId(issuedCoupon.getUser().getUserId())
                 .couponId(issuedCoupon.getCoupon().getCouponId())
+                .couponCode(issuedCoupon.getCoupon().getCouponCode())
                 .couponUsed(issuedCoupon.isCouponUsed())
                 .couponValidDate(issuedCoupon.getCouponValidDate())
                 .build();
