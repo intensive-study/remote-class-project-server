@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,10 +14,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @DynamicInsert
+@EntityListeners(AuditingEntityListener.class) // 이 어노테이션이 있어야 @CreatedDate가 작동합니다.
 public class Coupon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "coupon_id")
     private Long couponId;
     private String couponCode;
 
@@ -31,5 +34,10 @@ public class Coupon {
     @Column(name = "coupon_created_date")
     @CreatedDate
     private LocalDateTime cratedDate;
+
+    // 쿠폰 마감일입니다. 이 시간부터는 쿠폰 발급 불가능합니다.
+    @Column(name = "coupon_end_date")
+    private LocalDateTime endDate;
+
 
 }

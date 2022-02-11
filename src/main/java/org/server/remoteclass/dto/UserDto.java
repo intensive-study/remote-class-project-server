@@ -26,6 +26,12 @@ public class UserDto {
     private LocalDateTime registerDate;
     private Set<AuthorityDto> authorityDtoSet;
 
+    public UserDto(String email, String name, String password){
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
+
     // 본인이 본인 정보 조회 or 관리자가 조회 시 사용할 함수
     public static UserDto from(User user){
         if(user == null) return null;
