@@ -23,6 +23,20 @@ docker compose up -d
 ![env issue1](https://user-images.githubusercontent.com/46596758/151531761-170272a0-f0e2-4223-97e3-388118cff3dc.png)  
 ![env issue2](https://user-images.githubusercontent.com/46596758/151531772-556d8438-2294-4ec4-80f1-5619d514e859.png)
 
+
+### swagger 이용 방법
+=> [접속 URL](http://localhost:8080/swagger-ui.html)   
+
+**‼️ Swagger 이용시 다른 팀원을 위해 최소한 이것만은 지키자! `@ApiOperation` ‼️**  
+각 `Rest Controller` 상단에 `@ApiOperation(HTTP 메소드 설명)` 을 추가합니다 :) 아래와 같이 명시해두면, swagger-ui에서 각 controller가 어떤 메소드인지 명확하게 알 수 있습니다.
+```java
+/** * OOOO의 상태를 조회 * @return */ 
+@ApiOperation("사용자 조회")  
+public List<UserDto> getUsers(){
+        ...        
+}
+```
+
 ### TokenProvider의 @Value 인식 에러 시
 1. 인텔리제이에서 File-Settings를 클릭합니다. (MAC의 경우 preference)
 2. Build, Execution, Deployment를 클릭합니다.
