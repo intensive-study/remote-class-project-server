@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/lecture")
+@RequestMapping("/lectures")
 public class LectureController {
 
     private final LectureService lectureService;

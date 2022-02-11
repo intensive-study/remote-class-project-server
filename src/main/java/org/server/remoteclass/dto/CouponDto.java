@@ -5,13 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.server.remoteclass.entity.Coupon;
-import org.server.remoteclass.entity.User;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -25,9 +19,15 @@ public class CouponDto {
     private boolean couponValid;
     private int couponValidDays;
     private LocalDateTime createdDate;
+    private LocalDateTime endDate;
 
     public CouponDto(){
 
+    }
+
+    public CouponDto(int couponValidDays, LocalDateTime endDate){
+        this.couponValidDays = couponValidDays;
+        this.endDate = endDate;
     }
 
     public static CouponDto from(Coupon coupon){
@@ -38,6 +38,7 @@ public class CouponDto {
                 .couponValid(coupon.isCouponValid())
                 .couponValidDays(coupon.getCouponValidDays())
                 .createdDate(coupon.getCratedDate())
+                .endDate(coupon.getEndDate())
                 .build();
     }
 }

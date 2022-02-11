@@ -1,22 +1,20 @@
 package org.server.remoteclass.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.server.remoteclass.entity.User;
+import lombok.Getter;
+import lombok.Setter;
 import org.server.remoteclass.constant.UserRole;
+import org.server.remoteclass.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDto {
+public class ResponseUserByAdminDto {
 
     private Long userId;
     private String email;
@@ -26,16 +24,21 @@ public class UserDto {
     private LocalDateTime registerDate;
     private Set<AuthorityDto> authorityDtoSet;
 
-    public UserDto(String email, String name, String password){
+    public ResponseUserByAdminDto(){
+
+    }
+
+    public ResponseUserByAdminDto(String email, String name, String password){
         this.email = email;
         this.name = name;
         this.password = password;
     }
 
-    // 본인이 본인 정보 조회 or 관리자가 조회 시 사용할 함수
-    public static UserDto from(User user){
+    // 관리자 혹은 본인이 조회 시 사용하는 함수
+    public static ResponseUserByAdminDto from(User user){
         if(user == null) return null;
-        return UserDto.builder()
+        return ResponseUserByAdminDto.builder()
+                .userId(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .password(user.getPassword())
@@ -43,5 +46,4 @@ public class UserDto {
                 .userRole(user.getUserRole())
                 .build();
     }
-
 }

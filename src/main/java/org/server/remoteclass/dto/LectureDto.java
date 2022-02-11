@@ -33,5 +33,4 @@ public class LectureDto {
                 .lecturer(lecture.getUser().getUserId())
                 .build();
     }
-
 }

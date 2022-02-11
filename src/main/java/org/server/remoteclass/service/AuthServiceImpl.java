@@ -1,10 +1,7 @@
 package org.server.remoteclass.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.server.remoteclass.dto.LoginDto;
-import org.server.remoteclass.dto.TokenDto;
-import org.server.remoteclass.dto.TokenRequestDto;
-import org.server.remoteclass.dto.UserDto;
+import org.server.remoteclass.dto.*;
 import org.server.remoteclass.constant.Authority;
 import org.server.remoteclass.entity.RefreshToken;
 import org.server.remoteclass.entity.User;
@@ -45,20 +42,20 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public UserDto signup(UserDto userDto){
-        if(userRepository.existsByEmail(userDto.getEmail())){
+    public ResponseUserDto signup(RequestUserDto requestUserDto){
+        if(userRepository.existsByEmail(requestUserDto.getEmail())){
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
 
         User user = User.builder()
-                .email(userDto.getEmail())
-                .name(userDto.getName())
-                .password(bCryptPasswordEncoder.encode(userDto.getPassword()))
+                .email(requestUserDto.getEmail())
+                .name(requestUserDto.getName())
+                .password(bCryptPasswordEncoder.encode(requestUserDto.getPassword()))
                 .userRole(UserRole.ROLE_STUDENT)
                 .authority(Authority.ROLE_USER)
                 .build();
 
-        return UserDto.from(userRepository.save(user));
+        return ResponseUserDto.from(userRepository.save(user));
     }
 
     @Override
