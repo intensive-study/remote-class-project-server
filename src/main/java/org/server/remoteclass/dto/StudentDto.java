@@ -1,9 +1,6 @@
 package org.server.remoteclass.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.Student;
 import org.server.remoteclass.entity.User;
@@ -12,23 +9,18 @@ import org.server.remoteclass.entity.User;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor @NoArgsConstructor
 public class StudentDto {
     private Long studentId;
-    private Lecture lecture;
-    private User user;
-
-    public StudentDto(Student student){
-        this.studentId = student.getStudentId();
-        this.lecture = student.getLecture();
-        this.user = student.getUser();
-    }
+    private Long lectureId;
+    private Long userId;
 
     public static StudentDto from(Student student){
         if(student == null) return null;
         return StudentDto.builder()
-                .lecture(student.getLecture())
-                .user(student.getUser())
+                .studentId(student.getStudentId())
+                .lectureId(student.getLecture().getLectureId())
+                .userId(student.getUser().getUserId())
                 .build();
     }
 }

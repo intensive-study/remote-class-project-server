@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.server.remoteclass.entity.Student;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.constant.UserRole;
 
@@ -35,6 +36,15 @@ public class UserDto {
                 .password(user.getPassword())
                 .registerDate(user.getRegisterDate())
                 .userRole(user.getUserRole())
+                .build();
+    }
+
+    public static UserDto from(Student student){
+        if(student == null) return null;
+        return UserDto.builder()
+                .email(student.getUser().getEmail())
+                .userId(student.getUser().getUserId())
+                .name(student.getUser().getName())
                 .build();
     }
 }
