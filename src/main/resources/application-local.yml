@@ -18,12 +18,10 @@ spring:
     #    서버 재구동 시에 data.sql 외에 모든 데이터가 날아갑니다.
     #    권한이 db상에 먼저 존재해야 외래키 제약 조건에 걸리지 않습니다. 그래서 일단 임의로 data.sql로 먼저 초기화하도록 하였습니다
     defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
-  jackson:
-    serialization:
-      fail-on-empty-beans: false
+#  sql:
+#    init:
+#      mode: always
+
 
 logging:
   level:

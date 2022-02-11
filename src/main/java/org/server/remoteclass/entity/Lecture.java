@@ -1,13 +1,19 @@
 package org.server.remoteclass.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
 @Entity
 @Getter @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@DynamicInsert @DynamicUpdate
 public class Lecture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,13 +32,10 @@ public class Lecture {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="category_id")
-    @JsonIgnore
     private Category category;       //강의 카테고리
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="lecturer") //강의자
-    @JsonIgnore
     private User user;
-
 
 }
