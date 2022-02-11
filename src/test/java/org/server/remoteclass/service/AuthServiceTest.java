@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.server.remoteclass.dto.LoginDto;
+import org.server.remoteclass.dto.RequestUserDto;
 import org.server.remoteclass.dto.TokenRequestDto;
 import org.server.remoteclass.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,11 +57,11 @@ public class AuthServiceTest {
     @Test
     @DisplayName("로그인 : 정상적인 Post요청시, 서버에서 상태코드 200을 받는다.")
     public void 로그인() throws Exception{
-        UserDto userDto = new UserDto();
-        userDto.setEmail("gusdn3477@naver.com");
-        userDto.setName("박현우");
-        userDto.setPassword("12345678");
-        authService.signup(userDto);
+        RequestUserDto requestUserDto = new RequestUserDto();
+        requestUserDto.setEmail("gusdn3477@naver.com");
+        requestUserDto.setName("박현우");
+        requestUserDto.setPassword("12345678");
+        authService.signup(requestUserDto);
         String json = mapper.writeValueAsString(new LoginDto("gusdn3477@naver.com", "12345678"));
         System.out.println(json);
         String URL = "/login";
@@ -79,11 +80,11 @@ public class AuthServiceTest {
     @Test
     @DisplayName("토큰 재발급 : 정상적인 Post요청시, 서버에서 상태코드 200을 받는다.")
     public void 토큰_재발급() throws Exception{
-        UserDto userDto = new UserDto();
-        userDto.setEmail("gusdn3477@naver.com");
-        userDto.setName("박현우");
-        userDto.setPassword("12345678");
-        authService.signup(userDto);
+        RequestUserDto requestUserDto = new RequestUserDto();
+        requestUserDto.setEmail("gusdn3477@naver.com");
+        requestUserDto.setName("박현우");
+        requestUserDto.setPassword("12345678");
+        authService.signup(requestUserDto);
         String json = mapper.writeValueAsString(new LoginDto("gusdn3477@naver.com", "12345678"));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login").contentType(MediaType.APPLICATION_JSON).content(json);
 

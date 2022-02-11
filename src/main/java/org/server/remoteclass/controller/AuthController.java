@@ -1,10 +1,7 @@
 package org.server.remoteclass.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.server.remoteclass.dto.LoginDto;
-import org.server.remoteclass.dto.TokenDto;
-import org.server.remoteclass.dto.TokenRequestDto;
-import org.server.remoteclass.dto.UserDto;
+import org.server.remoteclass.dto.*;
 import org.server.remoteclass.service.AuthService;
 import org.server.remoteclass.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -25,8 +22,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<UserDto> signup(@Valid @RequestBody UserDto userDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(userDto));
+    public ResponseEntity<ResponseUserDto> signup(@Valid @RequestBody RequestUserDto requestUserDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(requestUserDto));
     }
 
     @PostMapping("/login")
