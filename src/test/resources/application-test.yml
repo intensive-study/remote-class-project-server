@@ -2,7 +2,9 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
-
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   jpa:
     hibernate:
       ddl-auto: create-drop
