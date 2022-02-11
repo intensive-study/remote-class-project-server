@@ -50,6 +50,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                         "/h2-console/**"
                         ,"/favicon.ico"
                         ,"/error"
+                        ,"/swagger-ui.html/**"
+                        ,"/swagger-ui/index.html/**"
+                        ,"/swagger-resources/**"
+                        ,"/webjars/**"
+                        ,"/v2/api-docs/**"
                 );
     }
 
