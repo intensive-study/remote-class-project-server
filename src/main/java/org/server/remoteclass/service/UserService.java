@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface UserService {
     ResponseUserDto getUserWithAuthorities(String email);
     ResponseUserDto getUserByUserId(Long userId);
-    ResponseUserByAdminDto getMyUserWithAuthorities();
+    ResponseUserByAdminDto getMyInfoWithAuthorities();
     List<ResponseUserDto> getUsersByAll();
 }

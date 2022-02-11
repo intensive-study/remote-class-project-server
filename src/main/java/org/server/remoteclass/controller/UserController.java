@@ -33,7 +33,7 @@ public class UserController {
     // 본인 정보 조회 기능(비밀번호까지 나와서 다른 유저 조회 시 기능 구현 시엔 주의해야 합니다)
     @GetMapping("/myself")
     public ResponseEntity<ResponseUserByAdminDto> getMyInfo(){
-        return ResponseEntity.ok(userService.getMyUserWithAuthorities());
+        return ResponseEntity.ok(userService.getMyInfoWithAuthorities());
     }
 
     // 사용자가 사용자 조회

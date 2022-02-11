@@ -1,5 +1,7 @@
 package org.server.remoteclass.controller;
 
+import org.server.remoteclass.dto.ResponseUserByAdminDto;
+import org.server.remoteclass.dto.ResponseUserDto;
 import org.server.remoteclass.dto.StudentDto;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.jpa.UserRepository;
@@ -20,10 +22,28 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     private final StudentService studentService;
+    private final UserService userService;
 
     @Autowired
-    public AdminController(StudentService studentService){
+    public AdminController(StudentService studentService, UserService userService){
         this.studentService = studentService;
+        this.userService = userService;
     }
 
+    @GetMapping("/welcome")
+    public String welcome(){
+        return "Welcome test";
+    }
+
+    // 사용자가 사용자 조회
+    @GetMapping("/{userId}")
+    public ResponseEntity<ResponseUserDto> getUser(@PathVariable("userId") Long userId){
+        return ResponseEntity.ok(userService.getUserByUserId(userId));
+    }
+
+    // 전체 유저 조회
+    @GetMapping
+    public ResponseEntity<List<ResponseUserDto>> getAllUsers(){
+        return ResponseEntity.ok(userService.getUsersByAll());
+    }
 }

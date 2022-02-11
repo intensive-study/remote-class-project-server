@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService{
 
     //본인의 정보 반환
     @Override
-    public ResponseUserByAdminDto getMyUserWithAuthorities(){
+    public ResponseUserByAdminDto getMyInfoWithAuthorities(){
         return ResponseUserByAdminDto.from(SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findByEmail).orElse(null));
     }
 
