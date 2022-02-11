@@ -5,10 +5,7 @@ import com.jayway.jsonpath.JsonPath;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.server.remoteclass.dto.CouponDto;
-import org.server.remoteclass.dto.LoginDto;
-import org.server.remoteclass.dto.TokenRequestDto;
-import org.server.remoteclass.dto.UserDto;
+import org.server.remoteclass.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,7 +46,7 @@ public class CouponServiceTest {
     @DisplayName("전체 쿠폰 조회 : 정상적인 Post요청시, 서버에서 상태코드 200을 받는다.")
     public void 전체쿠폰조회() throws Exception{
         // 일단 유저가 만드는 걸로(나중에 관리자로 해야 함)
-        authService.signup(new UserDto("gusdn3477@naver.com", "박현우", "12345678"));
+        authService.signup(new RequestUserDto("gusdn3477@naver.com", "박현우", "12345678"));
         String json = mapper.writeValueAsString(new LoginDto("gusdn3477@naver.com", "12345678"));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login").contentType(MediaType.APPLICATION_JSON).content(json);
 
@@ -73,7 +70,7 @@ public class CouponServiceTest {
     @DisplayName("쿠폰생성 : 정상적인 Post요청시, 서버에서 상태코드 200을 받는다.")
     public void 쿠폰생성() throws Exception{
         // 일단 유저가 만드는 걸로(나중에 관리자로 해야 함)
-        authService.signup(new UserDto("gusdn3477@naver.com", "박현우", "12345678"));
+        authService.signup(new RequestUserDto("gusdn3477@naver.com", "박현우", "12345678"));
         String json = mapper.writeValueAsString(new LoginDto("gusdn3477@naver.com", "12345678"));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login").contentType(MediaType.APPLICATION_JSON).content(json);
 
@@ -99,7 +96,7 @@ public class CouponServiceTest {
     @DisplayName("쿠폰비활성화 : 쿠폰 valid 상태를 false로 한다.")
     public void 쿠폰비활성화() throws Exception{
         // 일단 유저가 만드는 걸로(나중에 관리자로 해야 함)
-        authService.signup(new UserDto("gusdn3477@naver.com", "박현우", "12345678"));
+        authService.signup(new RequestUserDto("gusdn3477@naver.com", "박현우", "12345678"));
         String json = mapper.writeValueAsString(new LoginDto("gusdn3477@naver.com", "12345678"));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login").contentType(MediaType.APPLICATION_JSON).content(json);
 
@@ -134,7 +131,7 @@ public class CouponServiceTest {
     @DisplayName("쿠폰 삭제")
     public void 쿠폰삭제() throws Exception{
         // 일단 유저가 만드는 걸로(나중에 관리자로 해야 함)
-        authService.signup(new UserDto("gusdn3477@naver.com", "박현우", "12345678"));
+        authService.signup(new RequestUserDto("gusdn3477@naver.com", "박현우", "12345678"));
         String json = mapper.writeValueAsString(new LoginDto("gusdn3477@naver.com", "12345678"));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login").contentType(MediaType.APPLICATION_JSON).content(json);
 

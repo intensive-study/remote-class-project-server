@@ -43,11 +43,8 @@ public class AuthServiceTest {
     @Test
     @DisplayName("회원가입 : 정상적인 Post요청시, 서버에서 상태코드 201을 받는다.")
     public void 회원가입() throws Exception{
-        UserDto userDto = new UserDto();
-        userDto.setEmail("park12345@naver.com");
-        userDto.setName("박현우1234");
-        userDto.setPassword("helloworld");
-        String json = mapper.writeValueAsString(userDto);
+        RequestUserDto requestUserDto = new RequestUserDto("gusdn3477@naver.com", "박현우", "helloworld");
+        String json = mapper.writeValueAsString(requestUserDto);
 //        String json = mapper.writeValueAsString(new SubmittedUserSolutionDto(1L, 1L, "2", false));
         String URL = "/signup";
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post(URL).contentType(MediaType.APPLICATION_JSON).content(json);

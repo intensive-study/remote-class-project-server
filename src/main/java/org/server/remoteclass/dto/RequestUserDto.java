@@ -7,7 +7,6 @@ import lombok.Setter;
 
 @Getter @Setter
 @Builder
-@AllArgsConstructor
 public class RequestUserDto {
 
     // 회원가입 시에 사용하는 Dto
@@ -19,4 +18,9 @@ public class RequestUserDto {
 
     }
 
+    public RequestUserDto(String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
 }
