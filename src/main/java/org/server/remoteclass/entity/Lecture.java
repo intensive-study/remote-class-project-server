@@ -1,6 +1,8 @@
 package org.server.remoteclass.entity;
 
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,6 +10,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@DynamicInsert @DynamicUpdate
 public class Lecture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +25,6 @@ public class Lecture {
     private String description;     //강의상세설명
     @Column(name = "price", nullable=false)
     private Integer price;      //수강료
-    //    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     @Column(name = "start_date")
     private LocalDateTime startDate;        //강의 시작일
     @Column(name = "end_date")
@@ -32,6 +37,5 @@ public class Lecture {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="lecturer") //강의자
     private User user;
-
 
 }

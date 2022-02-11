@@ -1,7 +1,6 @@
 package org.server.remoteclass.controller;
 
 import org.server.remoteclass.dto.LectureDto;
-import org.server.remoteclass.dto.LectureFormDto;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.LectureService;
@@ -26,9 +25,10 @@ public class LectureController {
 
     //강의 생성
     @PostMapping
-    public ResponseEntity<LectureDto> createLecture(@RequestBody @Valid LectureFormDto lectureFormDto) throws IdNotExistException, ForbiddenException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.createLecture(lectureFormDto));
+    public ResponseEntity<LectureDto> createLecture(@RequestBody @Valid LectureDto lectureDto) throws IdNotExistException, ForbiddenException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.createLecture(lectureDto));
     }
+
     //강의 조회
     @GetMapping("/{lectureId}")
     public ResponseEntity<LectureDto> readLecture(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
@@ -37,8 +37,8 @@ public class LectureController {
 
     //강의 수정
     @PutMapping
-    public ResponseEntity<LectureDto> updateLecture(@RequestBody @Valid LectureFormDto lectureFormDto) throws IdNotExistException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.updateLecture(lectureFormDto));
+    public ResponseEntity<LectureDto> updateLecture(@RequestBody @Valid LectureDto lectureDto) throws IdNotExistException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.updateLecture(lectureDto));
     }
 
     //강의 삭제
