@@ -5,6 +5,7 @@ import org.server.remoteclass.dto.ResponseUserDto;
 import org.server.remoteclass.dto.StudentDto;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.jpa.UserRepository;
+import org.server.remoteclass.service.AdminService;
 import org.server.remoteclass.service.StudentService;
 import org.server.remoteclass.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,12 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     private final StudentService studentService;
-    private final UserService userService;
+    private final AdminService adminService;
 
     @Autowired
-    public AdminController(StudentService studentService, UserService userService){
+    public AdminController(StudentService studentService, AdminService adminService){
         this.studentService = studentService;
-        this.userService = userService;
+        this.adminService = adminService;
     }
 
     @GetMapping("/welcome")
@@ -35,15 +36,15 @@ public class AdminController {
         return "Welcome test";
     }
 
-    // 사용자가 사용자 조회
+    // 관리자가 사용자 조회
     @GetMapping("/{userId}")
-    public ResponseEntity<ResponseUserDto> getUser(@PathVariable("userId") Long userId){
-        return ResponseEntity.ok(userService.getUserByUserId(userId));
+    public ResponseEntity<ResponseUserByAdminDto> getUser(@PathVariable("userId") Long userId){
+        return ResponseEntity.ok(adminService.getUser(userId));
     }
 
-    // 전체 유저 조회
+    // 곤리자가 전체 유저 조회
     @GetMapping
-    public ResponseEntity<List<ResponseUserDto>> getAllUsers(){
-        return ResponseEntity.ok(userService.getUsersByAll());
+    public ResponseEntity<List<ResponseUserByAdminDto>> getAllUsers(){
+        return ResponseEntity.ok(adminService.getAllUsers());
     }
 }
