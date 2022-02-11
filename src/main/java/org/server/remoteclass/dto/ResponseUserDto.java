@@ -1,5 +1,6 @@
 package org.server.remoteclass.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter @Setter
 @Builder
+@AllArgsConstructor
 public class ResponseUserDto {
 
     // 사용자가 다른 사용자 조회 시에 보일 정보

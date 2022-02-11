@@ -2,6 +2,8 @@ package org.server.remoteclass.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.server.remoteclass.dto.ResponseUserByAdminDto;
+import org.server.remoteclass.dto.ResponseUserDto;
 import org.server.remoteclass.dto.UserDto;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.jpa.UserRepository;
@@ -28,20 +30,26 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDto getUserWithAuthorities(String email){
-        return UserDto.from(userRepository.findByEmail(email).orElse(null));
+    public ResponseUserDto getUserWithAuthorities(String email){
+        return ResponseUserDto.from(userRepository.findByEmail(email).orElse(null));
     }
 
-    //현재 스프링 시큐리티 컨텍스트에 있는 유저 반환
+    //본인의 정보 반환
     @Override
-    public UserDto getMyUserWithAuthorities(){
-        return UserDto.from(SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findByEmail).orElse(null));
+    public ResponseUserByAdminDto getMyUserWithAuthorities(){
+        return ResponseUserByAdminDto.from(SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findByEmail).orElse(null));
     }
 
     @Override
-    public List<UserDto> getUsersByAll(){
+    public ResponseUserDto getUserByUserId(Long userId){
+        return ResponseUserDto.from(userRepository.findByUserId(userId).orElse(null));
+    }
+
+    //전체 유저 정보 조회
+    @Override
+    public List<ResponseUserDto> getUsersByAll(){
         List<User> users = userRepository.findAll();
-        return users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+        return users.stream().map(user -> modelMapper.map(user, ResponseUserDto.class)).collect(Collectors.toList());
     }
 
 }
