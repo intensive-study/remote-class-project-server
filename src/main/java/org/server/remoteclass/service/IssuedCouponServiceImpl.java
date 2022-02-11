@@ -51,6 +51,7 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
         Coupon coupon = couponRepository.findByCouponCode(issuedCouponDto.getCouponCode())
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다.", ResultCode.ID_NOT_EXIST));
 
+//        IssuedCoupon check = couponRepository.findByCouponCode(issuedCouponDto.getCouponCode());
         //발급 쿠폰 중복 조회 필요
        IssuedCoupon issuedCoupon = modelMapper.map(issuedCouponDto, IssuedCoupon.class);
         issuedCoupon.setCouponUsed(false);
