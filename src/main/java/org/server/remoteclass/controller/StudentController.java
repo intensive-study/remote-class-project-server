@@ -1,8 +1,6 @@
 package org.server.remoteclass.controller;
 
-import org.server.remoteclass.dto.LectureDto;
-import org.server.remoteclass.dto.StudentDto;
-import org.server.remoteclass.dto.UserDto;
+import org.server.remoteclass.dto.*;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.NameDuplicateException;
@@ -27,8 +25,8 @@ public class StudentController {
 
     //수강 신청 (학생 권한)
     @PostMapping
-    public ResponseEntity<StudentDto> applyLecture(@RequestBody @Valid StudentDto studentDto) throws IdNotExistException, NameDuplicateException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.applyLecture(studentDto));
+    public ResponseEntity<StudentDto> applyLecture(@RequestBody @Valid RequestStudentDto requestStudentDto) throws IdNotExistException, NameDuplicateException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(requestStudentDto));
     }
 
     //수강 취소
@@ -40,13 +38,13 @@ public class StudentController {
 
     //수강하는 강좌 전체 조회(학생 권한)
     @GetMapping("/list")
-    public ResponseEntity<List<LectureDto>> getAllLectureByUserId() throws IdNotExistException, ForbiddenException {
+    public ResponseEntity<List<ResponseLectureDto>> getAllLectureByUserId() throws IdNotExistException, ForbiddenException {
         return ResponseEntity.ok(studentService.getLecturesByUserId());
     }
 
     //수강생 전체 조회 (강의자 권한)
     @GetMapping("/{lectureId}")
-    public ResponseEntity<List<UserDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException, ForbiddenException {
+    public ResponseEntity<List<ResponseStudentByLecturerDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException, ForbiddenException {
         return ResponseEntity.ok(studentService.getStudentsByLectureId(lectureId));
     }
 }

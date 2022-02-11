@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.server.remoteclass.entity.User;
+import org.server.remoteclass.entity.Student;
 import org.server.remoteclass.constant.UserRole;
 
 import java.time.LocalDateTime;
@@ -16,8 +16,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDto {
+public class ResponseStudentByLecturerDto {
 
+    // 강의자 권한에서 수강생 조회 시에 사용하는 Dto
     private Long userId;
     private String email;
     private String name;
@@ -26,16 +27,12 @@ public class UserDto {
     private LocalDateTime registerDate;
     private Set<AuthorityDto> authorityDtoSet;
 
-    // 본인이 본인 정보 조회 or 관리자가 조회 시 사용할 함수
-    public static UserDto from(User user){
-        if(user == null) return null;
-        return UserDto.builder()
-                .email(user.getEmail())
-                .name(user.getName())
-                .password(user.getPassword())
-                .registerDate(user.getRegisterDate())
-                .userRole(user.getUserRole())
+    public static ResponseStudentByLecturerDto from(Student student){
+        if(student == null) return null;
+        return ResponseStudentByLecturerDto.builder()
+                .email(student.getUser().getEmail())
+                .userId(student.getUser().getUserId())
+                .name(student.getUser().getName())
                 .build();
     }
-
 }

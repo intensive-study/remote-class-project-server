@@ -1,9 +1,7 @@
 package org.server.remoteclass.dto;
 
 import lombok.*;
-import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.Student;
-import org.server.remoteclass.entity.User;
 
 
 @Getter
@@ -11,6 +9,8 @@ import org.server.remoteclass.entity.User;
 @Builder
 @AllArgsConstructor @NoArgsConstructor
 public class StudentDto {
+
+    //수강생 조회시 사용하는 dto
     private Long studentId;
     private Long lectureId;
     private Long userId;

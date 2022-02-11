@@ -2,9 +2,7 @@ package org.server.remoteclass.service;
 
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.UserRole;
-import org.server.remoteclass.dto.LectureDto;
-import org.server.remoteclass.dto.StudentDto;
-import org.server.remoteclass.dto.UserDto;
+import org.server.remoteclass.dto.*;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.Student;
 import org.server.remoteclass.entity.User;
@@ -45,15 +43,15 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     @Transactional
-    public StudentDto applyLecture(StudentDto studentDto) throws IdNotExistException, NameDuplicateException {
+    public StudentDto createStudent(RequestStudentDto requestStudentDto) throws IdNotExistException, NameDuplicateException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
-        Student student = modelMapper.map(studentDto, Student.class);
+        Student student = new Student();
         if(user.getUserRole() == UserRole.ROLE_STUDENT){
-            if(!studentRepository.existsByLecture_LectureIdAndUser_UserId(studentDto.getLectureId(), studentDto.getUserId())) {
+            if(!studentRepository.existsByLecture_LectureIdAndUser_UserId(requestStudentDto.getLectureId(), user.getUserId())) {
                 student.setUser(user);
-                student.setLecture(lectureRepository.findById(studentDto.getLectureId()).orElse(null));
+                student.setLecture(lectureRepository.findById(requestStudentDto.getLectureId()).orElse(null));
             }
             else{
                 throw new NameDuplicateException("이미 존재하는 데이터입니다.", ResultCode.NAME_DUPLICATION);
@@ -75,7 +73,7 @@ public class StudentServiceImpl implements StudentService{
 
     //강좌별 전체 수강생 목록
     @Override
-    public List<UserDto> getStudentsByLectureId(Long lectureId) throws IdNotExistException, ForbiddenException {
+    public List<ResponseStudentByLecturerDto> getStudentsByLectureId(Long lectureId) throws IdNotExistException, ForbiddenException {
 
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
@@ -89,13 +87,13 @@ public class StudentServiceImpl implements StudentService{
         else{
             throw new ForbiddenException("접근 권한이 없습니다", ResultCode.FORBIDDEN);
         }
-        return students.stream().map(student-> UserDto.from(student)).collect(Collectors.toList());
+        return students.stream().map(student-> ResponseStudentByLecturerDto.from(student)).collect(Collectors.toList());
     }
 
 
     //현재 수강생의 수강 강좌 리스트 조회
     @Override
-    public List<LectureDto> getLecturesByUserId() throws IdNotExistException, ForbiddenException {
+    public List<ResponseLectureDto> getLecturesByUserId() throws IdNotExistException, ForbiddenException {
 
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
@@ -108,7 +106,7 @@ public class StudentServiceImpl implements StudentService{
         else{
             throw new ForbiddenException("접근 권한이 없습니다.", ResultCode.FORBIDDEN);
         }
-        return students.stream().map(lecture->LectureDto.from(lecture)).collect(Collectors.toList());
+        return students.stream().map(lecture->ResponseLectureDto.from(lecture)).collect(Collectors.toList());
     }
 
 }
