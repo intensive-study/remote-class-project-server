@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.server.remoteclass.dto.LoginDto;
+import org.server.remoteclass.dto.RequestUserDto;
 import org.server.remoteclass.dto.TokenRequestDto;
 import org.server.remoteclass.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +43,8 @@ public class AuthServiceTest {
     @Test
     @DisplayName("회원가입 : 정상적인 Post요청시, 서버에서 상태코드 201을 받는다.")
     public void 회원가입() throws Exception{
-        UserDto userDto = new UserDto();
-        userDto.setEmail("park12345@naver.com");
-        userDto.setName("박현우1234");
-        userDto.setPassword("helloworld");
-        String json = mapper.writeValueAsString(userDto);
+        RequestUserDto requestUserDto = new RequestUserDto("gusdn3477@naver.com", "박현우", "helloworld");
+        String json = mapper.writeValueAsString(requestUserDto);
 //        String json = mapper.writeValueAsString(new SubmittedUserSolutionDto(1L, 1L, "2", false));
         String URL = "/signup";
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post(URL).contentType(MediaType.APPLICATION_JSON).content(json);
@@ -56,11 +54,11 @@ public class AuthServiceTest {
     @Test
     @DisplayName("로그인 : 정상적인 Post요청시, 서버에서 상태코드 200을 받는다.")
     public void 로그인() throws Exception{
-        UserDto userDto = new UserDto();
-        userDto.setEmail("gusdn3477@naver.com");
-        userDto.setName("박현우");
-        userDto.setPassword("12345678");
-        authService.signup(userDto);
+        RequestUserDto requestUserDto = new RequestUserDto();
+        requestUserDto.setEmail("gusdn3477@naver.com");
+        requestUserDto.setName("박현우");
+        requestUserDto.setPassword("12345678");
+        authService.signup(requestUserDto);
         String json = mapper.writeValueAsString(new LoginDto("gusdn3477@naver.com", "12345678"));
         System.out.println(json);
         String URL = "/login";
@@ -79,11 +77,11 @@ public class AuthServiceTest {
     @Test
     @DisplayName("토큰 재발급 : 정상적인 Post요청시, 서버에서 상태코드 200을 받는다.")
     public void 토큰_재발급() throws Exception{
-        UserDto userDto = new UserDto();
-        userDto.setEmail("gusdn3477@naver.com");
-        userDto.setName("박현우");
-        userDto.setPassword("12345678");
-        authService.signup(userDto);
+        RequestUserDto requestUserDto = new RequestUserDto();
+        requestUserDto.setEmail("gusdn3477@naver.com");
+        requestUserDto.setName("박현우");
+        requestUserDto.setPassword("12345678");
+        authService.signup(requestUserDto);
         String json = mapper.writeValueAsString(new LoginDto("gusdn3477@naver.com", "12345678"));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login").contentType(MediaType.APPLICATION_JSON).content(json);
 
