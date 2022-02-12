@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@AllArgsConstructor
 public class RequestEventDto {
 
     private String title;
@@ -19,18 +20,4 @@ public class RequestEventDto {
 
     }
 
-    public RequestEventDto(String title, LocalDateTime startDate, LocalDateTime endDate){
-        this.title = title;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
-
-    public static RequestEventDto from(Event event){
-        if(event == null) return null;
-        return RequestEventDto.builder()
-                .title(event.getTitle())
-                .startDate(event.getEventStartDate())
-                .endDate(event.getEventEndDate())
-                .build();
-    }
 }
