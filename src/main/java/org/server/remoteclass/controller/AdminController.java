@@ -45,7 +45,7 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getUser(userId));
     }
 
-    // 곤리자가 전체 유저 조회
+    // 관리자가 전체 유저 조회
     @ApiOperation(value = "관리자가 모든 사용자 조회", notes = "모든 사용자의 상세한 정보를 알 수 있다.")
     @GetMapping("/users")
     public ResponseEntity<List<ResponseUserByAdminDto>> getAllUsers(){
