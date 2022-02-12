@@ -1,6 +1,6 @@
 package org.server.remoteclass.service;
 
-import org.server.remoteclass.dto.ResponseUserByAdminDto;
+import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
 
 import java.util.List;
 

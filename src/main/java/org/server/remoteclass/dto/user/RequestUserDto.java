@@ -1,4 +1,4 @@
-package org.server.remoteclass.dto;
+package org.server.remoteclass.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

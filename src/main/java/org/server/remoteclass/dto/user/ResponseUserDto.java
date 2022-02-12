@@ -1,4 +1,4 @@
-package org.server.remoteclass.dto;
+package org.server.remoteclass.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.server.remoteclass.constant.UserRole;
 import org.server.remoteclass.entity.User;
-
-import java.time.LocalDateTime;
 
 @Getter @Setter
 @Builder
