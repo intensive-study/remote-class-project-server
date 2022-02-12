@@ -1,6 +1,6 @@
 package org.server.remoteclass.controller;
 
-import org.server.remoteclass.dto.LectureDto;
+import org.server.remoteclass.dto.lecture.LectureDto;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.LectureService;

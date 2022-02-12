@@ -2,9 +2,8 @@ package org.server.remoteclass.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.server.remoteclass.dto.ResponseUserByAdminDto;
-import org.server.remoteclass.dto.ResponseUserDto;
-import org.server.remoteclass.dto.UserDto;
+import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
+import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.jpa.UserRepository;
 import org.server.remoteclass.util.BeanConfiguration;

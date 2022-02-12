@@ -1,4 +1,4 @@
-package org.server.remoteclass.dto;
+package org.server.remoteclass.dto.coupon;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.server.remoteclass.entity.IssuedCoupon;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

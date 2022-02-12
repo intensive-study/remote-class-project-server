@@ -1,9 +1,7 @@
 package org.server.remoteclass.controller;
 
-import org.server.remoteclass.dto.LectureDto;
-import org.server.remoteclass.dto.OrderDto;
-import org.server.remoteclass.dto.OrderFormDto;
-import org.server.remoteclass.dto.OrderLectureDto;
+import org.server.remoteclass.dto.order.OrderDto;
+import org.server.remoteclass.dto.order.OrderFormDto;
 import org.server.remoteclass.entity.OrderLecture;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.OrderService;

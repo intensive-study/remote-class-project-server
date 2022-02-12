@@ -1,16 +1,17 @@
 package org.server.remoteclass.controller;
 
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.server.remoteclass.dto.*;
+import org.server.remoteclass.dto.auth.LoginDto;
+import org.server.remoteclass.dto.auth.TokenDto;
+import org.server.remoteclass.dto.auth.TokenRequestDto;
+import org.server.remoteclass.dto.user.RequestUserDto;
+import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.service.AuthService;
-import org.server.remoteclass.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;

@@ -2,7 +2,7 @@ package org.server.remoteclass.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.server.remoteclass.dto.*;
+import org.server.remoteclass.dto.coupon.IssuedCouponDto;
 import org.server.remoteclass.entity.Coupon;
 import org.server.remoteclass.entity.IssuedCoupon;
 import org.server.remoteclass.entity.User;
