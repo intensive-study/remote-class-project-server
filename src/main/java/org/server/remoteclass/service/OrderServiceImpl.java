@@ -1,5 +1,6 @@
 package org.server.remoteclass.service;
 
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.Authority;
 import org.server.remoteclass.constant.OrderStatus;
@@ -49,9 +50,9 @@ public class OrderServiceImpl implements OrderService{
         this.modelMapper = beanConfiguration.modelMapper();
     }
 
-    //주문 신청
+    @ApiOperation("주문 신청")
     @Override
-    public Long order(OrderDto orderDto)throws IdNotExistException{
+    public Long createOrder(OrderDto orderDto) throws IdNotExistException{
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
@@ -59,9 +60,17 @@ public class OrderServiceImpl implements OrderService{
                 .orElseThrow(EntityNotFoundException::new);
 
         List<OrderLecture> orderLectureList = new ArrayList<>();
-        OrderLecture orderLecture = OrderLecture.createOrderLecture(lecture);
+//        OrderLecture orderLecture = OrderLecture.createOrderLecture(lecture);
+        OrderLecture orderLecture = new OrderLecture();
+        orderLecture.setLecture(lecture);
         orderLectureList.add(orderLecture);
-        Order order = Order.createOrder(user, orderLectureList);
+
+//        Order order = Order.createOrder(user, orderLectureList);
+        Order order = new Order();
+        order.setUser(user);
+        order.setOrderLectures(orderLectureList);
+        order.setOrderStatus(OrderStatus.PENDING);
+        order.setOrderDate(LocalDateTime.now());
         order.setPayment(orderDto.getPayment());
         if(orderDto.getPayment() == Payment.BANK_ACCOUNT){
             order.setBank(orderDto.getBank());
@@ -79,34 +88,53 @@ public class OrderServiceImpl implements OrderService{
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(EntityNotFoundException::new);
+        Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
         if(user.getUserId() != order.getUser().getUserId()){
             throw new ForbiddenException("취소 권한이 없습니다", ResultCode.FORBIDDEN);
         }
-        order.cancelOrder();
-    }
-
-    public Long orders(List<OrderDto> orderDtoList) throws IdNotExistException {
-
-        User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
-
-        List<OrderLecture> orderLectureList = new ArrayList<>();
-
-        for (OrderDto orderDto : orderDtoList) {
-            Lecture lecture = lectureRepository.findById(orderDto.getLectureId())
-                    .orElseThrow(EntityNotFoundException::new);
-
-            OrderLecture orderLecture = OrderLecture.createOrderLecture(lecture);
-            orderLectureList.add(orderLecture);
+//        order.cancelOrder();
+        order.setOrderStatus(OrderStatus.CANCEL);
+        for(OrderLecture orderLecture : order.getOrderLectures()){
+            orderLecture.getLecture();
         }
-
-        Order order = Order.createOrder(user, orderLectureList);
-        orderRepository.save(order);
-
-        return order.getOrderId();
     }
+//    public Long createOrderList(List<OrderDto> orderDtoList) throws IdNotExistException {
+//
+//        User user = SecurityUtil.getCurrentUserEmail()
+//                .flatMap(userRepository::findByEmail)
+//                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+//
+//        List<OrderLecture> orderLectureList = new ArrayList<>();
+//
+//        for (OrderDto orderDto : orderDtoList) {
+//            Lecture lecture = lectureRepository.findById(orderDto.getLectureId())
+//                    .orElseThrow(EntityNotFoundException::new);
+//
+////            OrderLecture orderLecture = OrderLecture.createOrderLecture(lecture);
+//            OrderLecture orderLecture = new OrderLecture();
+//            orderLecture.setLecture(lecture);
+//
+//            orderLectureList.add(orderLecture);
+//        }
+//
+////        Order order = Order.createOrder(user, orderLectureList);
+//        Order order = new Order();
+//        order.setUser(user);
+//        for(OrderLecture orderLectureElem : orderLectureList){
+////            order.addOrderLecture(orderLectureElem);
+//            orderLectureList.add(orderLectureElem);
+//            orderLectureElem.setOrder(order);
+//        }
+//        order.setOrderStatus(OrderStatus.PENDING);
+//        order.setOrderDate(LocalDateTime.now());
+//        order.setPayment(orderDto.getPayment());
+//        if(orderDto.getPayment() == Payment.BANK_ACCOUNT){
+//            order.setBank(orderDto.getBank());
+//            order.setAccount(orderDto.getAccount());
+//        }
+//        orderRepository.save(order);
+//
+//        return order.getOrderId();
+//    }
 
 }
