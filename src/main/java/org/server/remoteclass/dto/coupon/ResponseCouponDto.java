@@ -1,9 +1,6 @@
 package org.server.remoteclass.dto.coupon;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.server.remoteclass.entity.Coupon;
 
 import java.time.LocalDateTime;
@@ -11,8 +8,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class CouponDto {
+public class ResponseCouponDto {
 
     private Long couponId;
     private String couponCode;
@@ -20,17 +18,9 @@ public class CouponDto {
     private int couponValidDays;
     private LocalDateTime createdDate;
 
-    public CouponDto(){
-
-    }
-
-    public CouponDto(int couponValidDays){
-        this.couponValidDays = couponValidDays;
-    }
-
-    public static CouponDto from(Coupon coupon){
+    public static ResponseCouponDto from(Coupon coupon){
         if(coupon == null) return null;
-        return CouponDto.builder()
+        return ResponseCouponDto.builder()
                 .couponId(coupon.getCouponId())
                 .couponCode(coupon.getCouponCode())
                 .couponValid(coupon.isCouponValid())

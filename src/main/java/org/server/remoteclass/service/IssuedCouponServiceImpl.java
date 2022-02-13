@@ -3,6 +3,8 @@ package org.server.remoteclass.service;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.coupon.IssuedCouponDto;
+import org.server.remoteclass.dto.coupon.RequestIssuedCouponDto;
+import org.server.remoteclass.dto.coupon.ResponseIssuedCouponDto;
 import org.server.remoteclass.entity.Coupon;
 import org.server.remoteclass.entity.IssuedCoupon;
 import org.server.remoteclass.entity.User;
@@ -43,27 +45,28 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
     // 테스트 필요
     @Override
     @Transactional
-    public IssuedCouponDto issueCoupon(IssuedCouponDto issuedCouponDto) throws IdNotExistException {
+    public void issueCoupon(RequestIssuedCouponDto requestIssuedCouponDto) throws IdNotExistException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
-        Coupon coupon = couponRepository.findByCouponCode(issuedCouponDto.getCouponCode())
+        Coupon coupon = couponRepository.findByCouponCode(requestIssuedCouponDto.getCouponCode())
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다.", ResultCode.ID_NOT_EXIST));
 
 //        IssuedCoupon check = couponRepository.findByCouponCode(issuedCouponDto.getCouponCode());
         //발급 쿠폰 중복 조회 필요
-       IssuedCoupon issuedCoupon = modelMapper.map(issuedCouponDto, IssuedCoupon.class);
+       IssuedCoupon issuedCoupon = modelMapper.map(requestIssuedCouponDto, IssuedCoupon.class);
         issuedCoupon.setCouponUsed(false);
         issuedCoupon.setCouponValidDate(LocalDateTime.now().plusDays(coupon.getCouponValidDays()));
         issuedCoupon.setUser(user);
         issuedCoupon.setCoupon(coupon);
         log.info("issued Coupon으로 couponId 확인 : " + issuedCoupon.getCoupon().getCouponId());
-        return IssuedCouponDto.from(issuedCouponRepository.save(issuedCoupon));
+        issuedCouponRepository.save(issuedCoupon);
+//        return IssuedCouponDto.from(issuedCouponRepository.save(issuedCoupon));
     }
 
     @Override
-    public List<IssuedCouponDto> getAllMyCoupons() throws IdNotExistException {
+    public List<ResponseIssuedCouponDto> getAllMyCoupons() throws IdNotExistException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
@@ -71,18 +74,18 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
         List<IssuedCoupon> issuedCouponList = issuedCouponRepository.findByUser(user.getUserId());
         return issuedCouponList.stream()
                 .map(issuedCoupon ->
-                        IssuedCouponDto.from(issuedCoupon)
+                        ResponseIssuedCouponDto.from(issuedCoupon)
 //                        modelMapper.map(issuedCoupon, IssuedCouponDto.class)
                 ).collect(Collectors.toList());
     }
 
     @Override
-    public IssuedCouponDto getMyCoupon(Long issuedCouponId) throws IdNotExistException {
+    public ResponseIssuedCouponDto getMyCoupon(Long issuedCouponId) throws IdNotExistException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
-        return IssuedCouponDto
+        return ResponseIssuedCouponDto
                 .from(issuedCouponRepository.findByUserAndIssuedCouponId(user.getUserId(), issuedCouponId).orElse(null));
     }
 }
