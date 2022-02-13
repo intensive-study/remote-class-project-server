@@ -84,7 +84,7 @@ public class CouponServiceTest {
         String accessToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
         TokenRequestDto tokenRequestDto = new TokenRequestDto();
         tokenRequestDto.setAccessToken(accessToken);
-        String json2 = mapper.writeValueAsString(new CouponDto(5, LocalDateTime.parse("2022-03-02T13:30:00")));
+        String json2 = mapper.writeValueAsString(new CouponDto(5));
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders.post("/coupons")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // "Bearer "를 붙여 줘야 함
                 .contentType(MediaType.APPLICATION_JSON)
@@ -110,7 +110,7 @@ public class CouponServiceTest {
         String accessToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
         TokenRequestDto tokenRequestDto = new TokenRequestDto();
         tokenRequestDto.setAccessToken(accessToken);
-        String json2 = mapper.writeValueAsString(new CouponDto(5, LocalDateTime.parse("2022-03-02T13:30:00")));
+        String json2 = mapper.writeValueAsString(new CouponDto(5));
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders.post("/coupons")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // "Bearer "를 붙여 줘야 함
                 .contentType(MediaType.APPLICATION_JSON)
@@ -145,7 +145,7 @@ public class CouponServiceTest {
         String accessToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
         TokenRequestDto tokenRequestDto = new TokenRequestDto();
         tokenRequestDto.setAccessToken(accessToken);
-        String json2 = mapper.writeValueAsString(new CouponDto(5, LocalDateTime.parse("2022-03-02T13:30:00")));
+        String json2 = mapper.writeValueAsString(new CouponDto(5));
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders.post("/coupons")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // "Bearer "를 붙여 줘야 함
                 .contentType(MediaType.APPLICATION_JSON)
