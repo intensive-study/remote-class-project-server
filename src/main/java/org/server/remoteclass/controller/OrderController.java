@@ -5,6 +5,7 @@ import org.server.remoteclass.dto.OrderDto;
 import org.server.remoteclass.dto.OrderFormDto;
 import org.server.remoteclass.dto.OrderLectureDto;
 import org.server.remoteclass.entity.OrderLecture;
+import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,22 +29,24 @@ public class OrderController {
 
     //주문 신청
     @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody @Valid OrderFormDto orderFormDto,List<OrderLecture> orderLectures) throws IdNotExistException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(orderFormDto, orderLectures));
+    public ResponseEntity createOrder(@RequestBody @Valid OrderDto orderDto) throws IdNotExistException {
+        Long orderId= orderService.order(orderDto);
+        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
 
     //주문 취소
     @PutMapping("/{orderId}")
-    public ResponseEntity<OrderDto> createOrder(@PathVariable Long orderId) throws IdNotExistException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.cancelOrder(orderId));
+    public @ResponseBody ResponseEntity cancelOrder(@PathVariable("orderId") Long orderId) throws ForbiddenException, IdNotExistException {
+        orderService.cancelOrder(orderId);
+        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
 
 
-    //주문 목록 조회
-    @GetMapping("/list")
-    public ResponseEntity<List<OrderDto>> getMyOrder() throws IdNotExistException {
-        return ResponseEntity.ok(orderService.getOrdersByUserId());
-    }
+//    //주문 목록 조회
+//    @GetMapping("/list")
+//    public ResponseEntity<List<OrderDto>> getMyOrder() throws IdNotExistException {
+//        return ResponseEntity.ok(orderService.getOrdersByUserId());
+//    }
 
 
 }

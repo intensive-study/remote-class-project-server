@@ -10,6 +10,7 @@ import javax.persistence.*;
 public class OrderLecture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_lecture_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -19,4 +20,14 @@ public class OrderLecture {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
+
+    public static OrderLecture createOrderLecture(Lecture lecture){
+        OrderLecture orderLecture = new OrderLecture();
+        orderLecture.setLecture(lecture);
+        return orderLecture;
+    }
+
+    public void cancel() {
+        this.getLecture();
+    }
 }
