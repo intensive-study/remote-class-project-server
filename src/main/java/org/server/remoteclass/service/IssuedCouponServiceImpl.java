@@ -55,12 +55,15 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
 
 //        IssuedCoupon check = couponRepository.findByCouponCode(issuedCouponDto.getCouponCode());
         //발급 쿠폰 중복 조회 필요
-       IssuedCoupon issuedCoupon = modelMapper.map(requestIssuedCouponDto, IssuedCoupon.class);
+        IssuedCoupon issuedCoupon = modelMapper.map(requestIssuedCouponDto, IssuedCoupon.class);
         issuedCoupon.setCouponUsed(false);
         issuedCoupon.setCouponValidDate(LocalDateTime.now().plusDays(coupon.getCouponValidDays()));
         issuedCoupon.setUser(user);
         issuedCoupon.setCoupon(coupon);
         log.info("issued Coupon으로 couponId 확인 : " + issuedCoupon.getCoupon().getCouponId());
+        coupon.getIssuedCouponList().add(issuedCoupon);
+        couponRepository.save(coupon);
+        log.info("쿠폰 리스트 확인" + coupon.getIssuedCouponList());
         issuedCouponRepository.save(issuedCoupon);
 //        return IssuedCouponDto.from(issuedCouponRepository.save(issuedCoupon));
     }
@@ -75,7 +78,6 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
         return issuedCouponList.stream()
                 .map(issuedCoupon ->
                         ResponseIssuedCouponDto.from(issuedCoupon)
-//                        modelMapper.map(issuedCoupon, IssuedCouponDto.class)
                 ).collect(Collectors.toList());
     }
 
