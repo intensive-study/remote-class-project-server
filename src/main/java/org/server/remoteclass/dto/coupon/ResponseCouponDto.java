@@ -25,7 +25,7 @@ public class ResponseCouponDto {
                 .couponCode(coupon.getCouponCode())
                 .couponValid(coupon.isCouponValid())
                 .couponValidDays(coupon.getCouponValidDays())
-                .createdDate(coupon.getCratedDate())
+                .createdDate(coupon.getCreatedDate())
                 .build();
     }
 }

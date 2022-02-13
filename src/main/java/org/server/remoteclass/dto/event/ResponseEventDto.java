@@ -15,17 +15,18 @@ public class ResponseEventDto {
     private Long eventId;
     private Long couponId;
     private String title;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDateTime eventStartDate;
+    private LocalDateTime eventEndDate;
+    private LocalDateTime eventCreatedDate;
 
     public static ResponseEventDto from(Event event){
         if(event == null) return null;
         return ResponseEventDto.builder()
                 .eventId(event.getEventId())
-                .couponId(event.getCouponId())
+                .couponId(event.getCoupon().getCouponId())
                 .title(event.getTitle())
-                .startDate(event.getEventStartDate())
-                .endDate(event.getEventEndDate())
+                .eventStartDate(event.getEventStartDate())
+                .eventEndDate(event.getEventEndDate())
                 .build();
     }
 }

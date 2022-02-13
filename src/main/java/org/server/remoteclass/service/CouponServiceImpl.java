@@ -52,7 +52,7 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     @Transactional
-    public void createCoupon(RequestCouponDto requestCouponDto) {
+    public ResponseCouponDto createCoupon(RequestCouponDto requestCouponDto) {
         // 0 이하 값이 들어온 경우 예외처리 필요. 나중에 통일시키겠습니다.
         // 또한 mysql에는 Valid의 default값이 true로 잘 설정되는데, h2 테스트 시에만 false로 출력됩니다.
         // 그래서 일단 서비스 단에서 true로 초기화 하도록 하겠습니다.
@@ -60,7 +60,7 @@ public class CouponServiceImpl implements CouponService {
         coupon.setCouponCode(UUID.randomUUID().toString());
         coupon.setCouponValid(true);
         coupon.setCouponValidDays(requestCouponDto.getCouponValidDays());
-        couponRepository.save(coupon);
+        return ResponseCouponDto.from(couponRepository.save(coupon));
 //        return CouponDto.from(couponRepository.save(coupon));
     }
 

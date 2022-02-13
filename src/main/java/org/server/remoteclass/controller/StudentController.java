@@ -3,6 +3,10 @@ package org.server.remoteclass.controller;
 import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.*;
 
+import org.server.remoteclass.dto.lecture.ResponseLectureDto;
+import org.server.remoteclass.dto.student.RequestStudentDto;
+import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
+import org.server.remoteclass.dto.student.StudentDto;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.NameDuplicateException;

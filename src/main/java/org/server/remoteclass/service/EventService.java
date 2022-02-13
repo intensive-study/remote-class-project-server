@@ -4,7 +4,6 @@ import org.server.remoteclass.dto.event.RequestEventDto;
 import org.server.remoteclass.dto.event.ResponseEventDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface EventService {
 
@@ -15,7 +14,7 @@ public interface EventService {
     // 이벤트 생성
     void createEvent(RequestEventDto requestEventDto);
     // 이벤트 수정
-
+    void updateEvent(RequestEventDto requestEventDto);
     // 이벤트 삭제
-    void deleteEvent();
+    void deleteEvent(Long eventId);
 }

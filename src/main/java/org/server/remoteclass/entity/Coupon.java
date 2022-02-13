@@ -33,6 +33,6 @@ public class Coupon {
     // 쿠폰 생성일입니다.
     @Column(name = "coupon_created_date")
     @CreatedDate
-    private LocalDateTime cratedDate;
+    private LocalDateTime createdDate;
 
 }
