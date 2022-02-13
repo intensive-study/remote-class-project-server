@@ -1,7 +1,7 @@
 package org.server.remoteclass.service;
 
 import org.modelmapper.ModelMapper;
-import org.server.remoteclass.dto.CouponDto;
+import org.server.remoteclass.dto.coupon.CouponDto;
 import org.server.remoteclass.entity.Coupon;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 

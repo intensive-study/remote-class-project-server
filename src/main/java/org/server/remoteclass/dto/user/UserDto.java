@@ -1,20 +1,23 @@
-package org.server.remoteclass.dto;
+package org.server.remoteclass.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.server.remoteclass.constant.UserRole;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.server.remoteclass.dto.auth.AuthorityDto;
 import org.server.remoteclass.entity.User;
+import org.server.remoteclass.constant.UserRole;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
-public class ResponseUserByAdminDto {
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UserDto {
 
     private Long userId;
     private String email;
@@ -24,21 +27,16 @@ public class ResponseUserByAdminDto {
     private LocalDateTime registerDate;
     private Set<AuthorityDto> authorityDtoSet;
 
-    public ResponseUserByAdminDto(){
-
-    }
-
-    public ResponseUserByAdminDto(String email, String name, String password){
+    public UserDto(String email, String name, String password){
         this.email = email;
         this.name = name;
         this.password = password;
     }
 
-    // 관리자 혹은 본인이 조회 시 사용하는 함수
-    public static ResponseUserByAdminDto from(User user){
+    // 본인이 본인 정보 조회 or 관리자가 조회 시 사용할 함수
+    public static UserDto from(User user){
         if(user == null) return null;
-        return ResponseUserByAdminDto.builder()
-                .userId(user.getUserId())
+        return UserDto.builder()
                 .email(user.getEmail())
                 .name(user.getName())
                 .password(user.getPassword())
@@ -46,4 +44,5 @@ public class ResponseUserByAdminDto {
                 .userRole(user.getUserRole())
                 .build();
     }
+
 }

@@ -1,7 +1,7 @@
 package org.server.remoteclass.controller;
 
 import io.swagger.annotations.ApiOperation;
-import org.server.remoteclass.dto.IssuedCouponDto;
+import org.server.remoteclass.dto.coupon.IssuedCouponDto;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.IssuedCouponService;
 import org.springframework.http.HttpStatus;

@@ -2,7 +2,7 @@ package org.server.remoteclass.service;
 
 import org.modelmapper.ModelMapper;
 
-import org.server.remoteclass.dto.LectureDto;
+import org.server.remoteclass.dto.lecture.LectureDto;
 import org.server.remoteclass.entity.Category;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.User;

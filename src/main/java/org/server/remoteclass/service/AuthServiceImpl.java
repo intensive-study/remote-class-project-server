@@ -1,8 +1,12 @@
 package org.server.remoteclass.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.server.remoteclass.dto.*;
 import org.server.remoteclass.constant.Authority;
+import org.server.remoteclass.dto.auth.LoginDto;
+import org.server.remoteclass.dto.auth.TokenDto;
+import org.server.remoteclass.dto.auth.TokenRequestDto;
+import org.server.remoteclass.dto.user.RequestUserDto;
+import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.entity.RefreshToken;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.constant.UserRole;

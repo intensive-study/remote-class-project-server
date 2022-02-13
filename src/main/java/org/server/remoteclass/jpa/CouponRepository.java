@@ -1,6 +1,5 @@
 package org.server.remoteclass.jpa;
 
-import org.server.remoteclass.dto.CouponDto;
 import org.server.remoteclass.entity.Coupon;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,4 +1,4 @@
-package org.server.remoteclass.dto;
+package org.server.remoteclass.dto.coupon;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -25,8 +25,7 @@ docker compose up -d
 
 
 ### swagger 이용 방법
-=> [접속 URL](http://localhost:8080/swagger-ui.html)   
-
+#### ✔️ 사용전
 **‼️ Swagger 이용시 다른 팀원을 위해 최소한 이것만은 지키자! `@ApiOperation` ‼️**  
 각 `Rest Controller` 상단에 `@ApiOperation(HTTP 메소드 설명)` 을 추가합니다 :) 아래와 같이 명시해두면, swagger-ui에서 각 controller가 어떤 메소드인지 명확하게 알 수 있습니다.
 ```java
@@ -36,6 +35,21 @@ public List<UserDto> getUsers(){
         ...        
 }
 ```
+#### ✔️ 접속 방법
+[접속 URL](http://localhost:8080/swagger-ui.html)   
+
+#### ✔️ 헤더에 토큰 등록 방법
+
+1. swagger 접속 후, 오른쪽애 `Autorize`버튼을 클릭한다.
+<img width="1483" alt="swagger security1" src="https://user-images.githubusercontent.com/32871201/153701236-8441036f-a5a2-4e2e-bf3e-adac92e6f8ab.png">
+
+
+2. `Autorize`버튼 클릭 후, 보이는 팝업 창에 `Bearer ` prefix를 붙이고, 발급된 토큰을 이어 붙인다.
+<img width="1448" alt="swagger security2" src="https://user-images.githubusercontent.com/32871201/153701237-ba86146c-97a3-4c82-adb9-206255cb67c3.png">
+
+3. 결과적으로 아래 화면과 같이 헤더에 토큰이 실린채 요청이 보내지는 것을 볼 수 있다.  
+**해당 키를 필요로 하지 않는 request의 경우 해당 키값을 logout 처리 해주면 된다.**
+<img width="1422" alt="swagger security3" src="https://user-images.githubusercontent.com/32871201/153701364-6d679f9f-53f3-44aa-8bb6-12347ad9d44a.png">
 
 ### TokenProvider의 @Value 인식 에러 시
 1. 인텔리제이에서 File-Settings를 클릭합니다. (MAC의 경우 preference)
