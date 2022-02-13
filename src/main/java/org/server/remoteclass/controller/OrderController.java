@@ -1,9 +1,7 @@
 package org.server.remoteclass.controller;
 
-import org.server.remoteclass.dto.LectureDto;
-import org.server.remoteclass.dto.OrderDto;
-import org.server.remoteclass.dto.OrderFormDto;
-import org.server.remoteclass.dto.OrderLectureDto;
+import io.swagger.annotations.ApiOperation;
+import org.server.remoteclass.dto.*;
 import org.server.remoteclass.entity.OrderLecture;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
@@ -27,14 +25,15 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    //주문 신청
+
+    @ApiOperation("주문 신청")
     @PostMapping
     public ResponseEntity createOrder(@RequestBody @Valid OrderDto orderDto) throws IdNotExistException {
         Long orderId= orderService.createOrder(orderDto);
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
 
-    //주문 취소
+    @ApiOperation("주문 취소")
     @PutMapping("/{orderId}")
     public @ResponseBody ResponseEntity cancelOrder(@PathVariable("orderId") Long orderId) throws ForbiddenException, IdNotExistException {
         orderService.cancelOrder(orderId);
@@ -42,11 +41,11 @@ public class OrderController {
     }
 
 
-//    //주문 목록 조회
-//    @GetMapping("/list")
-//    public ResponseEntity<List<OrderDto>> getMyOrder() throws IdNotExistException {
-//        return ResponseEntity.ok(orderService.getOrdersByUserId());
-//    }
+    @ApiOperation("주문 목록 조회")
+    @GetMapping("/list")
+    public ResponseEntity<List<OrderHistoryDto>> getMyOrder() throws IdNotExistException {
+        return ResponseEntity.ok(orderService.getOrdersByUserId());
+    }
 
 
 }
