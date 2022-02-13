@@ -30,7 +30,7 @@ public class OrderController {
     //주문 신청
     @PostMapping
     public ResponseEntity createOrder(@RequestBody @Valid OrderDto orderDto) throws IdNotExistException {
-        Long orderId= orderService.order(orderDto);
+        Long orderId= orderService.createOrder(orderDto);
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
 

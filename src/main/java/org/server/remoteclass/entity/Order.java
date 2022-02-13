@@ -45,37 +45,4 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private Payment payment; //결제방법
 
-    public void addOrderLecture(OrderLecture orderLecture) {
-        orderLectures.add(orderLecture);
-        orderLecture.setOrder(this);
-    }
-
-    public static Order createOrder(User user, List<OrderLecture> orderLectureList) {
-        Order order = new Order();
-        order.setUser(user);
-
-        for(OrderLecture orderLecture : orderLectureList) {
-            order.addOrderLecture(orderLecture);
-        }
-
-        order.setOrderStatus(OrderStatus.PENDING);
-        order.setOrderDate(LocalDateTime.now());
-
-        return order;
-    }
-
-    public int getTotalPrice() {
-        int totalPrice = 0;
-        for(OrderLecture orderLecture : orderLectures){
-            totalPrice += orderLecture.getLecture().getPrice();
-        }
-        return totalPrice;
-    }
-
-    public void cancelOrder() {
-        this.orderStatus = OrderStatus.CANCEL;
-        for (OrderLecture orderLecture : orderLectures) {
-            orderLecture.cancel();
-        }
-    }
 }

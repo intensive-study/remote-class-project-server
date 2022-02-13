@@ -21,13 +21,4 @@ public class OrderLecture {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    public static OrderLecture createOrderLecture(Lecture lecture){
-        OrderLecture orderLecture = new OrderLecture();
-        orderLecture.setLecture(lecture);
-        return orderLecture;
-    }
-
-    public void cancel() {
-        this.getLecture();
-    }
 }

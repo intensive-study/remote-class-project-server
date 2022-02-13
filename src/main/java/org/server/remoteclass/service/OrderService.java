@@ -11,8 +11,9 @@ import java.util.List;
 
 public interface OrderService {
 
-    Long order(OrderDto orderDto)throws IdNotExistException;
+    Long createOrder(OrderDto orderDto)throws IdNotExistException;
     void cancelOrder(Long orderId) throws IdNotExistException, ForbiddenException;
+//    Long createOrderList(List<OrderDto> orderDtoList) throws IdNotExistException;
 //    OrderDto createOrder(OrderFormDto orderFormDto,List<OrderLecture> orderLectures) throws IdNotExistException;
 //    //주문 취소
 //    OrderDto cancelOrder(Long orderID) throws IdNotExistException;

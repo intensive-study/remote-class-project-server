@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderHistDto {
+public class OrderHistoryDto {
 
 
     private Long orderId;
@@ -26,7 +26,7 @@ public class OrderHistDto {
         orderLectureDtoList.add(orderLectureDto);    }
 
 
-    public OrderHistDto(Order order){
+    public OrderHistoryDto(Order order){
         this.orderId = order.getOrderId();
         this.userId = order.getUser().getUserId();
         this.orderStatus = order.getOrderStatus();
