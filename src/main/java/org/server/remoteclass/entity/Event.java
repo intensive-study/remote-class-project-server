@@ -15,7 +15,6 @@ public class Event {
     @Column(name = "event_id")
     private Long eventId;
 
-    private Long couponId;
     private LocalDateTime eventStartDate;
     private LocalDateTime eventEndDate;
     private String title;
