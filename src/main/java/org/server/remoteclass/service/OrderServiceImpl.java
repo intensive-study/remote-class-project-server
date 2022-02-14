@@ -6,10 +6,7 @@ import org.server.remoteclass.constant.Authority;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
 import org.server.remoteclass.dto.*;
-import org.server.remoteclass.entity.Lecture;
-import org.server.remoteclass.entity.Order;
-import org.server.remoteclass.entity.OrderLecture;
-import org.server.remoteclass.entity.User;
+import org.server.remoteclass.entity.*;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
@@ -17,11 +14,9 @@ import org.server.remoteclass.jpa.*;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService{
 
     private final UserRepository userRepository;
@@ -49,37 +44,38 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Long createOrder(OrderDto orderDto) throws IdNotExistException{
+    @Transactional
+    public Long createOrder(RequestOrderDto requestOrderDto) throws IdNotExistException{
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
-        Lecture lecture = lectureRepository.findById(orderDto.getLectureId())
-                .orElseThrow(EntityNotFoundException::new);
-
-        List<OrderLecture> orderLectureList = new ArrayList<>();
-//        OrderLecture orderLecture = OrderLecture.createOrderLecture(lecture);
-        OrderLecture orderLecture = new OrderLecture();
-        orderLecture.setLecture(lecture);
-        orderLectureList.add(orderLecture);
-
-//        Order order = Order.createOrder(user, orderLectureList);
-        Order order = new Order();
+        Order order = modelMapper.map(requestOrderDto, Order.class);
         order.setUser(user);
-        order.setOrderLectures(orderLectureList);
+        order.setOrderLectures(requestOrderDto.getOrderLectures().stream()
+                .map(responseOrderLectureDto -> new OrderLecture())
+                .collect(Collectors.toList()));
         order.setOrderStatus(OrderStatus.PENDING);
         order.setOrderDate(LocalDateTime.now());
-        order.setPayment(orderDto.getPayment());
-        if(orderDto.getPayment() == Payment.BANK_ACCOUNT){
-            order.setBank(orderDto.getBank());
-            order.setAccount(orderDto.getAccount());
+        order.setPayment(requestOrderDto.getPayment());
+        if(requestOrderDto.getPayment() == Payment.BANK_ACCOUNT){
+            order.setBank(requestOrderDto.getBank());
+            order.setAccount(requestOrderDto.getAccount());
         }
         orderRepository.save(order);
 
+        List<OrderLecture> orderLectures = order.getOrderLectures();
+        for(OrderLecture orderLectureElem: orderLectures){
+            OrderLecture orderLecture = modelMapper.map(orderLectures, OrderLecture.class);
+            orderLecture.setOrder(order);
+            orderLecture.setLecture(orderLectureElem.getLecture());
+            orderLectureRepository.save(orderLecture);
+        }
         return order.getOrderId();
     }
 
-    //주문 취소
+//    주문 취소
     @Override
+    @Transactional
     public void cancelOrder(Long orderId) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
@@ -89,69 +85,70 @@ public class OrderServiceImpl implements OrderService{
         if(user.getUserId() != order.getUser().getUserId()){
             throw new ForbiddenException("취소 권한이 없습니다", ResultCode.FORBIDDEN);
         }
-//        order.cancelOrder();
         order.setOrderStatus(OrderStatus.CANCEL);
         for(OrderLecture orderLecture : order.getOrderLectures()){
             orderLecture.getLecture();
         }
     }
-    public Long createOrderList(List<OrderDto> orderDtoList, OrderDto orderDto) throws IdNotExistException {
 
+    //사용자 본인것만 조회
+    @Override
+    public List<ResponseOrderDto> getMyOrdersByUserId() throws IdNotExistException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
-        List<OrderLecture> orderLectureList = new ArrayList<>();
-
-        for (OrderDto orderDtoElem : orderDtoList) {
-            Lecture lecture = lectureRepository.findById(orderDtoElem.getLectureId())
-                    .orElseThrow(EntityNotFoundException::new);
-
-//            OrderLecture orderLecture = OrderLecture.createOrderLecture(lecture);
-            OrderLecture orderLecture = new OrderLecture();
-            orderLecture.setLecture(lecture);
-
-            orderLectureList.add(orderLecture);
-        }
-
-//        Order order = Order.createOrder(user, orderLectureList);
-        Order order = new Order();
-        order.setUser(user);
-        for(OrderLecture orderLectureElem : orderLectureList){
-//            order.addOrderLecture(orderLectureElem);
-            orderLectureList.add(orderLectureElem);
-            orderLectureElem.setOrder(order);
-        }
-        order.setOrderStatus(OrderStatus.PENDING);
-        order.setOrderDate(LocalDateTime.now());
-        order.setPayment(orderDto.getPayment());
-        if(orderDto.getPayment() == Payment.BANK_ACCOUNT){
-            order.setBank(orderDto.getBank());
-            order.setAccount(orderDto.getAccount());
-        }
-        orderRepository.save(order);
-
-        return order.getOrderId();
+        List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(user.getUserId());
+        return orders.stream().map(order -> modelMapper.map(order, ResponseOrderDto.class)).collect(Collectors.toList());
     }
 
+    //관리자 전체 조회
     @Override
-    @Transactional(readOnly = true)
-    public List<OrderHistoryDto> getOrdersByUserId() throws IdNotExistException{
+    public List<ResponseOrderDto> getAllOrdersByAdmin() throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
-        List<Order> orders;
-        //관리자 권한일때는 모든 주문내역을 조회 가능
-        if(user.getAuthority() == Authority.ROLE_ADMIN){
-            orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC, "orderDate"));
-        }
-        // 사용자 권한일때는 현재 회원의 주문내역을 조회 가능
-        else{
-            orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(user.getUserId());
-        }
+//        if(user.getAuthority() == Authority.ROLE_ADMIN){
+            List<Order> orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC, "orderDate"));
+            return orders.stream().map(order -> modelMapper.map(order, ResponseOrderDto.class)).collect(Collectors.toList());
+//        }
+//        else{
+//            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
+//        }
 
-        return orders.stream().map(order -> modelMapper.map(order, OrderHistoryDto.class)).collect(Collectors.toList());
+    }
 
+    //관리자가 사용자별로 조회
+    @Override
+    public List<ResponseOrderDto> getOrderByUserIdByAdmin(Long userId) throws IdNotExistException, ForbiddenException {
+        User user = SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
+//        if(user.getAuthority() == Authority.ROLE_ADMIN){
+            List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(userId);
+            return orders.stream().map(order -> modelMapper.map(order, ResponseOrderDto.class)).collect(Collectors.toList());
+//        }
+//        else{
+//            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
+//        }
+    }
+
+    //관리자가 사용자별로 조회
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseOrderDto getOrderByOrderIdByAdmin(Long orderId) throws IdNotExistException, ForbiddenException {
+        User user = SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+
+//        if(user.getAuthority() == Authority.ROLE_ADMIN){
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+            return ResponseOrderDto.from(order);
+//        }
+//        else{
+//            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
+//        }
     }
 }

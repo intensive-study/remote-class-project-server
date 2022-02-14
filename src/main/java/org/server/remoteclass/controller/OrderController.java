@@ -28,23 +28,39 @@ public class OrderController {
 
     @ApiOperation("주문 신청")
     @PostMapping
-    public ResponseEntity createOrder(@RequestBody @Valid OrderDto orderDto) throws IdNotExistException {
-        Long orderId= orderService.createOrder(orderDto);
-        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+    public ResponseEntity createOrder(@RequestBody RequestOrderDto requestOrderDto) throws IdNotExistException {
+        orderService.createOrder(requestOrderDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @ApiOperation("주문 취소")
     @PutMapping("/{orderId}")
-    public @ResponseBody ResponseEntity cancelOrder(@PathVariable("orderId") Long orderId) throws ForbiddenException, IdNotExistException {
+    public ResponseEntity cancelOrder(@PathVariable("orderId") @Valid Long orderId) throws ForbiddenException, IdNotExistException {
         orderService.cancelOrder(orderId);
-        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @ApiOperation("사용자 본인 주문 목록 조회")
+    @GetMapping("/myList")
+    public ResponseEntity<List<ResponseOrderDto>> getMyOrder() throws IdNotExistException {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getMyOrdersByUserId());
+    }
+    @ApiOperation("관리자의 주문 전체 목록 조회")
+    @GetMapping("/admin/list")
+    public ResponseEntity<List<ResponseOrderDto>> getAllByAdmin() throws IdNotExistException, ForbiddenException {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrdersByAdmin());
+    }
 
-    @ApiOperation("주문 목록 조회")
-    @GetMapping("/list")
-    public ResponseEntity<List<OrderHistoryDto>> getMyOrder() throws IdNotExistException {
-        return ResponseEntity.ok(orderService.getOrdersByUserId());
+    @ApiOperation("관리자의 사용자별 목록 조회")
+    @GetMapping("/admin/user/{userId}")
+    public ResponseEntity<List<ResponseOrderDto>> getByUserIdByAdmin(@PathVariable("userId") Long userId) throws IdNotExistException, ForbiddenException {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderByUserIdByAdmin(userId));
+    }
+
+    @ApiOperation("관리자의 특정 주문 목록 조회")
+    @GetMapping("/admin/order/{orderId}")
+    public ResponseEntity<ResponseOrderDto> getByOrderIdByAdmin(@PathVariable("orderId") Long orderId) throws IdNotExistException, ForbiddenException {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderByOrderIdByAdmin(orderId));
     }
 
 
