@@ -1,7 +1,9 @@
-package org.server.remoteclass.dto;
+package org.server.remoteclass.dto.order;
 
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
 import org.server.remoteclass.entity.Order;
@@ -11,12 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Builder
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
-public class ResponseOrderDto {
+@Getter
+@Setter
+public class ResponseOrderByAdminDto {
 
     private Long orderId;
-    private Long userId;
+    private Long userId;       //주문하는 회원
     private List<ResponseOrderLectureDto> orderLectures = new ArrayList<>();
     private OrderStatus orderStatus; //주문상태
     private Payment payment; //결제방법
@@ -24,11 +26,11 @@ public class ResponseOrderDto {
     private String account;  //예금주
     private Long couponId;       //적용하는 쿠폰 아이디
 
-    public static ResponseOrderDto from(Order order){
+    public static ResponseOrderByAdminDto from(Order order){
         if(order == null) return null;
-        return ResponseOrderDto.builder()
-                .userId(order.getUser().getUserId())
+        return ResponseOrderByAdminDto.builder()
                 .orderId(order.getOrderId())
+                .userId(order.getUser().getUserId())
                 .orderLectures(order.getOrderLectures().stream()
                         .map(ResponseOrderLectureDto::new)
                         .collect(Collectors.toList())
