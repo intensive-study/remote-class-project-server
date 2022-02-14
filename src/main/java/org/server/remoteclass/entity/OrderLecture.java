@@ -10,8 +10,7 @@ import javax.persistence.*;
 public class OrderLecture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_lecture_id")
-    private Long id;
+    private Long orderLectureId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id")
