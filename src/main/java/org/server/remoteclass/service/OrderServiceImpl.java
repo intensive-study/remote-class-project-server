@@ -49,6 +49,11 @@ public class OrderServiceImpl implements OrderService{
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+        // 먼저, orderlecture는 주문번호는 같되, 강의번호가 다른 경우라
+        // 주문 번호를 알아야 함과 동시에 해당 order의 객체를 꺼내야 됨. -> 여기에 강의들을 넣어줘야 하기 때문에.
+        // 반환된 주문 번호로 findBy문 해서 객체 꺼내고,
+        // order save => 아이디를 알아낸 후에, 리스트를 순회하며 OrderLecture를 만들며 add와 동시에 save saveAll()
+        // 마지막에는 order 에 대해 save.
         List<OrderLecture> orderLectureList = new ArrayList<>();
         for(OrderLecture orderLecture : orderLectures) {
             orderLectureList.add(orderLecture);

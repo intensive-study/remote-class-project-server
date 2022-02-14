@@ -36,7 +36,8 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public List<ResponseCouponDto> getAllCoupons() {
         List<Coupon> coupons = couponRepository.findAll();
-        return coupons.stream().map(coupon -> modelMapper.map(coupon, ResponseCouponDto.class)).collect(Collectors.toList());
+        return coupons.stream().map(
+                coupon -> ResponseCouponDto.from(coupon)).collect(Collectors.toList());
     }
 
     @Override

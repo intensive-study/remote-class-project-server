@@ -1,6 +1,7 @@
 package org.server.remoteclass.dto.coupon;
 
 import lombok.*;
+import org.server.remoteclass.dto.issuedcoupon.ResponseIssuedCouponDto;
 import org.server.remoteclass.entity.Coupon;
 
 import java.time.LocalDateTime;
@@ -32,7 +33,11 @@ public class ResponseCouponDto {
                 .createdDate(coupon.getCreatedDate())
                 .issuedCouponList(coupon.getIssuedCouponList().stream()
                         .map(issuedCoupon ->
-                                ResponseIssuedCouponDto.from(issuedCoupon)
+                                        new ResponseIssuedCouponDto(
+                                                issuedCoupon.getIssuedCouponId(),
+                                                issuedCoupon.isCouponUsed(),
+                                                issuedCoupon.getCoupon().getCouponCode(),
+                                                issuedCoupon.getCouponValidDate())
                         ).collect(Collectors.toList()))
                 .build();
     }
