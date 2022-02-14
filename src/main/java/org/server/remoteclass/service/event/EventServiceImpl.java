@@ -1,4 +1,4 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -9,6 +9,7 @@ import org.server.remoteclass.dto.event.ResponseEventDto;
 import org.server.remoteclass.entity.Coupon;
 import org.server.remoteclass.entity.Event;
 import org.server.remoteclass.jpa.EventRepository;
+import org.server.remoteclass.service.coupon.CouponService;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -4,7 +4,7 @@ import org.server.remoteclass.dto.order.OrderDto;
 import org.server.remoteclass.dto.order.OrderFormDto;
 import org.server.remoteclass.entity.OrderLecture;
 import org.server.remoteclass.exception.IdNotExistException;
-import org.server.remoteclass.service.OrderService;
+import org.server.remoteclass.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

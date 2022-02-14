@@ -1,7 +1,6 @@
 package org.server.remoteclass.controller;
 
 import io.swagger.annotations.ApiOperation;
-import org.server.remoteclass.dto.*;
 
 import org.server.remoteclass.dto.lecture.ResponseLectureDto;
 import org.server.remoteclass.dto.student.RequestStudentDto;
@@ -10,7 +9,7 @@ import org.server.remoteclass.dto.student.StudentDto;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.NameDuplicateException;
-import org.server.remoteclass.service.StudentService;
+import org.server.remoteclass.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.user;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
 import org.server.remoteclass.dto.user.ResponseUserDto;
 

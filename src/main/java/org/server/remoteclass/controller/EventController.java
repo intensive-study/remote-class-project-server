@@ -3,7 +3,7 @@ package org.server.remoteclass.controller;
 import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.event.RequestEventDto;
 import org.server.remoteclass.dto.event.ResponseEventDto;
-import org.server.remoteclass.service.EventService;
+import org.server.remoteclass.service.event.EventService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

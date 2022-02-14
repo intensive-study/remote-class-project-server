@@ -1,4 +1,4 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.auth;
 
 import org.server.remoteclass.dto.auth.LoginDto;
 import org.server.remoteclass.dto.auth.TokenDto;

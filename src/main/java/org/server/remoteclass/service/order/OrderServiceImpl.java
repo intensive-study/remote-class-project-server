@@ -1,4 +1,4 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.order;
 
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.Authority;

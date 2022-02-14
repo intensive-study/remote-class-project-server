@@ -1,7 +1,6 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.coupon;
 
 import org.modelmapper.ModelMapper;
-import org.server.remoteclass.dto.coupon.CouponDto;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.entity.Coupon;

@@ -4,7 +4,7 @@ import org.server.remoteclass.jwt.JwtAccessDeniedHandler;
 import org.server.remoteclass.jwt.JwtAuthenticationEntryPoint;
 import org.server.remoteclass.jwt.JwtSecurityConfig;
 import org.server.remoteclass.jwt.TokenProvider;
-import org.server.remoteclass.service.UserService;
+import org.server.remoteclass.service.user.UserService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

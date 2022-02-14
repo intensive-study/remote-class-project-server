@@ -1,4 +1,4 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.coupon;
 
 import org.server.remoteclass.dto.coupon.CouponDto;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;

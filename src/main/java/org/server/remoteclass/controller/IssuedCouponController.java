@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.issuedcoupon.RequestIssuedCouponDto;
 import org.server.remoteclass.dto.issuedcoupon.ResponseIssuedCouponDto;
 import org.server.remoteclass.exception.IdNotExistException;
-import org.server.remoteclass.service.IssuedCouponService;
+import org.server.remoteclass.service.issuedCoupon.IssuedCouponService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.auth;
 
 import lombok.extern.slf4j.Slf4j;
 import org.server.remoteclass.constant.Authority;

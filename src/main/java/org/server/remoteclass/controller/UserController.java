@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
 import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.jpa.UserRepository;
-import org.server.remoteclass.service.UserService;
+import org.server.remoteclass.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

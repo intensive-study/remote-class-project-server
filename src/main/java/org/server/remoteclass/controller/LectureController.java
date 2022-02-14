@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.lecture.LectureDto;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
-import org.server.remoteclass.service.LectureService;
+import org.server.remoteclass.service.lecture.LectureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

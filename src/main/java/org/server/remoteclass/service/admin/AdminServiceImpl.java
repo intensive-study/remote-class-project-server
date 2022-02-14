@@ -1,4 +1,4 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.admin;
 
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;

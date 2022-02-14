@@ -1,4 +1,4 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.event;
 
 import org.server.remoteclass.dto.event.RequestEventDto;
 import org.server.remoteclass.dto.event.ResponseEventDto;
