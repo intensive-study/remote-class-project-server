@@ -5,10 +5,8 @@ import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.OrderStatus;
 
 import org.server.remoteclass.constant.Payment;
-import org.server.remoteclass.dto.order.RequestOrderDto;
-import org.server.remoteclass.dto.order.RequestOrderLectureDto;
-import org.server.remoteclass.dto.order.ResponseOrderDto;
-import org.server.remoteclass.dto.order.ResponseOrderLectureDto;
+import org.server.remoteclass.dto.coupon.ResponseIssuedCouponDto;
+import org.server.remoteclass.dto.order.*;
 import org.server.remoteclass.entity.*;
 import org.server.remoteclass.exception.ForbiddenException;
 
@@ -36,15 +34,18 @@ public class OrderServiceImpl implements OrderService{
     private final LectureRepository lectureRepository;
     private final OrderRepository orderRepository;
     private final OrderLectureRepository orderLectureRepository;
+    private final CouponRepository couponRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
     public OrderServiceImpl(UserRepository userRepository, LectureRepository lectureRepository,
-                              OrderRepository orderRepository, OrderLectureRepository orderLectureRepository,BeanConfiguration beanConfiguration){
+                              OrderRepository orderRepository, OrderLectureRepository orderLectureRepository,
+                            CouponRepository couponRepository, BeanConfiguration beanConfiguration){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.orderRepository = orderRepository;
         this.orderLectureRepository = orderLectureRepository;
+        this.couponRepository = couponRepository;
         this.modelMapper = beanConfiguration.modelMapper();
     }
 
@@ -63,6 +64,12 @@ public class OrderServiceImpl implements OrderService{
         if(requestOrderDto.getPayment() == Payment.BANK_ACCOUNT){
             order.setBank(requestOrderDto.getBank());
             order.setAccount(requestOrderDto.getAccount());
+        }
+        Coupon coupon = couponRepository.findByCouponId(requestOrderDto.getCouponId()).orElse(null);
+        log.info(String.valueOf(coupon.getCouponId()));
+        //유효한 쿠폰일 경우 insert
+        if(coupon.isCouponValid()){
+            order.setCoupon(coupon);
         }
         orderRepository.save(order);
 
@@ -98,23 +105,23 @@ public class OrderServiceImpl implements OrderService{
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
-
         List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(user.getUserId());
-        for(Order order: orders){
-            log.info(String.valueOf(order.getOrderId()));
-        }
-        return orders.stream().map(order -> modelMapper.map(order, ResponseOrderDto.class)).collect(Collectors.toList());
+//        for(Order order: orders){
+//            log.info("주문: " + order.getCoupon().getCouponId());
+//        }
+        return orders.stream().map(order -> ResponseOrderDto.from(order)).collect(Collectors.toList());
     }
 
     //관리자 전체 조회
     @Override
-    public List<ResponseOrderDto> getAllOrdersByAdmin() throws IdNotExistException, ForbiddenException {
+    public List<ResponseOrderByAdminDto> getAllOrdersByAdmin() throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 //        if(user.getAuthority() == Authority.ROLE_ADMIN){
-            List<Order> orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC, "orderDate"));
-            return orders.stream().map(order -> modelMapper.map(order, ResponseOrderDto.class)).collect(Collectors.toList());
+//            List<Order> orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC, "orderDate"));
+        List<Order> orders = orderRepository.findByOrderByOrderDateDesc();
+        return orders.stream().map(order -> ResponseOrderByAdminDto.from(order)).collect(Collectors.toList());
 //        }
 //        else{
 //            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
@@ -124,14 +131,14 @@ public class OrderServiceImpl implements OrderService{
 
     //관리자가 사용자별로 조회
     @Override
-    public List<ResponseOrderDto> getOrderByUserIdByAdmin(Long userId) throws IdNotExistException, ForbiddenException {
+    public List<ResponseOrderByAdminDto> getOrderByUserIdByAdmin(Long userId) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
 //        if(user.getAuthority() == Authority.ROLE_ADMIN){
-            List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(userId);
-            return orders.stream().map(order -> modelMapper.map(order, ResponseOrderDto.class)).collect(Collectors.toList());
+        List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(userId);
+        return orders.stream().map(order -> ResponseOrderByAdminDto.from(order)).collect(Collectors.toList());
 //        }
 //        else{
 //            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
@@ -141,15 +148,15 @@ public class OrderServiceImpl implements OrderService{
     //관리자가 사용자별로 조회
     @Override
     @Transactional(readOnly = true)
-    public ResponseOrderDto getOrderByOrderIdByAdmin(Long orderId) throws IdNotExistException, ForbiddenException {
+    public ResponseOrderByAdminDto getOrderByOrderIdByAdmin(Long orderId) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
 //        if(user.getAuthority() == Authority.ROLE_ADMIN){
             Order order = orderRepository.findById(orderId)
-                    .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
-            return ResponseOrderDto.from(order);
+                    .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ResultCode.ID_NOT_EXIST));
+            return ResponseOrderByAdminDto.from(order);
 //        }
 //        else{
 //            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);

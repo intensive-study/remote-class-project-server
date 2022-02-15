@@ -14,4 +14,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // 회원이 주문한 주문 목록 최신순으로
     List<Order> findByUser_UserIdOrderByOrderDateDesc(Long userId);
 
+    List<Order> findByOrderByOrderDateDesc();
+
 }

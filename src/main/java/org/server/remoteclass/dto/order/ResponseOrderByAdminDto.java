@@ -1,26 +1,26 @@
 package org.server.remoteclass.dto.order;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
 import org.server.remoteclass.entity.Order;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Builder
 @Getter
-@Setter
+@Setter @NoArgsConstructor @AllArgsConstructor
 public class ResponseOrderByAdminDto {
 
     private Long orderId;
     private Long userId;       //주문하는 회원
     private List<ResponseOrderLectureDto> orderLectures = new ArrayList<>();
     private OrderStatus orderStatus; //주문상태
+    private LocalDateTime orderDate;
     private Payment payment; //결제방법
     private String bank;  //입금은행
     private String account;  //예금주
@@ -36,10 +36,11 @@ public class ResponseOrderByAdminDto {
                         .collect(Collectors.toList())
                 )
                 .orderStatus(order.getOrderStatus())
+                .orderDate(order.getOrderDate())
                 .payment(order.getPayment())
                 .bank(order.getBank())
                 .account(order.getAccount())
-                .couponId(order.getCoupon().getCouponId())
+//                .couponId(order.getCoupon().getCouponId())
                 .build();
     }
 

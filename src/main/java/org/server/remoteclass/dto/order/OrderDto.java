@@ -1,5 +1,6 @@
 package org.server.remoteclass.dto.order;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @Builder
 @Getter
-@Setter
+@Setter @NoArgsConstructor @AllArgsConstructor
 public class OrderDto {
     private Long orderId;
 

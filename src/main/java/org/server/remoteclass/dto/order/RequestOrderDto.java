@@ -1,6 +1,7 @@
 package org.server.remoteclass.dto.order;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.server.remoteclass.constant.Payment;
 import org.server.remoteclass.entity.*;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
 @Getter
 @Setter @NoArgsConstructor @AllArgsConstructor
 public class RequestOrderDto {
+
+    //주문 신청할때 입력하는 dto
 
     private List<RequestOrderLectureDto> orderLectures = new ArrayList<>();
     private Payment payment; //결제방법
