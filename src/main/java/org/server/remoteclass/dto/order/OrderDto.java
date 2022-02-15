@@ -1,17 +1,10 @@
 package org.server.remoteclass.dto.order;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
-
-import org.server.remoteclass.entity.Coupon;
-import org.server.remoteclass.entity.Order;
 import org.server.remoteclass.entity.OrderLecture;
-import org.server.remoteclass.entity.User;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

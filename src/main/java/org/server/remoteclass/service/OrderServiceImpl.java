@@ -62,15 +62,14 @@ public class OrderServiceImpl implements OrderService{
             order.setBank(requestOrderDto.getBank());
             order.setAccount(requestOrderDto.getAccount());
         }
-        if(requestOrderDto.getCouponId() > 0){
-            Coupon coupon = couponRepository.findByCouponId(requestOrderDto.getCouponId()).orElse(null);
-            if(coupon.isCouponValid()) { //쿠폰이 유효하면
-                order.setCoupon(coupon);
-            }
-            else{
-                order.setCoupon(null);
-            }
-        }
+        log.info("couponId: " + requestOrderDto.getCouponId());
+        Coupon coupon = couponRepository.findByCouponId(requestOrderDto.getCouponId()).orElse(null);
+//        if(coupon.isCouponValid()) { //쿠폰이 유효하면
+        order.setCoupon(coupon);
+//        }
+//        else{
+//                order.setCoupon(null);
+//        }
         orderRepository.save(order);
 
         List<OrderLecture> orderLectureList = order.getOrderLectures();

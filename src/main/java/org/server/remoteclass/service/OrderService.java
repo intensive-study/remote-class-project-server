@@ -1,7 +1,5 @@
 package org.server.remoteclass.service;
 
-
-import org.server.remoteclass.dto.order.OrderDto;
 import org.server.remoteclass.dto.order.RequestOrderDto;
 import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;
 import org.server.remoteclass.dto.order.ResponseOrderDto;
@@ -19,4 +17,5 @@ public interface OrderService {
     List<ResponseOrderByAdminDto> getAllOrdersByAdmin() throws IdNotExistException, ForbiddenException;
     List<ResponseOrderByAdminDto> getOrderByUserIdByAdmin(Long userId) throws IdNotExistException, ForbiddenException;
     ResponseOrderByAdminDto getOrderByOrderIdByAdmin(Long orderId) throws IdNotExistException, ForbiddenException;
+
 }
