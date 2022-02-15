@@ -17,4 +17,7 @@ public class RequestOrderLectureDto {
 
     private Long lectureId;
 
+    public RequestOrderLectureDto(OrderLecture orderLecture) {
+        this.lectureId = orderLecture.getOrderLectureId();
+    }
 }

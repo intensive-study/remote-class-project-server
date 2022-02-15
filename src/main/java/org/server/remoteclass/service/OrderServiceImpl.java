@@ -1,11 +1,14 @@
 package org.server.remoteclass.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.OrderStatus;
 
 import org.server.remoteclass.constant.Payment;
 import org.server.remoteclass.dto.order.RequestOrderDto;
+import org.server.remoteclass.dto.order.RequestOrderLectureDto;
 import org.server.remoteclass.dto.order.ResponseOrderDto;
+import org.server.remoteclass.dto.order.ResponseOrderLectureDto;
 import org.server.remoteclass.entity.*;
 import org.server.remoteclass.exception.ForbiddenException;
 
@@ -21,8 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService{
@@ -49,11 +54,9 @@ public class OrderServiceImpl implements OrderService{
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
-        Order order = modelMapper.map(requestOrderDto, Order.class);
+        Order order = new Order();
         order.setUser(user);
-        order.setOrderLectures(requestOrderDto.getOrderLectures().stream()
-                .map(responseOrderLectureDto -> new OrderLecture())
-                .collect(Collectors.toList()));
+        order.setOrderDate(LocalDateTime.now());
         order.setOrderStatus(OrderStatus.PENDING);
         order.setOrderDate(LocalDateTime.now());
         order.setPayment(requestOrderDto.getPayment());
@@ -63,12 +66,13 @@ public class OrderServiceImpl implements OrderService{
         }
         orderRepository.save(order);
 
-        List<OrderLecture> orderLectures = order.getOrderLectures();
-        for(OrderLecture orderLectureElem: orderLectures){
-            OrderLecture orderLecture = modelMapper.map(orderLectures, OrderLecture.class);
+        List<OrderLecture> orderLectureList = order.getOrderLectures();
+        for(RequestOrderLectureDto requestOrderLectureDto : requestOrderDto.getOrderLectures()) {
+            OrderLecture orderLecture = new OrderLecture();
+            Lecture lecture = lectureRepository.findById(requestOrderLectureDto.getLectureId()).orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ResultCode.ID_NOT_EXIST));
+            orderLecture.setLecture(lecture);
             orderLecture.setOrder(order);
-            orderLecture.setLecture(orderLectureElem.getLecture());
-            orderLectureRepository.save(orderLecture);
+            orderLectureList.add(orderLectureRepository.save(orderLecture));
         }
         return order.getOrderId();
     }
@@ -86,9 +90,6 @@ public class OrderServiceImpl implements OrderService{
             throw new ForbiddenException("취소 권한이 없습니다", ResultCode.FORBIDDEN);
         }
         order.setOrderStatus(OrderStatus.CANCEL);
-        for(OrderLecture orderLecture : order.getOrderLectures()){
-            orderLecture.getLecture();
-        }
     }
 
     //사용자 본인것만 조회
@@ -99,6 +100,9 @@ public class OrderServiceImpl implements OrderService{
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
         List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(user.getUserId());
+        for(Order order: orders){
+            log.info(String.valueOf(order.getOrderId()));
+        }
         return orders.stream().map(order -> modelMapper.map(order, ResponseOrderDto.class)).collect(Collectors.toList());
     }
 
