@@ -1,24 +1,29 @@
 package org.server.remoteclass.dto.order;
 
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
+
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.Order;
 import org.server.remoteclass.entity.OrderLecture;
 
 
-@Getter @Setter
+@Getter @Setter @NoArgsConstructor  @AllArgsConstructor
+@Builder
 public class OrderLectureDto {
 
-    private Long id;
+    private Long orderLectureId;
     private Lecture lecture;
-//    private Order order;
+    private Order order;
 
-    public OrderLectureDto(){}
 
-    public OrderLectureDto(OrderLecture orderLecture){
-        this.id = orderLecture.getId();
-        this.lecture = orderLecture.getLecture();
-//        this.order = orderLecture.getOrder();
+    public static OrderLectureDto from(OrderLecture orderLecture){
+        if(orderLecture==null) return null;
+        return OrderLectureDto.builder()
+                .orderLectureId(orderLecture.getOrderLectureId())
+                .lecture(orderLecture.getLecture())
+                .order(orderLecture.getOrder())
+                .build();
+
     }
 }

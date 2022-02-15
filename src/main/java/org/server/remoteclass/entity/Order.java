@@ -34,9 +34,9 @@ public class Order {
     @Column(name="order_date", nullable = false)
     private LocalDateTime orderDate;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="coupon_id")
-//    private Coupon coupon;       //적용하는 쿠폰 아이디
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="coupon_id")
+    private Coupon coupon;       //적용하는 쿠폰 아이디
 
 
     private String bank;  //입금은행
@@ -44,4 +44,5 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private Payment payment; //결제방법
+
 }
