@@ -1,6 +1,5 @@
 package org.server.remoteclass.dto.order;
 
-
 import lombok.*;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
@@ -26,22 +25,21 @@ public class ResponseOrderByAdminDto {
     private String account;  //예금주
     private Long couponId;       //적용하는 쿠폰 아이디
 
-    public static ResponseOrderByAdminDto from(Order order){
-        if(order == null) return null;
-        return ResponseOrderByAdminDto.builder()
-                .orderId(order.getOrderId())
-                .userId(order.getUser().getUserId())
-                .orderLectures(order.getOrderLectures().stream()
-                        .map(ResponseOrderLectureDto::new)
-                        .collect(Collectors.toList())
-                )
-                .orderStatus(order.getOrderStatus())
-                .orderDate(order.getOrderDate())
-                .payment(order.getPayment())
-                .bank(order.getBank())
-                .account(order.getAccount())
-//                .couponId(order.getCoupon().getCouponId())
-                .build();
+    public ResponseOrderByAdminDto(Order order){
+        this.orderId = order.getOrderId();
+        this.userId = order.getUser().getUserId();
+        this.orderStatus = order.getOrderStatus();
+        this.orderLectures = order.getOrderLectures().stream().map(ResponseOrderLectureDto::new).collect(Collectors.toList());
+        this.orderDate = order.getOrderDate();
+        this.payment = order.getPayment();
+        this.bank = order.getBank();
+        this.account = order.getAccount();
+        if(order.getCoupon() == null || !order.getCoupon().isCouponValid()){
+            this.couponId = null;
+        }
+        else {
+            this.couponId = order.getCoupon().getCouponId();
+        }
     }
 
 }

@@ -1,10 +1,7 @@
 package org.server.remoteclass.dto.order;
 
 import lombok.*;
-import org.server.remoteclass.entity.Lecture;
-import org.server.remoteclass.entity.Order;
 import org.server.remoteclass.entity.OrderLecture;
-
 
 @Getter @Setter @NoArgsConstructor
 @Builder

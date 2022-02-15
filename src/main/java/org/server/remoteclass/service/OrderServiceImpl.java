@@ -5,7 +5,6 @@ import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.OrderStatus;
 
 import org.server.remoteclass.constant.Payment;
-import org.server.remoteclass.dto.coupon.ResponseIssuedCouponDto;
 import org.server.remoteclass.dto.order.*;
 import org.server.remoteclass.entity.*;
 import org.server.remoteclass.exception.ForbiddenException;
@@ -16,13 +15,11 @@ import org.server.remoteclass.jpa.*;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -65,11 +62,14 @@ public class OrderServiceImpl implements OrderService{
             order.setBank(requestOrderDto.getBank());
             order.setAccount(requestOrderDto.getAccount());
         }
-        Coupon coupon = couponRepository.findByCouponId(requestOrderDto.getCouponId()).orElse(null);
-        log.info(String.valueOf(coupon.getCouponId()));
-        //유효한 쿠폰일 경우 insert
-        if(coupon.isCouponValid()){
-            order.setCoupon(coupon);
+        if(requestOrderDto.getCouponId() > 0){
+            Coupon coupon = couponRepository.findByCouponId(requestOrderDto.getCouponId()).orElse(null);
+            if(coupon.isCouponValid()) { //쿠폰이 유효하면
+                order.setCoupon(coupon);
+            }
+            else{
+                order.setCoupon(null);
+            }
         }
         orderRepository.save(order);
 
@@ -106,10 +106,8 @@ public class OrderServiceImpl implements OrderService{
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
         List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(user.getUserId());
-//        for(Order order: orders){
-//            log.info("주문: " + order.getCoupon().getCouponId());
-//        }
-        return orders.stream().map(order -> ResponseOrderDto.from(order)).collect(Collectors.toList());
+
+        return orders.stream().map(order -> new ResponseOrderDto(order)).collect(Collectors.toList());
     }
 
     //관리자 전체 조회
@@ -119,9 +117,9 @@ public class OrderServiceImpl implements OrderService{
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 //        if(user.getAuthority() == Authority.ROLE_ADMIN){
-//            List<Order> orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC, "orderDate"));
         List<Order> orders = orderRepository.findByOrderByOrderDateDesc();
-        return orders.stream().map(order -> ResponseOrderByAdminDto.from(order)).collect(Collectors.toList());
+
+        return orders.stream().map(order -> new ResponseOrderByAdminDto(order)).collect(Collectors.toList());
 //        }
 //        else{
 //            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
@@ -138,7 +136,7 @@ public class OrderServiceImpl implements OrderService{
 
 //        if(user.getAuthority() == Authority.ROLE_ADMIN){
         List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(userId);
-        return orders.stream().map(order -> ResponseOrderByAdminDto.from(order)).collect(Collectors.toList());
+        return orders.stream().map(order -> new ResponseOrderByAdminDto(order)).collect(Collectors.toList());
 //        }
 //        else{
 //            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
@@ -156,7 +154,7 @@ public class OrderServiceImpl implements OrderService{
 //        if(user.getAuthority() == Authority.ROLE_ADMIN){
             Order order = orderRepository.findById(orderId)
                     .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ResultCode.ID_NOT_EXIST));
-            return ResponseOrderByAdminDto.from(order);
+            return new ResponseOrderByAdminDto(order);
 //        }
 //        else{
 //            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
