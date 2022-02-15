@@ -1,4 +1,4 @@
-package org.server.remoteclass.service.order;
+package org.server.remoteclass.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -12,7 +12,6 @@ import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
 import org.server.remoteclass.jpa.*;
-import org.server.remoteclass.service.order.OrderService;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @Transactional(readOnly = true)
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl implements OrderService{
 
     private final UserRepository userRepository;
     private final LectureRepository lectureRepository;

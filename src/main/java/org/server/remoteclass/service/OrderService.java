@@ -1,4 +1,4 @@
-package org.server.remoteclass.service.order;
+package org.server.remoteclass.service;
 
 import org.server.remoteclass.dto.order.RequestOrderDto;
 import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;

@@ -1,6 +1,8 @@
 package org.server.remoteclass.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
 
@@ -13,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-
+@DynamicInsert
 public class Order {
 
     @Id
@@ -34,14 +36,16 @@ public class Order {
     @Column(name="order_date", nullable = false)
     private LocalDateTime orderDate;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="coupon_id")
-//    private Coupon coupon;       //적용하는 쿠폰 아이디
-
-
-    private String bank;  //입금은행
-    private String account;  //예금주
-
     @Enumerated(EnumType.STRING)
     private Payment payment; //결제방법
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String bank;  //입금은행
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String account;  //예금주
+
+    @OneToOne
+    @JoinColumn(name = "coupon_id")
+    private Coupon coupon;       //적용하는 쿠폰 아이디
+
 }
