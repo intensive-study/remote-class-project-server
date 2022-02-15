@@ -1,4 +1,4 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.order;
 
 import org.server.remoteclass.dto.order.OrderDto;
 import org.server.remoteclass.dto.order.OrderFormDto;

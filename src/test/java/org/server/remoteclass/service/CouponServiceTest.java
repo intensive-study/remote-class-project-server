@@ -9,6 +9,8 @@ import org.server.remoteclass.dto.auth.LoginDto;
 import org.server.remoteclass.dto.coupon.CouponDto;
 import org.server.remoteclass.dto.auth.TokenRequestDto;
 import org.server.remoteclass.dto.user.RequestUserDto;
+import org.server.remoteclass.service.auth.AuthService;
+import org.server.remoteclass.service.coupon.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,8 +21,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-
-import java.time.LocalDateTime;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

@@ -7,6 +7,9 @@ import lombok.Setter;
 import org.server.remoteclass.entity.Coupon;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -35,7 +38,7 @@ public class CouponDto {
                 .couponCode(coupon.getCouponCode())
                 .couponValid(coupon.isCouponValid())
                 .couponValidDays(coupon.getCouponValidDays())
-                .createdDate(coupon.getCratedDate())
+                .createdDate(coupon.getCreatedDate())
                 .build();
     }
 }

@@ -1,9 +1,13 @@
 package org.server.remoteclass.dto.coupon;
 
 import lombok.*;
+import org.server.remoteclass.dto.issuedcoupon.ResponseIssuedCouponDto;
 import org.server.remoteclass.entity.Coupon;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -17,6 +21,7 @@ public class ResponseCouponDto {
     private boolean couponValid;
     private int couponValidDays;
     private LocalDateTime createdDate;
+    private List<ResponseIssuedCouponDto> issuedCouponList = new ArrayList<>();
 
     public static ResponseCouponDto from(Coupon coupon){
         if(coupon == null) return null;
@@ -25,7 +30,15 @@ public class ResponseCouponDto {
                 .couponCode(coupon.getCouponCode())
                 .couponValid(coupon.isCouponValid())
                 .couponValidDays(coupon.getCouponValidDays())
-                .createdDate(coupon.getCratedDate())
+                .createdDate(coupon.getCreatedDate())
+                .issuedCouponList(coupon.getIssuedCouponList().stream()
+                        .map(issuedCoupon ->
+                                        new ResponseIssuedCouponDto(
+                                                issuedCoupon.getIssuedCouponId(),
+                                                issuedCoupon.isCouponUsed(),
+                                                issuedCoupon.getCoupon().getCouponCode(),
+                                                issuedCoupon.getCouponValidDate())
+                        ).collect(Collectors.toList()))
                 .build();
     }
 }

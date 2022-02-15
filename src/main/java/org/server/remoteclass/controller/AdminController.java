@@ -2,8 +2,8 @@ package org.server.remoteclass.controller;
 
 import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
-import org.server.remoteclass.service.AdminService;
-import org.server.remoteclass.service.StudentService;
+import org.server.remoteclass.service.admin.AdminService;
+import org.server.remoteclass.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

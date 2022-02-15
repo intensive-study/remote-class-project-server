@@ -7,7 +7,7 @@ import org.server.remoteclass.dto.auth.TokenDto;
 import org.server.remoteclass.dto.auth.TokenRequestDto;
 import org.server.remoteclass.dto.user.RequestUserDto;
 import org.server.remoteclass.dto.user.ResponseUserDto;
-import org.server.remoteclass.service.AuthService;
+import org.server.remoteclass.service.auth.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

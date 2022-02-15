@@ -1,4 +1,4 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.coupon;
 
 import org.server.remoteclass.dto.coupon.CouponDto;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;
@@ -12,7 +12,7 @@ public interface CouponService {
     //일단 다 관리자 권한이라 가정하겠습니다.
     ResponseCouponDto getCouponByCouponId(Long couponId);
     //쿠폰 생성
-    void createCoupon(RequestCouponDto requestCouponDto);
+    ResponseCouponDto createCoupon(RequestCouponDto requestCouponDto);
     //쿠폰 비활성화
     void deactivateCoupon(Long couponId) throws IdNotExistException;
     //모든 쿠폰 조회

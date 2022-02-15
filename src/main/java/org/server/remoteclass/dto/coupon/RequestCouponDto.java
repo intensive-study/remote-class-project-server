@@ -2,6 +2,8 @@ package org.server.remoteclass.dto.coupon;
 
 import lombok.*;
 
+import java.util.List;
+
 
 @Getter
 @Setter

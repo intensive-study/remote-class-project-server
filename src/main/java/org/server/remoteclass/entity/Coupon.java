@@ -9,6 +9,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,6 +35,9 @@ public class Coupon {
     // 쿠폰 생성일입니다.
     @Column(name = "coupon_created_date")
     @CreatedDate
-    private LocalDateTime cratedDate;
+    private LocalDateTime createdDate;
+
+    @OneToMany(mappedBy = "coupon")
+    private List<IssuedCoupon> issuedCouponList = new ArrayList<>();
 
 }

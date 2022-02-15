@@ -1,4 +1,4 @@
-package org.server.remoteclass.service;
+package org.server.remoteclass.service.lecture;
 
 import org.server.remoteclass.dto.lecture.LectureDto;
 import org.server.remoteclass.exception.ForbiddenException;
