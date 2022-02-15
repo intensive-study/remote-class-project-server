@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     public OrderServiceImpl(UserRepository userRepository, LectureRepository lectureRepository,
-                              OrderRepository orderRepository, OrderLectureRepository orderLectureRepository,
+                            OrderRepository orderRepository, OrderLectureRepository orderLectureRepository,
                             CouponRepository couponRepository, BeanConfiguration beanConfiguration){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
@@ -84,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
         return order.getOrderId();
     }
 
-//    주문 취소
+    //    주문 취소
     @Override
     @Transactional
     public void cancelOrder(Long orderId) throws IdNotExistException, ForbiddenException {
@@ -152,9 +152,9 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
 //        if(user.getAuthority() == Authority.ROLE_ADMIN){
-            Order order = orderRepository.findById(orderId)
-                    .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ResultCode.ID_NOT_EXIST));
-            return new ResponseOrderByAdminDto(order);
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ResultCode.ID_NOT_EXIST));
+        return new ResponseOrderByAdminDto(order);
 //        }
 //        else{
 //            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
