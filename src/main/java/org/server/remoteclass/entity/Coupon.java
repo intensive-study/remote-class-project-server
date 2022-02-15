@@ -16,6 +16,8 @@ import java.util.List;
 @Getter
 @Setter
 @DynamicInsert
+@Inheritance // default인 싱글 테이블 전략 사용
+@DiscriminatorColumn
 @EntityListeners(AuditingEntityListener.class) // 이 어노테이션이 있어야 @CreatedDate가 작동합니다.
 public class Coupon {
 
@@ -24,7 +26,7 @@ public class Coupon {
     @Column(name = "coupon_id")
     private Long couponId;
     private String couponCode;
-
+    private String title;
     // 쿠폰 VALID 상태면 회원이 발급받을 수 있고, 아니면 불가능하게 하려 합니다.
     @Column(columnDefinition = "boolean default 1")
     private boolean couponValid;

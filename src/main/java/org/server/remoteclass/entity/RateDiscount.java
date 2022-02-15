@@ -8,15 +8,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class RateDiscount {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long rateDiscountId;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    private Coupon coupon;
-
-    private String title;
+@DiscriminatorValue("R")
+public class RateDiscount extends Coupon{
     private int discountRate;
 }

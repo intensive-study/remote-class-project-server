@@ -8,15 +8,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class FixDiscount {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long fixDiscountId;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    private Coupon coupon;
-
-    private String title;
+@DiscriminatorValue("F")
+public class FixDiscount extends Coupon{
     private int discountPrice;
 }
