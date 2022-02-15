@@ -33,17 +33,19 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderLectureRepository orderLectureRepository;
     private final CouponRepository couponRepository;
+    private final IssuedCouponRepository issuedCouponRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
     public OrderServiceImpl(UserRepository userRepository, LectureRepository lectureRepository,
                             OrderRepository orderRepository, OrderLectureRepository orderLectureRepository,
-                            CouponRepository couponRepository, BeanConfiguration beanConfiguration){
+                            CouponRepository couponRepository, IssuedCouponRepository issuedCouponRepository, BeanConfiguration beanConfiguration){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.orderRepository = orderRepository;
         this.orderLectureRepository = orderLectureRepository;
         this.couponRepository = couponRepository;
+        this.issuedCouponRepository = issuedCouponRepository;
         this.modelMapper = beanConfiguration.modelMapper();
     }
 
@@ -63,10 +65,10 @@ public class OrderServiceImpl implements OrderService {
             order.setBank(requestOrderDto.getBank());
             order.setAccount(requestOrderDto.getAccount());
         }
-        log.info("couponId: " + requestOrderDto.getCouponId());
-        Coupon coupon = couponRepository.findByCouponId(requestOrderDto.getCouponId()).orElse(null);
+//        log.info("couponId: " + requestOrderDto.getCouponId());
+        IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
 //        if(coupon.isCouponValid()) { //쿠폰이 유효하면
-        order.setCoupon(coupon);
+        order.setIssuedCoupon(issuedCoupon);
 //        }
 //        else{
 //                order.setCoupon(null);

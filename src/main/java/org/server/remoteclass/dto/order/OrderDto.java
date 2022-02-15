@@ -23,7 +23,7 @@ public class OrderDto {
     private List<OrderLecture> orderLectures = new ArrayList<>();
     private OrderStatus orderStatus; //주문상태
     private LocalDateTime orderDate;
-    private Long couponId;       //적용하는 쿠폰 아이디
+    private Long issuedCouponId;       //적용하는 쿠폰 아이디
     @NotNull
     private Payment payment; //결제방법
     private String bank;  //입금은행

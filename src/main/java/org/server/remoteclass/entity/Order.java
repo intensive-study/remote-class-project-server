@@ -45,7 +45,7 @@ public class Order {
     private String account;  //예금주
 
     @OneToOne
-    @JoinColumn(name = "coupon_id")
-    private Coupon coupon;       //적용하는 쿠폰 아이디
+    @JoinColumn(name = "issuedCoupon_id")
+    private IssuedCoupon issuedCoupon;       //적용하는 쿠폰 아이디
 
 }
