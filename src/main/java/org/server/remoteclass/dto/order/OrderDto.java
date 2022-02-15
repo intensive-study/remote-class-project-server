@@ -3,6 +3,7 @@ package org.server.remoteclass.dto.order;
 import lombok.*;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
+
 import org.server.remoteclass.entity.Coupon;
 import org.server.remoteclass.entity.Order;
 import org.server.remoteclass.entity.OrderLecture;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
 import java.util.List;
 
 @Builder
@@ -20,6 +22,7 @@ import java.util.List;
 @Setter
 public class OrderDto {
     private Long orderId;
+
     @NotNull
     private Long userId;
     @NotNull
@@ -31,4 +34,5 @@ public class OrderDto {
     private Payment payment; //결제방법
     private String bank;  //입금은행
     private String account;  //예금주
+
 }

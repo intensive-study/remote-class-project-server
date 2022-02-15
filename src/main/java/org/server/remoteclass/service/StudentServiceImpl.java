@@ -2,7 +2,10 @@ package org.server.remoteclass.service;
 
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.UserRole;
-import org.server.remoteclass.dto.*;
+import org.server.remoteclass.dto.lecture.ResponseLectureDto;
+import org.server.remoteclass.dto.student.RequestStudentDto;
+import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
+import org.server.remoteclass.dto.student.StudentDto;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.Student;
 import org.server.remoteclass.entity.User;

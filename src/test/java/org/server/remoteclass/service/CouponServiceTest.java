@@ -5,7 +5,10 @@ import com.jayway.jsonpath.JsonPath;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.server.remoteclass.dto.*;
+import org.server.remoteclass.dto.auth.LoginDto;
+import org.server.remoteclass.dto.coupon.CouponDto;
+import org.server.remoteclass.dto.auth.TokenRequestDto;
+import org.server.remoteclass.dto.user.RequestUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -81,7 +84,7 @@ public class CouponServiceTest {
         String accessToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
         TokenRequestDto tokenRequestDto = new TokenRequestDto();
         tokenRequestDto.setAccessToken(accessToken);
-        String json2 = mapper.writeValueAsString(new CouponDto(5, LocalDateTime.parse("2022-03-02T13:30:00")));
+        String json2 = mapper.writeValueAsString(new CouponDto(5));
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders.post("/coupons")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // "Bearer "를 붙여 줘야 함
                 .contentType(MediaType.APPLICATION_JSON)
@@ -107,7 +110,7 @@ public class CouponServiceTest {
         String accessToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
         TokenRequestDto tokenRequestDto = new TokenRequestDto();
         tokenRequestDto.setAccessToken(accessToken);
-        String json2 = mapper.writeValueAsString(new CouponDto(5, LocalDateTime.parse("2022-03-02T13:30:00")));
+        String json2 = mapper.writeValueAsString(new CouponDto(5));
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders.post("/coupons")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // "Bearer "를 붙여 줘야 함
                 .contentType(MediaType.APPLICATION_JSON)
@@ -142,7 +145,7 @@ public class CouponServiceTest {
         String accessToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
         TokenRequestDto tokenRequestDto = new TokenRequestDto();
         tokenRequestDto.setAccessToken(accessToken);
-        String json2 = mapper.writeValueAsString(new CouponDto(5, LocalDateTime.parse("2022-03-02T13:30:00")));
+        String json2 = mapper.writeValueAsString(new CouponDto(5));
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders.post("/coupons")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // "Bearer "를 붙여 줘야 함
                 .contentType(MediaType.APPLICATION_JSON)

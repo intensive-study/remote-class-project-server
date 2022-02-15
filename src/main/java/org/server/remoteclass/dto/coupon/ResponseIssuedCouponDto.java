@@ -1,4 +1,4 @@
-package org.server.remoteclass.dto;
+package org.server.remoteclass.dto.coupon;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,31 +6,27 @@ import lombok.Getter;
 import lombok.Setter;
 import org.server.remoteclass.entity.IssuedCoupon;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-public class IssuedCouponDto {
+public class ResponseIssuedCouponDto {
 
     private Long issuedCouponId;
-    private Long userId;
-    private Long couponId;
     private boolean couponUsed;
     private String couponCode;
     private LocalDateTime couponValidDate; // 쿠폰 유효기간이라 봐주시면 됩니다.
 
-    public IssuedCouponDto(){
+    public ResponseIssuedCouponDto(){
     }
 
-    public static IssuedCouponDto from(IssuedCoupon issuedCoupon){
+    public static ResponseIssuedCouponDto from(IssuedCoupon issuedCoupon){
         if(issuedCoupon == null) return null;
-        return IssuedCouponDto.builder()
+        return ResponseIssuedCouponDto.builder()
                 .issuedCouponId(issuedCoupon.getIssuedCouponId())
-                .userId(issuedCoupon.getUser().getUserId())
-                .couponId(issuedCoupon.getCoupon().getCouponId())
                 .couponCode(issuedCoupon.getCoupon().getCouponCode())
                 .couponUsed(issuedCoupon.isCouponUsed())
                 .couponValidDate(issuedCoupon.getCouponValidDate())

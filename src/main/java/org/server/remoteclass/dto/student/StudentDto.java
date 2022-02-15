@@ -1,4 +1,4 @@
-package org.server.remoteclass.dto;
+package org.server.remoteclass.dto.student;
 
 import lombok.*;
 import org.server.remoteclass.entity.Student;

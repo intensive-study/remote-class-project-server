@@ -35,9 +35,4 @@ public class Coupon {
     @CreatedDate
     private LocalDateTime cratedDate;
 
-    // 쿠폰 마감일입니다. 이 시간부터는 쿠폰 발급 불가능합니다.
-    @Column(name = "coupon_end_date")
-    private LocalDateTime endDate;
-
-
 }

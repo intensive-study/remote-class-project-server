@@ -1,4 +1,4 @@
-package org.server.remoteclass.dto;
+package org.server.remoteclass.dto.coupon;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,15 +19,13 @@ public class CouponDto {
     private boolean couponValid;
     private int couponValidDays;
     private LocalDateTime createdDate;
-    private LocalDateTime endDate;
 
     public CouponDto(){
 
     }
 
-    public CouponDto(int couponValidDays, LocalDateTime endDate){
+    public CouponDto(int couponValidDays){
         this.couponValidDays = couponValidDays;
-        this.endDate = endDate;
     }
 
     public static CouponDto from(Coupon coupon){
@@ -38,7 +36,6 @@ public class CouponDto {
                 .couponValid(coupon.isCouponValid())
                 .couponValidDays(coupon.getCouponValidDays())
                 .createdDate(coupon.getCratedDate())
-                .endDate(coupon.getEndDate())
                 .build();
     }
 }

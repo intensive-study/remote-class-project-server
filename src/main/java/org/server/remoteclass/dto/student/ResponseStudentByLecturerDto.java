@@ -1,10 +1,11 @@
-package org.server.remoteclass.dto;
+package org.server.remoteclass.dto.student;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.server.remoteclass.dto.auth.AuthorityDto;
 import org.server.remoteclass.entity.Student;
 import org.server.remoteclass.constant.UserRole;
 

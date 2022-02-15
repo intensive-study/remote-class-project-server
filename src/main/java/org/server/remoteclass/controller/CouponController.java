@@ -23,32 +23,40 @@ public class CouponController {
     }
 
     //관리자 권한이므로 CouponDto로 모든 정보를 보여주게끔 한다.
+    @ApiOperation(value = "전체 쿠폰 조회", notes = "현재까지 생성된 모든 쿠폰을 조회할 수 있다.")
     @GetMapping
-    public ResponseEntity<List<CouponDto>> getAllCoupons(){
+    public ResponseEntity<List<ResponseCouponDto>> getAllCoupons(){
         return ResponseEntity.status(HttpStatus.OK).body(couponService.getAllCoupons());
     }
 
     //쿠폰 번호로 쿠폰 검색(관리자 권한)
+    @ApiOperation(value = "쿠폰 번호로 쿠폰 조회", notes = "쿠폰 번호에 해당하는 쿠폰을 조회한다.")
     @GetMapping("/{couponId}")
-    public ResponseEntity<CouponDto> getCoupon(@PathVariable("couponId") Long couponId){
+    public ResponseEntity<ResponseCouponDto> getCoupon(@PathVariable("couponId") Long couponId){
         return ResponseEntity.status(HttpStatus.OK).body(couponService.getCouponByCouponId(couponId));
     }
 
     //쿠폰 생성(관리자 권한)
+    @ApiOperation(value = "쿠폰 생성", notes = "새로운 쿠폰을 생성할 수 있다.")
     @PostMapping
-    public ResponseEntity<CouponDto> createCoupon(@RequestBody @Valid CouponDto couponDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(couponService.createCoupon(couponDto));
+    public ResponseEntity createCoupon(@RequestBody @Valid RequestCouponDto requestCouponDto){
+        couponService.createCoupon(requestCouponDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     //쿠폰 비활성화(관리자 권한)
+    @ApiOperation(value = "쿠폰 비활성화", notes = "더 이상 쿠폰을 발급받을 수 없게 쿠폰을 비활성화 한다.")
     @PutMapping("/deactivate/{couponId}")
-    public ResponseEntity<CouponDto> createCoupon(@PathVariable("couponId") Long couponId) throws IdNotExistException {
-        return ResponseEntity.status(HttpStatus.OK).body(couponService.deactivateCoupon(couponId));
+    public ResponseEntity createCoupon(@PathVariable("couponId") Long couponId) throws IdNotExistException {
+        couponService.deactivateCoupon(couponId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @ApiOperation(value = "쿠폰 삭제", notes = "쿠폰 목록에서 쿠폰을 삭제한다.")
     @DeleteMapping("/{couponId}")
-    public ResponseEntity<CouponDto> deleteCoupon(@PathVariable("couponId") Long couponId) throws IdNotExistException {
-        return ResponseEntity.status(HttpStatus.OK).body(couponService.deleteCoupon(couponId));
+    public ResponseEntity deleteCoupon(@PathVariable("couponId") Long couponId) throws IdNotExistException {
+        couponService.deleteCoupon(couponId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }
