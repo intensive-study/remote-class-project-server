@@ -9,6 +9,10 @@ import javax.persistence.*;
 @Getter
 @Setter
 @DiscriminatorValue("R")
-public class RateDiscount extends Coupon{
+public class RateDiscount extends Coupon {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long rateDiscountId;
     private int discountRate;
 }

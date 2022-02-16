@@ -42,4 +42,10 @@ public class Coupon {
     @OneToMany(mappedBy = "coupon")
     private List<IssuedCoupon> issuedCouponList = new ArrayList<>();
 
+    //FisDiscount에 있는 컬럼
+    private Long fixDiscountId;
+    private int discountPrice;
+    //RateDiscount에 있는 컬럼
+    private Long rateDiscountId;
+    private int discountRate;
 }
