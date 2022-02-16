@@ -24,6 +24,7 @@ public class ResponseOrderByAdminDto {
     private String bank;  //입금은행
     private String account;  //예금주
     private Long issuedCouponId;       //적용하는 쿠폰 아이디
+    private Integer originalPrice;
 
     public ResponseOrderByAdminDto(Order order){
         this.orderId = order.getOrderId();
@@ -40,6 +41,7 @@ public class ResponseOrderByAdminDto {
         else {
             this.issuedCouponId = order.getIssuedCoupon().getIssuedCouponId();
         }
+        this.originalPrice = order.getOriginalPrice();
     }
 
 }

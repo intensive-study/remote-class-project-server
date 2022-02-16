@@ -28,5 +28,6 @@ public class OrderDto {
     private Payment payment; //결제방법
     private String bank;  //입금은행
     private String account;  //예금주
+    private Integer originalPrice;
 
 }
