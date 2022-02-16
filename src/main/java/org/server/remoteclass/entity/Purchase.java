@@ -20,8 +20,7 @@ public class Purchase {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    private Integer originalPrice;
-    private Integer discountPrice;
+    private Integer purchasePrice;
     private LocalDateTime purchaseDate;
 
 }

@@ -1,12 +1,9 @@
 package org.server.remoteclass.dto.purchase;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
 public class RequestPurchaseDto {
     private Long orderId;
 }

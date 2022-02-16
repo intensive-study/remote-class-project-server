@@ -29,6 +29,7 @@ public class PurchaseController {
     @ApiOperation(value = "구매 생성", notes = "구매 생성으로 구매 완료처리함.")
     @PostMapping
     public ResponseEntity<PurchaseDto> createPurchase(@RequestBody @Valid RequestPurchaseDto requestPurchaseDto) throws IdNotExistException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(purchaseService.createPurchase(requestPurchaseDto));
+        purchaseService.createPurchase(requestPurchaseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

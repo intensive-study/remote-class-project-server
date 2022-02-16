@@ -8,29 +8,23 @@ import java.time.LocalDateTime;
 
 
 @Getter @Setter @Builder
-@AllArgsConstructor
+@AllArgsConstructor @NoArgsConstructor
 public class PurchaseDto {
 
     private Long purchaseId;
     @NotNull
     private Long orderId;
     @NotNull
-    private Integer originalPrice;
-    private Integer discountPrice;
+    private Integer purchasePrice;
     @NotNull
     private LocalDateTime purchaseDate;
-
-    public PurchaseDto(){
-
-    }
 
     public static PurchaseDto from(Purchase purchase){
         if(purchase == null) return null;
         return PurchaseDto.builder()
                 .purchaseId(purchase.getPurchaseId())
                 .orderId(purchase.getOrder().getOrderId())
-                .originalPrice(purchase.getOriginalPrice())
-                .discountPrice(purchase.getDiscountPrice())
+                .purchasePrice(purchase.getPurchasePrice())
                 .purchaseDate(purchase.getPurchaseDate())
                 .build();
     }
