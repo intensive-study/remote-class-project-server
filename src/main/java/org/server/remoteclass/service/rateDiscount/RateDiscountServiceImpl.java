@@ -6,10 +6,12 @@ import org.server.remoteclass.entity.RateDiscount;
 import org.server.remoteclass.jpa.RateDiscountRepository;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
+@Transactional
 public class RateDiscountServiceImpl implements RateDiscountService {
 
     private final ModelMapper modelMapper;

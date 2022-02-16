@@ -21,15 +21,9 @@ import java.util.List;
 public class CouponController {
 
     private final CouponService couponService;
-    private final FixDiscountService fixDiscountService;
-    private final RateDiscountService rateDiscountService;
 
-    public CouponController(CouponService couponService,
-                            FixDiscountService fixDiscountService,
-                            RateDiscountService rateDiscountService){
+    public CouponController(CouponService couponService){
         this.couponService = couponService;
-        this.fixDiscountService = fixDiscountService;
-        this.rateDiscountService = rateDiscountService;
     }
 
     //관리자 권한이므로 CouponDto로 모든 정보를 보여주게끔 한다.
@@ -51,24 +45,6 @@ public class CouponController {
     @PostMapping
     public ResponseEntity createCoupon(@RequestBody @Valid RequestCouponDto requestCouponDto){
         couponService.createCoupon(requestCouponDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    //쿠폰 생성(관리자 권한)
-    @ApiOperation(value = "정액 할인 쿠폰 생성", notes = "새로운 쿠폰을 생성할 수 있다.")
-    @PostMapping("/fix")
-    public ResponseEntity createFixDiscountCoupon(@RequestBody @Valid RequestFixDiscountDto fixDiscountDto){
-//        couponService.createCoupon(requestCouponDto);
-        fixDiscountService.createFixDiscountCoupon(fixDiscountDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    //쿠폰 생성(관리자 권한)
-    @ApiOperation(value = "정률 할인 쿠폰 생성", notes = "새로운 쿠폰을 생성할 수 있다.")
-    @PostMapping("/rate")
-    public ResponseEntity createRateDiscountCoupon(@RequestBody @Valid RequestRateDiscountDto requestRateDiscountDto){
-//        couponService.createCoupon(requestCouponDto);
-        rateDiscountService.createRateDiscountCoupon(requestRateDiscountDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

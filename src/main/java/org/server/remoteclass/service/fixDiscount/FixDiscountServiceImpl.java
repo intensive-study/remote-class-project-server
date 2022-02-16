@@ -6,10 +6,12 @@ import org.server.remoteclass.entity.FixDiscount;
 import org.server.remoteclass.jpa.FixDiscountRepository;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
+@Transactional
 public class FixDiscountServiceImpl implements FixDiscountService {
 
     private final ModelMapper modelMapper;
