@@ -27,6 +27,7 @@ public class RateDiscountServiceImpl implements RateDiscountService {
         rateDiscount.setCouponCode(UUID.randomUUID().toString());
         rateDiscount.setCouponValid(true);
         rateDiscount.setCouponValidDays(requestRateDiscountDto.getCouponValidDays());
+        rateDiscount.setDiscountRate(rateDiscount.getDiscountRate());
         rateDiscountRepository.save(rateDiscount);
     }
 }

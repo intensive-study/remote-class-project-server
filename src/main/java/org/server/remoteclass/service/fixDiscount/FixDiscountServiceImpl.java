@@ -27,6 +27,7 @@ public class FixDiscountServiceImpl implements FixDiscountService {
         fixDiscount.setCouponCode(UUID.randomUUID().toString());
         fixDiscount.setCouponValid(true);
         fixDiscount.setCouponValidDays(requestFixDiscountDto.getCouponValidDays());
+        fixDiscount.setDiscountPrice(requestFixDiscountDto.getDiscountPrice());
         fixDiscountRepository.save(fixDiscount);
     }
 }

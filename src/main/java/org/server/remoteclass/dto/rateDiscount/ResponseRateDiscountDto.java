@@ -1,12 +1,9 @@
 package org.server.remoteclass.dto.rateDiscount;
 
 import lombok.*;
-import org.server.remoteclass.dto.coupon.ResponseCouponDto;
-import org.server.remoteclass.dto.issuedcoupon.ResponseIssuedCouponDto;
 import org.server.remoteclass.entity.Coupon;
 
 import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -20,7 +17,7 @@ public class ResponseRateDiscountDto {
     private boolean couponValid;
     private int couponValidDays;
     private LocalDateTime createdDate;
-    private int rateDiscount;
+    private int discountRate;
 
     public static ResponseRateDiscountDto from(Coupon coupon){
         if(coupon == null) return null;
@@ -30,7 +27,7 @@ public class ResponseRateDiscountDto {
                 .couponValid(coupon.isCouponValid())
                 .couponValidDays(coupon.getCouponValidDays())
                 .createdDate(coupon.getCreatedDate())
-                .rateDiscount(coupon.getDiscountRate())
+                .discountRate(coupon.getDiscountRate())
                 .build();
     }
 }
