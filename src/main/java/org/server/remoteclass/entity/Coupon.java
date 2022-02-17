@@ -44,6 +44,13 @@ public class Coupon {
     @OneToMany(mappedBy = "coupon")
     private List<IssuedCoupon> issuedCouponList = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_id")
+    private FixDiscount fixDiscount;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_id")
+    private RateDiscount rateDiscount;
 
 
     //FisDiscount에 있는 컬럼
