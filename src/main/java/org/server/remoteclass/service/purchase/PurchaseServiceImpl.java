@@ -1,9 +1,11 @@
 package org.server.remoteclass.service.purchase;
 
 import org.modelmapper.ModelMapper;
+import org.server.remoteclass.constant.Authority;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.dto.purchase.PurchaseDto;
 import org.server.remoteclass.dto.purchase.RequestPurchaseDto;
+import org.server.remoteclass.dto.purchase.ResponsePurchaseDto;
 import org.server.remoteclass.entity.*;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
@@ -16,10 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PurchaseServiceImpl implements PurchaseService{
 
     private final UserRepository userRepository;
@@ -42,6 +45,7 @@ public class PurchaseServiceImpl implements PurchaseService{
     }
 
     @Override
+    @Transactional
     public PurchaseDto createPurchase(RequestPurchaseDto requestPurchaseDto) throws IdNotExistException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
@@ -76,4 +80,26 @@ public class PurchaseServiceImpl implements PurchaseService{
         return PurchaseDto.from(purchaseRepository.save(purchase));
     }
 
+    //전체 구매내역 조회
+    @Override
+    public List<ResponsePurchaseDto> getAllPurchaseByUserId() throws IdNotExistException{
+        User user = SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+        List<Purchase> purchases = purchaseRepository.findByOrder_User_UserIdOrderByPurchaseDateDesc(user.getUserId());
+
+        return purchases.stream().map(ResponsePurchaseDto::new).collect(Collectors.toList());
+    }
+
+    // 특정 구매내역 조회
+    @Override
+    public ResponsePurchaseDto getPurchaseByUserIdAndPurchaseId(Long purchaseId) throws IdNotExistException{
+        SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+        Purchase purchase = purchaseRepository.findById(purchaseId)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ResultCode.ID_NOT_EXIST));
+
+        return new ResponsePurchaseDto(purchase);
+    }
 }
