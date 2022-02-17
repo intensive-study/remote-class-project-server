@@ -2,12 +2,14 @@ package org.server.remoteclass.service.rateDiscount;
 
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.rateDiscount.RequestRateDiscountDto;
+import org.server.remoteclass.dto.rateDiscount.ResponseRateDiscountDto;
 import org.server.remoteclass.entity.RateDiscount;
 import org.server.remoteclass.jpa.RateDiscountRepository;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -31,5 +33,15 @@ public class RateDiscountServiceImpl implements RateDiscountService {
         rateDiscount.setCouponValidDays(requestRateDiscountDto.getCouponValidDays());
         rateDiscount.setDiscountRate(rateDiscount.getDiscountRate());
         rateDiscountRepository.save(rateDiscount);
+    }
+
+    @Override
+    public List<ResponseRateDiscountDto> getAllRateDiscountCoupons() {
+        return null;
+    }
+
+    @Override
+    public ResponseRateDiscountDto getRateDiscountCoupon(Long couponId) {
+        return null;
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @DynamicInsert
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn
+@DiscriminatorColumn(name = "DTYPE")
 @EntityListeners(AuditingEntityListener.class) // 이 어노테이션이 있어야 @CreatedDate가 작동합니다.
 public class Coupon {
 
