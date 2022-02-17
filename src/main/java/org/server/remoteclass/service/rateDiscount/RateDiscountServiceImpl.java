@@ -1,6 +1,7 @@
 package org.server.remoteclass.service.rateDiscount;
 
 import org.modelmapper.ModelMapper;
+import org.server.remoteclass.dto.fixDiscount.ResponseFixDiscountDto;
 import org.server.remoteclass.dto.rateDiscount.RequestRateDiscountDto;
 import org.server.remoteclass.dto.rateDiscount.ResponseRateDiscountDto;
 import org.server.remoteclass.entity.RateDiscount;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -37,11 +39,13 @@ public class RateDiscountServiceImpl implements RateDiscountService {
 
     @Override
     public List<ResponseRateDiscountDto> getAllRateDiscountCoupons() {
-        return null;
+        List<RateDiscount> rateDiscountList = rateDiscountRepository.findAll();
+        return rateDiscountList.stream().
+                map(rateDiscount -> ResponseRateDiscountDto.from(rateDiscount)).collect(Collectors.toList());
     }
 
     @Override
     public ResponseRateDiscountDto getRateDiscountCoupon(Long couponId) {
-        return null;
+        return ResponseRateDiscountDto.from(rateDiscountRepository.findByCouponId(couponId).orElse(null));
     }
 }
