@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("rate-discount")
+@RequestMapping("/rate-discount")
 public class RateDiscountController {
 
     private final RateDiscountService rateDiscountService;

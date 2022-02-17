@@ -2,6 +2,7 @@ package org.server.remoteclass.dto.fixDiscount;
 
 import lombok.*;
 import org.server.remoteclass.entity.Coupon;
+import org.server.remoteclass.entity.FixDiscount;
 
 import java.time.LocalDateTime;
 
@@ -22,16 +23,16 @@ public class ResponseFixDiscountDto {
 
     private LocalDateTime createdDate;
 
-    public static ResponseFixDiscountDto from(Coupon coupon){
-        if(coupon == null) return null;
+    public static ResponseFixDiscountDto from(FixDiscount fixDiscount){
+        if(fixDiscount == null) return null;
         return ResponseFixDiscountDto.builder()
-                .couponId(coupon.getCouponId())
-                .couponCode(coupon.getCouponCode())
-                .couponValid(coupon.isCouponValid())
-                .couponValidDays(coupon.getCouponValidDays())
-                .createdDate(coupon.getCreatedDate())
-                .title(coupon.getTitle())
-                .discountPrice(coupon.getDiscountPrice())
+                .couponId(fixDiscount.getCouponId())
+                .couponCode(fixDiscount.getCouponCode())
+                .couponValid(fixDiscount.isCouponValid())
+                .couponValidDays(fixDiscount.getCouponValidDays())
+                .createdDate(fixDiscount.getCreatedDate())
+                .title(fixDiscount.getTitle())
+                .discountPrice(fixDiscount.getDiscountPrice())
                 .build();
     }
 }

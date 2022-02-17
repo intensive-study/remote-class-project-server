@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @DynamicInsert
-@Inheritance // default인 싱글 테이블 전략 사용
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
 @EntityListeners(AuditingEntityListener.class) // 이 어노테이션이 있어야 @CreatedDate가 작동합니다.
 public class Coupon {
@@ -43,9 +43,9 @@ public class Coupon {
     private List<IssuedCoupon> issuedCouponList = new ArrayList<>();
 
     //FisDiscount에 있는 컬럼
-    private Long fixDiscountId;
-    private int discountPrice;
+//    private Long fixDiscountId;
+//    private int discountPrice;
     //RateDiscount에 있는 컬럼
-    private Long rateDiscountId;
-    private int discountRate;
+//    private Long rateDiscountId;
+//    private int discountRate;
 }

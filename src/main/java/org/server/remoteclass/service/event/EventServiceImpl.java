@@ -76,4 +76,12 @@ public class EventServiceImpl implements EventService{
     public void deleteEvent(Long eventId) {
         eventRepository.deleteByEventId(eventId);
     }
+
+    @Transactional
+    @Override
+    public void quitEvent(){
+        // 이벤트에서 쿠폰이 생성되므로, 이벤트와 연결된 쿠폰을 가져와서 현재 시간 - 쿠폰 시간 < 0인 경우 종료시킴
+        List<Event> eventList = eventRepository.findAll();
+    }
+
 }
