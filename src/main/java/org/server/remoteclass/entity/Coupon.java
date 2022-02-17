@@ -1,6 +1,7 @@
 package org.server.remoteclass.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @DynamicInsert
+@NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "DTYPE")
 @EntityListeners(AuditingEntityListener.class) // 이 어노테이션이 있어야 @CreatedDate가 작동합니다.
@@ -41,6 +43,8 @@ public class Coupon {
 
     @OneToMany(mappedBy = "coupon")
     private List<IssuedCoupon> issuedCouponList = new ArrayList<>();
+
+
 
     //FisDiscount에 있는 컬럼
 //    private Long fixDiscountId;
