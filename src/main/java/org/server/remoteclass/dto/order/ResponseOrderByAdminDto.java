@@ -23,7 +23,8 @@ public class ResponseOrderByAdminDto {
     private Payment payment; //결제방법
     private String bank;  //입금은행
     private String account;  //예금주
-    private Long couponId;       //적용하는 쿠폰 아이디
+    private Long issuedCouponId;       //적용하는 쿠폰 아이디
+    private Integer originalPrice;
 
     public ResponseOrderByAdminDto(Order order){
         this.orderId = order.getOrderId();
@@ -34,12 +35,13 @@ public class ResponseOrderByAdminDto {
         this.payment = order.getPayment();
         this.bank = order.getBank();
         this.account = order.getAccount();
-        if(order.getCoupon() == null || !order.getCoupon().isCouponValid()){
-            this.couponId = null;
+        if(order.getIssuedCoupon() == null){
+            this.issuedCouponId = null;
         }
         else {
-            this.couponId = order.getCoupon().getCouponId();
+            this.issuedCouponId = order.getIssuedCoupon().getIssuedCouponId();
         }
+        this.originalPrice = order.getOriginalPrice();
     }
 
 }

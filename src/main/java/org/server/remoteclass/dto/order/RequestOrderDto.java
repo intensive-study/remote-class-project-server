@@ -19,7 +19,7 @@ public class RequestOrderDto {
     private Payment payment; //결제방법
     private String bank;  //입금은행
     private String account;  //예금주
-    private Long couponId;       //적용하는 쿠폰 아이디
+    private Long issuedCouponId;       //적용하는 쿠폰 아이디
 
     public static RequestOrderDto from(Order order){
         if(order == null) return null;
@@ -31,7 +31,7 @@ public class RequestOrderDto {
                 .payment(order.getPayment())
                 .bank(order.getBank())
                 .account(order.getAccount())
-                .couponId(order.getCoupon().getCouponId())
+                .issuedCouponId(order.getIssuedCoupon().getIssuedCouponId())
                 .build();
     }
 

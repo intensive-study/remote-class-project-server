@@ -31,7 +31,7 @@ public class OrderController {
 
     @ApiOperation("주문 신청")
     @PostMapping
-    public ResponseEntity createOrder(@RequestBody RequestOrderDto requestOrderDto) throws IdNotExistException {
+    public ResponseEntity createOrder(@RequestBody RequestOrderDto requestOrderDto) throws IdNotExistException, ForbiddenException {
         orderService.createOrder(requestOrderDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
