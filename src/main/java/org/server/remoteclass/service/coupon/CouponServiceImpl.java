@@ -1,9 +1,12 @@
 package org.server.remoteclass.service.coupon;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.entity.Coupon;
+import org.server.remoteclass.entity.FixDiscount;
+import org.server.remoteclass.entity.RateDiscount;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
 import org.server.remoteclass.jpa.CouponRepository;
@@ -16,21 +19,30 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @Transactional(readOnly = true)
 public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
     private final ModelMapper modelMapper;
 
-    public CouponServiceImpl(CouponRepository couponRepository, BeanConfiguration beanConfiguration){
+    public CouponServiceImpl(CouponRepository couponRepository, BeanConfiguration beanConfiguration) {
         this.couponRepository = couponRepository;
         this.modelMapper = beanConfiguration.modelMapper();
     }
 
     @Override
     public ResponseCouponDto getCouponByCouponId(Long couponId) {
-        return ResponseCouponDto.from(couponRepository.findByCouponId(couponId).orElse(null));
+        if (couponRepository.findByCouponId(couponId).orElse(null) instanceof FixDiscount) {
+            log.info("FixDiscount 타입입니다.");
+            return ResponseCouponDto.from((FixDiscount) couponRepository.findByCouponId(couponId).orElse(null));
+        }
+
+        log.info("RateDiscount 타입입니다.");
+        return ResponseCouponDto.from((RateDiscount) couponRepository.findByCouponId(couponId).orElse(null));
+
     }
+
 
     @Override
     public List<ResponseCouponDto> getAllCoupons() {
@@ -41,11 +53,13 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     @Transactional
-    public void deactivateCoupon(Long couponId) throws IdNotExistException{
-        Coupon coupon = couponRepository.findByCouponId(couponId)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다.", ResultCode.ID_NOT_EXIST)
-        );
+    public void deactivateCoupon(Long couponId) throws IdNotExistException {
+        Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId).orElse(null);
         coupon.setCouponValid(false);
+//        Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId)
+//                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다.", ResultCode.ID_NOT_EXIST)
+//        );
+//        coupon.setCouponValid(false);
         // 스프링 데이터 JPA가 알아서 해 주는 것 같긴 한데, 일단 save로 업데이트 하였습니다.
 //        return CouponDto.from(couponRepository.save(coupon));
     }
@@ -60,24 +74,23 @@ public class CouponServiceImpl implements CouponService {
         coupon.setCouponCode(UUID.randomUUID().toString());
         coupon.setCouponValid(true);
         coupon.setCouponValidDays(requestCouponDto.getCouponValidDays());
-        return ResponseCouponDto.from(couponRepository.save(coupon));
+        return ResponseCouponDto.from((Coupon) couponRepository.save(coupon));
 //        return CouponDto.from(couponRepository.save(coupon));
     }
 
     @Override
     public ResponseCouponDto getCouponByCouponCode(String couponCode) {
-        return ResponseCouponDto.from(couponRepository.findByCouponCode(couponCode).orElse(null));
+        return ResponseCouponDto.from((Coupon) couponRepository.findByCouponCode(couponCode).orElse(null));
     }
 
     //쿠폰 삭제
     @Override
     @Transactional
     public void deleteCoupon(Long couponId) throws IdNotExistException{
-        Coupon coupon = couponRepository
-                .findByCouponId(couponId)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다", ResultCode.ID_NOT_EXIST));
+//        Coupon coupon = (Coupon) couponRepository
+//                .findByCouponId(couponId)
+//                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다", ResultCode.ID_NOT_EXIST));
         couponRepository.deleteByCouponId(couponId);
-//        return CouponDto.from(coupon);
     }
 
 }

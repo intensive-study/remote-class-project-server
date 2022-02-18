@@ -12,9 +12,5 @@ import javax.persistence.*;
 @NoArgsConstructor
 @DiscriminatorValue("R")
 public class RateDiscount extends Coupon {
-
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long rateDiscountId;
     private int discountRate;
 }
