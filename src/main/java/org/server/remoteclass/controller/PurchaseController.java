@@ -2,6 +2,7 @@ package org.server.remoteclass.controller;
 
 import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.purchase.*;
+import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.purchase.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,14 @@ public class PurchaseController {
 
     @ApiOperation(value = "구매 생성", notes = "구매 생성으로 구매 완료처리함.")
     @PostMapping
-    public ResponseEntity<PurchaseDto> createPurchase(@RequestBody @Valid RequestPurchaseDto requestPurchaseDto) throws IdNotExistException {
+    public ResponseEntity<PurchaseDto> createPurchase(@RequestBody @Valid RequestPurchaseDto requestPurchaseDto) throws IdNotExistException, ForbiddenException {
         purchaseService.createPurchase(requestPurchaseDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @ApiOperation(value = "구매 내역 전체 조회", notes = "생성된 전체 구매 내열 조회함.")
     @GetMapping("/myList")
-    public ResponseEntity<List<ResponsePurchaseDto>> getAllPurchase(@RequestBody @Valid RequestPurchaseDto requestPurchaseDto) throws IdNotExistException {
+    public ResponseEntity<List<ResponsePurchaseDto>> getAllPurchase() throws IdNotExistException {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getAllPurchaseByUserId());
     }
 

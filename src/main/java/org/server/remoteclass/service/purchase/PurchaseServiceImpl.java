@@ -1,5 +1,6 @@
 package org.server.remoteclass.service.purchase;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.Authority;
 import org.server.remoteclass.constant.OrderStatus;
@@ -7,6 +8,7 @@ import org.server.remoteclass.dto.purchase.PurchaseDto;
 import org.server.remoteclass.dto.purchase.RequestPurchaseDto;
 import org.server.remoteclass.dto.purchase.ResponsePurchaseDto;
 import org.server.remoteclass.entity.*;
+import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ResultCode;
 import org.server.remoteclass.jpa.*;
@@ -20,13 +22,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class PurchaseServiceImpl implements PurchaseService{
 
     private final UserRepository userRepository;
-    private final LectureRepository lectureRepository;
     private final OrderRepository orderRepository;
     private final IssuedCouponRepository issuedCouponRepository;
     private final PurchaseRepository purchaseRepository;
@@ -34,10 +35,9 @@ public class PurchaseServiceImpl implements PurchaseService{
 
     @Autowired
     public PurchaseServiceImpl(UserRepository userRepository, OrderRepository orderRepository,
-                               LectureRepository lectureRepository, PurchaseRepository purchaseRepository,
-                               IssuedCouponRepository issuedCouponRepository, BeanConfiguration beanConfiguration){
+                               PurchaseRepository purchaseRepository, IssuedCouponRepository issuedCouponRepository,
+                                BeanConfiguration beanConfiguration){
         this.userRepository = userRepository;
-        this.lectureRepository = lectureRepository;
         this.orderRepository = orderRepository;
         this.issuedCouponRepository = issuedCouponRepository;
         this.purchaseRepository = purchaseRepository;
@@ -46,18 +46,26 @@ public class PurchaseServiceImpl implements PurchaseService{
 
     @Override
     @Transactional
-    public PurchaseDto createPurchase(RequestPurchaseDto requestPurchaseDto) throws IdNotExistException {
+    public PurchaseDto createPurchase(RequestPurchaseDto requestPurchaseDto) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
         //orderId를 입력하면 order 객체 받아오기
         Order order = orderRepository.findById(requestPurchaseDto.getOrderId())
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ResultCode.ID_NOT_EXIST));
-        Purchase purchase = modelMapper.map(requestPurchaseDto, Purchase.class);
-        purchase.setPurchaseDate(LocalDateTime.now());
-        //해당 orderId의 주문에는 status를 complete로 변경하기
-        order.setOrderStatus(OrderStatus.COMPLETE);
-        purchase.setOrder(order);
+        Purchase purchase = null;
+        // pending상태만 주문 가능. 취소되거나 이미 완료된 주문이면 더이상 구매하지 못함.
+        if(order.getOrderStatus() == OrderStatus.PENDING){
+            purchase = modelMapper.map(requestPurchaseDto, Purchase.class);
+            purchase.setPurchaseDate(LocalDateTime.now());
+            order.setOrderStatus(OrderStatus.COMPLETE);//해당 orderId의 주문에는 status를 complete로 변경하기
+            purchase.setOrder(order);
+            purchase.setPurchasePrice(order.getOriginalPrice());
+            purchaseRepository.save(purchase);
+        }
+        else{
+            throw new ForbiddenException("주문 가능한 상태가 아닙니다", ResultCode.FORBIDDEN);
+        }
         /** 쿠폰 할인 관련 기능!!
         // 주문에서 정상가 끌어오고
         Integer totalPrice = order.getOriginalPrice();
@@ -76,8 +84,7 @@ public class PurchaseServiceImpl implements PurchaseService{
         }
         purchase.setPurchasePrice(totalPrice);
          */
-
-        return PurchaseDto.from(purchaseRepository.save(purchase));
+        return PurchaseDto.from(purchase);
     }
 
     //전체 구매내역 조회

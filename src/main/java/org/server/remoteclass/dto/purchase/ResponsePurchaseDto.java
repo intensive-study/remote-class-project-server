@@ -20,6 +20,10 @@ public class ResponsePurchaseDto {
     private LocalDateTime purchaseDate;
 
     public ResponsePurchaseDto(Purchase purchase) {
+        this.purchaseId = purchase.getPurchaseId();
+        this.orderId = purchase.getOrder().getOrderId();
+        this.purchasePrice = purchase.getPurchasePrice();
+        this.purchaseDate = purchase.getPurchaseDate();
     }
 
     public static ResponsePurchaseDto from(Purchase purchase){
