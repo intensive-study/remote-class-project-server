@@ -18,4 +18,13 @@ public interface CartService {
     // 장바구니 전체 비우기
     void deleteAllCart() throws IdNotExistException;
 
+    //나의 장바구니 리스트
+    List<ResponseCartDto> getCartsByUserId() throws IdNotExistException, ForbiddenException;
+
+    // 장바구니 금액 계산
+    Integer sumCartByUserId() throws IdNotExistException;
+
+    // 장바구니 개수 계산
+    Integer countCartByUserId() throws IdNotExistException;
+
 }

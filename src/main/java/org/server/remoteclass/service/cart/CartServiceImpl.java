@@ -6,10 +6,7 @@ import org.server.remoteclass.constant.UserRole;
 import org.server.remoteclass.dto.cart.CartDto;
 import org.server.remoteclass.dto.cart.RequestCartDto;
 import org.server.remoteclass.dto.cart.ResponseCartDto;
-import org.server.remoteclass.dto.lecture.ResponseLectureDto;
-import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
 import org.server.remoteclass.entity.Cart;
-import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
@@ -26,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -98,4 +94,43 @@ public class CartServiceImpl implements CartService {
 
     }
 
+    //현재 장바구니 전체 리스트 조회
+    @Override
+    @Transactional(readOnly = true)
+    public List<ResponseCartDto> getCartsByUserId() throws IdNotExistException, ForbiddenException {
+
+        User user = SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+
+        List<Cart> carts = null;
+        if(user.getUserRole() == UserRole.ROLE_STUDENT){
+            carts = cartRepository.findByUser_UserIdOrderByCreatedDateDesc(user.getUserId());
+        }
+        else{
+            throw new ForbiddenException("접근 권한이 없습니다.", ResultCode.FORBIDDEN);
+        }
+        return carts.stream().map(cart->ResponseCartDto.from(cart)).collect(Collectors.toList());
+    }
+
+
+    //장바구니 합
+    @Override
+    public Integer sumCartByUserId() throws IdNotExistException {
+        User user = SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+
+        return cartRepository.findSumCartByUserId(user.getUserId());
+    }
+
+    // 장바구니 개수
+    @Override
+    public Integer countCartByUserId() throws IdNotExistException {
+        User user = SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+
+        return cartRepository.findCountCartByUserId(user.getUserId());
+    }
 }
