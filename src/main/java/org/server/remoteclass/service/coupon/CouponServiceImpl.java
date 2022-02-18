@@ -14,6 +14,7 @@ import org.server.remoteclass.util.BeanConfiguration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -47,8 +48,20 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public List<ResponseCouponDto> getAllCoupons() {
         List<Coupon> coupons = couponRepository.findAll();
-        return coupons.stream().map(
-                coupon -> ResponseCouponDto.from(coupon)).collect(Collectors.toList());
+        List<ResponseCouponDto> list = new ArrayList<>();
+
+        for (Coupon coupon : coupons) {
+            if(coupon instanceof FixDiscount){
+                list.add(ResponseCouponDto.from((FixDiscount) coupon));
+            }
+            else {
+                list.add(ResponseCouponDto.from((RateDiscount) coupon));
+            }
+        }
+
+        return list;
+//        return coupons.stream().map(
+//                coupon -> ResponseCouponDto.from(coupon)).collect(Collectors.toList());
     }
 
     @Override
