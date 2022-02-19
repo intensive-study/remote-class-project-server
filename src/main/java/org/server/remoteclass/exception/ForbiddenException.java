@@ -1,13 +1,9 @@
 package org.server.remoteclass.exception;
 
-import lombok.Getter;
 
-@Getter
-public class ForbiddenException extends RuntimeException {
-    private ErrorCode errorCode;
+public class ForbiddenException extends RemoteGlobalException {
 
     public ForbiddenException(String message, ErrorCode errorCode){
-        super(message);
-        this.errorCode = errorCode;
+        super(message, errorCode);
     }
 }

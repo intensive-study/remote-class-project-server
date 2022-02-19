@@ -1,13 +1,9 @@
 package org.server.remoteclass.exception;
 
-import lombok.Getter;
 
-@Getter
-public class EmailDuplicateException extends RuntimeException{
+public class EmailDuplicateException extends RemoteGlobalException {
 
-    private ErrorCode errorCode;
     public EmailDuplicateException(String message, ErrorCode errorCode){
-        super(message);
-        this.errorCode = errorCode;
+        super(message, errorCode);
     }
 }
