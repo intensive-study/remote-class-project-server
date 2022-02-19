@@ -49,8 +49,8 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
-        Coupon coupon = couponRepository.findByCouponCode(requestIssuedCouponDto.getCouponCode())
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다.", ResultCode.ID_NOT_EXIST));
+        Coupon coupon = (Coupon) couponRepository.findByCouponCode(requestIssuedCouponDto.getCouponCode()).orElse(null);
+//                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다.", ResultCode.ID_NOT_EXIST));
 
 //        IssuedCoupon check = couponRepository.findByCouponCode(issuedCouponDto.getCouponCode());
         //발급 쿠폰 중복 조회 필요

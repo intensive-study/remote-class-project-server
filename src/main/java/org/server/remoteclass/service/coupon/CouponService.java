@@ -1,8 +1,6 @@
 package org.server.remoteclass.service.coupon;
 
-import org.server.remoteclass.dto.coupon.CouponDto;
-import org.server.remoteclass.dto.coupon.RequestCouponDto;
-import org.server.remoteclass.dto.coupon.ResponseCouponDto;
+import org.server.remoteclass.dto.coupon.*;
 import org.server.remoteclass.exception.IdNotExistException;
 
 import java.util.List;
