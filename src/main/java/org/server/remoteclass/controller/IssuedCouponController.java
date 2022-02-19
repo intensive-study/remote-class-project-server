@@ -7,12 +7,14 @@ import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.issuedCoupon.IssuedCouponService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasRole('ROLE_USER')")
 @RequestMapping("/mycoupons") // 어감이 좀 이상해서 수정할 수도 있습니다. issuedcoupons이 아니니 조심하세요!
 public class IssuedCouponController {
 
@@ -30,7 +32,7 @@ public class IssuedCouponController {
     }
 
     //내가 가진 쿠폰 상세보기
-    @ApiOperation(value = "내가 발급받은 쿠폰 번호를 톷해 조회")
+    @ApiOperation(value = "내가 발급받은 쿠폰 번호 통해 조회")
     @GetMapping("/{couponId}")
     public ResponseEntity<ResponseIssuedCouponDto> getCoupon(@PathVariable("couponId") Long couponId) throws IdNotExistException{
         return ResponseEntity.status(HttpStatus.OK).body(issuedCouponService.getMyCoupon(couponId));

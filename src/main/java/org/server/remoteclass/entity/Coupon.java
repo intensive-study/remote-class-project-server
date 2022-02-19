@@ -1,6 +1,7 @@
 package org.server.remoteclass.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,6 +17,9 @@ import java.util.List;
 @Getter
 @Setter
 @DynamicInsert
+@NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "DTYPE")
 @EntityListeners(AuditingEntityListener.class) // 이 어노테이션이 있어야 @CreatedDate가 작동합니다.
 public class Coupon {
 
@@ -24,7 +28,7 @@ public class Coupon {
     @Column(name = "coupon_id")
     private Long couponId;
     private String couponCode;
-
+    private String title;
     // 쿠폰 VALID 상태면 회원이 발급받을 수 있고, 아니면 불가능하게 하려 합니다.
     @Column(columnDefinition = "boolean default 1")
     private boolean couponValid;
@@ -39,5 +43,4 @@ public class Coupon {
 
     @OneToMany(mappedBy = "coupon")
     private List<IssuedCoupon> issuedCouponList = new ArrayList<>();
-
 }

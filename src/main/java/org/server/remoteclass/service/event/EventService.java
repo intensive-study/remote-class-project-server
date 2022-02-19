@@ -17,4 +17,6 @@ public interface EventService {
     void updateEvent(RequestEventDto requestEventDto);
     // 이벤트 삭제
     void deleteEvent(Long eventId);
+    // 스케줄러로 이벤트 순회하며 종료시키기
+    void quitEvent();
 }

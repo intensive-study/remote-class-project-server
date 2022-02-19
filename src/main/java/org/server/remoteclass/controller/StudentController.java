@@ -13,12 +13,14 @@ import org.server.remoteclass.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasRole('ROLE_USER')")
 @RequestMapping("/students")
 public class StudentController {
     private final StudentService studentService;
@@ -48,6 +50,7 @@ public class StudentController {
     }
 
     //수강생 전체 조회 (강의자 권한)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiOperation(value = "전체 수강생 조회", notes = "강의자가 현재까지 수강신청한 모든 수강생을 조회할 수 있다.")
     @GetMapping("/{lectureId}")
     public ResponseEntity<List<ResponseStudentByLecturerDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException, ForbiddenException {
