@@ -27,8 +27,15 @@ public class LectureController {
 
     @ApiOperation(value = "강의 생성", notes = "새로운 강의를 생성할 수 있다.")
     @PostMapping
-    public ResponseEntity<LectureDto> createLecture(@RequestBody @Valid LectureDto lectureDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.createLecture(lectureDto));
+    public ResponseEntity createLecture(@RequestBody @Valid LectureDto lectureDto) {
+        lectureService.createLecture(lectureDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")
+    @GetMapping
+    public ResponseEntity<List<LectureDto>> getAllLecture(){
+        return ResponseEntity.ok(lectureService.getLectureByAll());
     }
 
     @ApiOperation(value = "강의 조회", notes = "원하는 강의 번호로 강의를 조회할 수 있다.")
@@ -37,10 +44,12 @@ public class LectureController {
         return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByLectureId(lectureId));
     }
 
+    // 수정, 삭제의 경우도 Status Code를 고려해 봐야 할 것 같습니다.
     @ApiOperation(value = "강의 수정", notes = "강의 상세내용을 수정할 수 있다.")
     @PutMapping
-    public ResponseEntity<LectureDto> updateLecture(@RequestBody @Valid LectureDto lectureDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.updateLecture(lectureDto));
+    public ResponseEntity updateLecture(@RequestBody @Valid LectureDto lectureDto) {
+        lectureService.updateLecture(lectureDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @ApiOperation(value = "강의 삭제", notes = "강의를 삭제할 수 있다.")
@@ -48,12 +57,6 @@ public class LectureController {
     public ResponseEntity deleteLecture(@PathVariable("lectureId") Long lectureId) {
         lectureService.deleteLecture(lectureId);
         return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")
-    @GetMapping("/list")
-    public ResponseEntity<List<LectureDto>> getAllLecture(){
-        return ResponseEntity.ok(lectureService.getLectureByAll());
     }
 
     @ApiOperation(value = "카테고리별 강의 조회", notes = "현재까지 생성된 강의를 카테고리별로 조회할 수 있다.")
