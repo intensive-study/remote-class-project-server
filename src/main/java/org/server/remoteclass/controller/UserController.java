@@ -34,8 +34,9 @@ public class UserController {
     }
 
     // 본인 정보 조회 기능(비밀번호까지 나와서 다른 유저 조회 시 기능 구현 시엔 주의해야 합니다)
+    // Admin으로 전체 조회 옮겼기에 /myself 삭제하겠습니다.
     @ApiOperation(value = "나의 정보 확인", notes = "자신의 정보를 상세하게 조회할 수 있다.")
-    @GetMapping("/myself")
+    @GetMapping
     public ResponseEntity<ResponseUserByAdminDto> getMyInfo(){
         return ResponseEntity.ok(userService.getMyInfoWithAuthorities());
     }
