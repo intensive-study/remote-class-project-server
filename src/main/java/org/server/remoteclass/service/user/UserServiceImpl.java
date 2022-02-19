@@ -5,6 +5,8 @@ import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
 import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.entity.User;
+import org.server.remoteclass.exception.ErrorCode;
+import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.jpa.UserRepository;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
@@ -36,7 +38,8 @@ public class UserServiceImpl implements UserService{
     //본인의 정보 반환
     @Override
     public ResponseUserByAdminDto getMyInfoWithAuthorities(){
-        return ResponseUserByAdminDto.from(SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findByEmail).orElse(null));
+        return ResponseUserByAdminDto.from(SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST)));
     }
 
     @Override

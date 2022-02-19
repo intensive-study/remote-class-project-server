@@ -11,11 +11,11 @@ import java.util.List;
 
 public interface OrderService {
 
-    Long createOrder(RequestOrderDto requestOrderDto) throws IdNotExistException, ForbiddenException;
-    void cancelOrder(Long orderId) throws IdNotExistException, ForbiddenException;
-    List<ResponseOrderDto> getMyOrdersByUserId() throws IdNotExistException;
-    List<ResponseOrderByAdminDto> getAllOrdersByAdmin() throws IdNotExistException, ForbiddenException;
-    List<ResponseOrderByAdminDto> getOrderByUserIdByAdmin(Long userId) throws IdNotExistException, ForbiddenException;
-    ResponseOrderByAdminDto getOrderByOrderIdByAdmin(Long orderId) throws IdNotExistException, ForbiddenException;
+    Long createOrder(RequestOrderDto requestOrderDto);
+    void cancelOrder(Long orderId);
+    List<ResponseOrderDto> getMyOrdersByUserId();
+    List<ResponseOrderByAdminDto> getAllOrdersByAdmin();
+    List<ResponseOrderByAdminDto> getOrderByUserIdByAdmin(Long userId);
+    ResponseOrderByAdminDto getOrderByOrderIdByAdmin(Long orderId);
 
 }

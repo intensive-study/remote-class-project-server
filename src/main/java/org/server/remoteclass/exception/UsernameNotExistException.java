@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public class UsernameNotExistException extends Throwable{
-    private ResultCode resultCode;
+    private ErrorCode errorCode;
 
-    public UsernameNotExistException(String message, ResultCode resultCode){
+    public UsernameNotExistException(String message, ErrorCode errorCode){
         super(message);
-        this.resultCode = resultCode;
+        this.errorCode = errorCode;
     }
 }

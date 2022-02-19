@@ -3,11 +3,11 @@ package org.server.remoteclass.exception;
 import lombok.Getter;
 
 @Getter
-public class IdNotExistException extends Exception{
-    private ResultCode resultCode;
+public class IdNotExistException extends RuntimeException {
+    private ErrorCode errorCode;
 
-    public IdNotExistException(String message, ResultCode resultCode){
+    public IdNotExistException(String message, ErrorCode errorCode){
         super(message);
-        this.resultCode = resultCode;
+        this.errorCode = errorCode;
     }
 }

@@ -9,9 +9,9 @@ public class ExceptionResponse {
     private String code;
     private String message;
 
-    public ExceptionResponse(ResultCode resultCode){
-        this.status = resultCode.getStatus();
-        this.code = resultCode.getCode();
-        this.message = resultCode.getMessage();
+    public ExceptionResponse(ErrorCode errorCode){
+        this.status = errorCode.getStatus();
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
     }
 }

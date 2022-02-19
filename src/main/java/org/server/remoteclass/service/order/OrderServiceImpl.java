@@ -11,9 +11,8 @@ import org.server.remoteclass.entity.*;
 import org.server.remoteclass.exception.ForbiddenException;
 
 import org.server.remoteclass.exception.IdNotExistException;
-import org.server.remoteclass.exception.ResultCode;
+import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.jpa.*;
-import org.server.remoteclass.service.order.OrderService;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +50,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Long createOrder(RequestOrderDto requestOrderDto) throws IdNotExistException, ForbiddenException {
+    public Long createOrder(RequestOrderDto requestOrderDto) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         Order order = new Order();
         order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
@@ -70,13 +69,16 @@ public class OrderServiceImpl implements OrderService {
             order.setIssuedCoupon(null);
         }
         else{  //쿠폰값 입력했을때
-            issuedCoupon= issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
+            issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
             if(issuedCoupon==null){  //없는 쿠폰 입력했을 때
-                throw new IdNotExistException("존재하지 않는 쿠폰입니다", ResultCode.ID_NOT_EXIST);
+                throw new IdNotExistException("존재하지 않는 쿠폰입니다", ErrorCode.ID_NOT_EXIST);
             }
             // 이미 사용한 쿠폰 입력했을 때 or 유효하지 않는 쿠폰 입력했을 때
+
+            // Forbidden의 경우 권한 문제인데, 이런 경우에 발생시켜도 되나? 싶습니다.
+            // 400이나 404와 같은 코드를 내보내는 게 맞지 않을까요?
             if(issuedCoupon.isCouponUsed() || LocalDateTime.now().isAfter(issuedCoupon.getCouponValidDate())){
-                throw new ForbiddenException("이미 사용했거나 유효하지 않은 쿠폰입니다", ResultCode.FORBIDDEN);
+                throw new ForbiddenException("이미 사용했거나 유효하지 않은 쿠폰입니다", ErrorCode.FORBIDDEN);
             }
             order.setIssuedCoupon(issuedCoupon);
         }
@@ -85,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderLecture> orderLectureList = order.getOrderLectures();
         for(RequestOrderLectureDto requestOrderLectureDto : requestOrderDto.getOrderLectures()) {
             OrderLecture orderLecture = new OrderLecture();
-            Lecture lecture = lectureRepository.findById(requestOrderLectureDto.getLectureId()).orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ResultCode.ID_NOT_EXIST));
+            Lecture lecture = lectureRepository.findById(requestOrderLectureDto.getLectureId()).orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ErrorCode.ID_NOT_EXIST));
             orderLecture.setLecture(lecture);
             orderLecture.setOrder(order);
             orderLectureList.add(orderLectureRepository.save(orderLecture));
@@ -102,12 +104,12 @@ public class OrderServiceImpl implements OrderService {
     public void cancelOrder(Long orderId) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ErrorCode.ID_NOT_EXIST));
         if(user.getUserId() != order.getUser().getUserId()){
-            throw new ForbiddenException("취소 권한이 없습니다", ResultCode.FORBIDDEN);
+            throw new ForbiddenException("취소 권한이 없습니다", ErrorCode.FORBIDDEN);
         }
         order.setOrderStatus(OrderStatus.CANCEL);
     }
@@ -117,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
     public List<ResponseOrderDto> getMyOrdersByUserId() throws IdNotExistException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
         List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(user.getUserId());
         return orders.stream().map(ResponseOrderDto::new).collect(Collectors.toList());
     }
@@ -127,13 +129,13 @@ public class OrderServiceImpl implements OrderService {
     public List<ResponseOrderByAdminDto> getAllOrdersByAdmin() throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
         List<Order> orders;
         if(user.getAuthority() == Authority.ROLE_ADMIN){
             orders = orderRepository.findByOrderByOrderDateDesc();
         }
         else{
-            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
+            throw new ForbiddenException("접근 권한 없습니다", ErrorCode.FORBIDDEN);
         }
         return orders.stream().map(ResponseOrderByAdminDto::new).collect(Collectors.toList());
     }
@@ -143,13 +145,13 @@ public class OrderServiceImpl implements OrderService {
     public List<ResponseOrderByAdminDto> getOrderByUserIdByAdmin(Long userId) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
         List<Order> orders;
         if(user.getAuthority() == Authority.ROLE_ADMIN){
             orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(userId);
         }
         else{
-            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
+            throw new ForbiddenException("접근 권한 없습니다", ErrorCode.FORBIDDEN);
         }
         return orders.stream().map(ResponseOrderByAdminDto::new).collect(Collectors.toList());
     }
@@ -160,14 +162,14 @@ public class OrderServiceImpl implements OrderService {
     public ResponseOrderByAdminDto getOrderByOrderIdByAdmin(Long orderId) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
         Order order;
         if(user.getAuthority() == Authority.ROLE_ADMIN){
             order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ErrorCode.ID_NOT_EXIST));
         }
         else{
-            throw new ForbiddenException("접근 권한 없습니다", ResultCode.FORBIDDEN);
+            throw new ForbiddenException("접근 권한 없습니다", ErrorCode.FORBIDDEN);
         }
         return new ResponseOrderByAdminDto(order);
     }

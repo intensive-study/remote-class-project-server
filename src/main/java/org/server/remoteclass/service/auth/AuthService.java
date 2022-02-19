@@ -5,6 +5,7 @@ import org.server.remoteclass.dto.auth.TokenDto;
 import org.server.remoteclass.dto.auth.TokenRequestDto;
 import org.server.remoteclass.dto.user.RequestUserDto;
 import org.server.remoteclass.dto.user.ResponseUserDto;
+import org.server.remoteclass.exception.EmailDuplicateException;
 
 public interface AuthService {
     ResponseUserDto signup(RequestUserDto requestUserDto);

@@ -27,21 +27,21 @@ public class IssuedCouponController {
     //내가 가진 모든 쿠폰 보기
     @ApiOperation(value = "내가 발급받은 모든 쿠폰 조회")
     @GetMapping
-    public ResponseEntity<List<ResponseIssuedCouponDto>> getAllCoupons() throws IdNotExistException{
+    public ResponseEntity<List<ResponseIssuedCouponDto>> getAllCoupons() {
         return ResponseEntity.status(HttpStatus.OK).body(issuedCouponService.getAllMyCoupons());
     }
 
     //내가 가진 쿠폰 상세보기
     @ApiOperation(value = "내가 발급받은 쿠폰 번호 통해 조회")
     @GetMapping("/{couponId}")
-    public ResponseEntity<ResponseIssuedCouponDto> getCoupon(@PathVariable("couponId") Long couponId) throws IdNotExistException{
+    public ResponseEntity<ResponseIssuedCouponDto> getCoupon(@PathVariable("couponId") Long couponId) {
         return ResponseEntity.status(HttpStatus.OK).body(issuedCouponService.getMyCoupon(couponId));
     }
 
     //쿠폰 코드 입력해서 발급받기
     @PostMapping
     @ApiOperation(value = "쿠폰 발급받기", notes = "쿠폰을 발급받아 내 쿠폰함에 생성한다.")
-    public ResponseEntity issueCoupon(@RequestBody @Valid RequestIssuedCouponDto requestIssuedCouponDto) throws IdNotExistException{
+    public ResponseEntity issueCoupon(@RequestBody @Valid RequestIssuedCouponDto requestIssuedCouponDto) {
         issuedCouponService.issueCoupon(requestIssuedCouponDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

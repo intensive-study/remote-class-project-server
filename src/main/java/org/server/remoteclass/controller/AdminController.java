@@ -82,12 +82,12 @@ public class AdminController {
 
     @ApiOperation(value = "강의 조회", notes = "원하는 강의 번호로 강의를 조회할 수 있다.")
     @GetMapping("/lectures/{lectureId}")
-    public ResponseEntity<LectureDto> readLecture(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+    public ResponseEntity<LectureDto> readLecture(@PathVariable("lectureId") Long lectureId){
         return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByLectureId(lectureId));
     }
     @ApiOperation(value = "강의 삭제", notes = "강의를 삭제할 수 있다.")
     @DeleteMapping("/lectures/{lectureId}")
-    public ResponseEntity deleteLecture(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+    public ResponseEntity deleteLecture(@PathVariable("lectureId") Long lectureId) {
         lectureService.deleteLecture(lectureId);
         return ResponseEntity.status(HttpStatus.OK).body("lecture id: " + lectureId + " 삭제완료");
     }
@@ -100,7 +100,7 @@ public class AdminController {
 
     @ApiOperation(value = "카테고리별 강의 조회", notes = "현재까지 생성된 강의를 카테고리별로 조회할 수 있다.")
     @GetMapping("/lectures/category/{categoryId}")
-    public ResponseEntity<List<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
+    public ResponseEntity<List<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) {
         return ResponseEntity.ok(lectureService.getLectureByCategoryId(categoryId));
     }
 
@@ -110,21 +110,21 @@ public class AdminController {
 
     @ApiOperation(value = "수강 취소", notes = "학생이 신청했던 강의를 취소할 수 있다.")
     @DeleteMapping("/students/{lectureId}")
-    public ResponseEntity deleteStudent(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+    public ResponseEntity deleteStudent(@PathVariable("lectureId") Long lectureId) {
         studentService.cancel(lectureId);
         return ResponseEntity.status(HttpStatus.OK).body("lecture id: " + lectureId + " 수강 취소");
     }
 
     @ApiOperation(value = "학생의 수강 강좌 조회", notes = "특정 학생 수강 신청한 모든 강의를 조회할 수 있다.")
     @GetMapping("/students/user/{userId}")
-    public ResponseEntity<List<ResponseLectureDto>> getLecturesByUserId(@PathVariable("userId") Long userId) throws IdNotExistException, ForbiddenException {
+    public ResponseEntity<List<ResponseLectureDto>> getLecturesByUserId(@PathVariable("userId") Long userId)  {
         return ResponseEntity.status(HttpStatus.OK).body(studentService.getLecturesByUserIdByAdmin(userId));
     }
 
     //수강생 전체 조회 (강의자 권한)
     @ApiOperation(value = "특정 강의의 수강생 조회", notes = "특정 강의의 모든 수강생을 조회할 수 있다.")
     @GetMapping("/students/lecture/{lectureId}")
-    public ResponseEntity<List<ResponseStudentByLecturerDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException, ForbiddenException {
+    public ResponseEntity<List<ResponseStudentByLecturerDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) {
         return ResponseEntity.status(HttpStatus.OK).body(studentService.getStudentsByLectureId(lectureId));
     }
 

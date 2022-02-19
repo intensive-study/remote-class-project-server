@@ -58,8 +58,6 @@ public class CouponServiceImpl implements CouponService {
         }
 
         return list;
-//        return coupons.stream().map(
-//                coupon -> ResponseCouponDto.from(coupon)).collect(Collectors.toList());
     }
 
     @Override

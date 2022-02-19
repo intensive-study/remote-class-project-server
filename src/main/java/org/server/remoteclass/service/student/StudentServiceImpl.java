@@ -13,8 +13,8 @@ import org.server.remoteclass.entity.Student;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
-import org.server.remoteclass.exception.NameDuplicateException;
-import org.server.remoteclass.exception.ResultCode;
+import org.server.remoteclass.exception.EmailDuplicateException;
+import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.jpa.LectureRepository;
 import org.server.remoteclass.jpa.StudentRepository;
 import org.server.remoteclass.jpa.UserRepository;
@@ -49,10 +49,10 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     @Transactional
-    public StudentDto createStudent(RequestStudentDto requestStudentDto) throws IdNotExistException, NameDuplicateException {
+    public StudentDto createStudent(RequestStudentDto requestStudentDto) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         Student student = new Student();
         if(user.getUserRole() == UserRole.ROLE_STUDENT){
             if(!studentRepository.existsByLecture_LectureIdAndUser_UserId(requestStudentDto.getLectureId(), user.getUserId())) {
@@ -60,7 +60,7 @@ public class StudentServiceImpl implements StudentService{
                 student.setLecture(lectureRepository.findById(requestStudentDto.getLectureId()).orElse(null));
             }
             else{
-                throw new NameDuplicateException("이미 존재하는 데이터입니다.", ResultCode.NAME_DUPLICATION);
+                throw new EmailDuplicateException("이미 가입된 이메일 주소입니다.", ErrorCode.EMAIL_DUPLICATION);
             }
         }
         return StudentDto.from(studentRepository.save(student));
@@ -71,7 +71,7 @@ public class StudentServiceImpl implements StudentService{
     public void cancel(Long lectureId) throws IdNotExistException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         if(studentRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())){
             studentRepository.deleteByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId());
         }
@@ -79,29 +79,29 @@ public class StudentServiceImpl implements StudentService{
 
     //현재 수강생의 수강 강좌 리스트 조회
     @Override
-    public List<ResponseLectureDto> getLecturesByUserId() throws IdNotExistException, ForbiddenException {
+    public List<ResponseLectureDto> getLecturesByUserId() {
 
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
         List<Student> students = null;
         if(user.getUserRole() == UserRole.ROLE_STUDENT){
             students = studentRepository.findByUser_UserIdOrderByLecture_StartDateDesc(user.getUserId());
         }
         else{
-            throw new ForbiddenException("접근 권한이 없습니다.", ResultCode.FORBIDDEN);
+            throw new ForbiddenException("접근 권한이 없습니다.", ErrorCode.FORBIDDEN);
         }
         return students.stream().map(lecture->ResponseLectureDto.from(lecture)).collect(Collectors.toList());
     }
 
     //강좌별 전체 수강생 목록
     @Override
-    public List<ResponseStudentByLecturerDto> getStudentsByLectureId(Long lectureId) throws IdNotExistException, ForbiddenException {
+    public List<ResponseStudentByLecturerDto> getStudentsByLectureId(Long lectureId) {
 
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
         Lecture lecture = lectureRepository.findById(lectureId).orElse(null);
         List<Student> students = null;
@@ -111,25 +111,25 @@ public class StudentServiceImpl implements StudentService{
             students = studentRepository.findByLecture_LectureId(lectureId);
         }
         else{
-            throw new ForbiddenException("접근 권한이 없습니다", ResultCode.FORBIDDEN);
+            throw new ForbiddenException("접근 권한이 없습니다", ErrorCode.FORBIDDEN);
         }
         return students.stream().map(student-> ResponseStudentByLecturerDto.from(student)).collect(Collectors.toList());
     }
 
     //특정 수강생의 수강 강좌 리스트 조회
     @Override
-    public List<ResponseLectureDto> getLecturesByUserIdByAdmin(Long userId) throws IdNotExistException, ForbiddenException {
+    public List<ResponseLectureDto> getLecturesByUserIdByAdmin(Long userId)  {
 
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
         List<Student> students = null;
         if(user.getAuthority() == Authority.ROLE_ADMIN){
             students = studentRepository.findByUser_UserIdOrderByLecture_StartDateDesc(userId);
         }
         else{
-            throw new ForbiddenException("접근 권한이 없습니다.", ResultCode.FORBIDDEN);
+            throw new ForbiddenException("접근 권한이 없습니다.", ErrorCode.FORBIDDEN);
         }
         return students.stream().map(ResponseLectureDto::new).collect(Collectors.toList());
     }

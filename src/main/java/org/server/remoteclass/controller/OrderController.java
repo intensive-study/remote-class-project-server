@@ -30,21 +30,21 @@ public class OrderController {
 
     @ApiOperation("주문 신청")
     @PostMapping
-    public ResponseEntity createOrder(@RequestBody RequestOrderDto requestOrderDto) throws IdNotExistException, ForbiddenException {
+    public ResponseEntity createOrder(@RequestBody RequestOrderDto requestOrderDto) {
         orderService.createOrder(requestOrderDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @ApiOperation("주문 취소")
     @PutMapping("/{orderId}")
-    public ResponseEntity cancelOrder(@PathVariable("orderId") @Valid Long orderId) throws ForbiddenException, IdNotExistException {
+    public ResponseEntity cancelOrder(@PathVariable("orderId") @Valid Long orderId) {
         orderService.cancelOrder(orderId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation("사용자 본인 주문 목록 조회")
     @GetMapping("/myList")
-    public ResponseEntity<List<ResponseOrderDto>> getMyOrder() throws IdNotExistException {
+    public ResponseEntity<List<ResponseOrderDto>> getMyOrder() {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getMyOrdersByUserId());
     }
 }

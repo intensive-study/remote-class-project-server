@@ -10,6 +10,8 @@ import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.entity.RefreshToken;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.constant.UserRole;
+import org.server.remoteclass.exception.EmailDuplicateException;
+import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.jpa.RefreshTokenRepository;
 import org.server.remoteclass.jpa.UserRepository;
 import org.server.remoteclass.jwt.TokenProvider;
@@ -48,7 +50,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public ResponseUserDto signup(RequestUserDto requestUserDto){
         if(userRepository.existsByEmail(requestUserDto.getEmail())){
-            throw new RuntimeException("이미 가입되어 있는 유저입니다");
+            throw new EmailDuplicateException("이미 가입되어 있는 유저입니다", ErrorCode.EMAIL_DUPLICATION);
         }
 
         User user = User.builder()
@@ -87,7 +89,7 @@ public class AuthServiceImpl implements AuthService{
     public TokenDto reissue(TokenRequestDto tokenRequestDto){
         // 1. Refresh Token 검증
         if(!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())){
-            throw  new RuntimeException("Refresh Token이 유효하지 않습니다.");
+            throw new RuntimeException("Refresh Token이 유효하지 않습니다.");
         }
         // 2. Access Token 에서 User Id 가져오기
         Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());

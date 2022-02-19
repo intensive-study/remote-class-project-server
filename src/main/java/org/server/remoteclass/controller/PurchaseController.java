@@ -25,7 +25,7 @@ public class PurchaseController {
 
     @ApiOperation(value = "구매 생성", notes = "구매 생성으로 구매 완료처리함.")
     @PostMapping
-    public ResponseEntity<PurchaseDto> createPurchase(@RequestBody @Valid RequestPurchaseDto requestPurchaseDto) throws IdNotExistException, ForbiddenException {
+    public ResponseEntity<PurchaseDto> createPurchase(@RequestBody @Valid RequestPurchaseDto requestPurchaseDto) {
         purchaseService.createPurchase(requestPurchaseDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -38,7 +38,7 @@ public class PurchaseController {
 
     @ApiOperation(value = "특정 구매 내역 조회", notes = "생성된 특정 구매 내열 조회함.")
     @GetMapping("/myList/{purchaseId}")
-    public ResponseEntity<ResponsePurchaseDto> getAllPurchase(@PathVariable("purchaseId") @Valid Long purchaseId) throws IdNotExistException {
+    public ResponseEntity<ResponsePurchaseDto> getAllPurchase(@PathVariable("purchaseId") @Valid Long purchaseId) {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getPurchaseByUserIdAndPurchaseId(purchaseId));
     }
 }

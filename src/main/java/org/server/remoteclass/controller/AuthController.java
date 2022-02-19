@@ -7,6 +7,7 @@ import org.server.remoteclass.dto.auth.TokenDto;
 import org.server.remoteclass.dto.auth.TokenRequestDto;
 import org.server.remoteclass.dto.user.RequestUserDto;
 import org.server.remoteclass.dto.user.ResponseUserDto;
+import org.server.remoteclass.exception.EmailDuplicateException;
 import org.server.remoteclass.service.auth.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class AuthController {
 
     @ApiOperation(value = "사용자 회원가입", notes = "email, name, password를 통해 회원가입한다.")
     @PostMapping("/signup")
-    public ResponseEntity<ResponseUserDto> signup(@Valid @RequestBody RequestUserDto requestUserDto){
+    public ResponseEntity<ResponseUserDto> signup(@Valid @RequestBody RequestUserDto requestUserDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(requestUserDto));
     }
 

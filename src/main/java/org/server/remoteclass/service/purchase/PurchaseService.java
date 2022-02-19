@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface PurchaseService {
 
-    PurchaseDto createPurchase(RequestPurchaseDto requestPurchaseDto) throws IdNotExistException, ForbiddenException;
-    List<ResponsePurchaseDto> getAllPurchaseByUserId() throws IdNotExistException;
-    ResponsePurchaseDto getPurchaseByUserIdAndPurchaseId(Long purchaseId) throws IdNotExistException;
+    PurchaseDto createPurchase(RequestPurchaseDto requestPurchaseDto);
+    List<ResponsePurchaseDto> getAllPurchaseByUserId();
+    ResponsePurchaseDto getPurchaseByUserIdAndPurchaseId(Long purchaseId);
 
 }
