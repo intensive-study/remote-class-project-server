@@ -33,7 +33,7 @@ public class LectureController {
 
     @ApiOperation(value = "강의 조회", notes = "원하는 강의 번호로 강의를 조회할 수 있다.")
     @GetMapping("/{lectureId}")
-    public ResponseEntity<LectureDto> readLecture(@PathVariable("lectureId") Long lectureId) {
+    public ResponseEntity<LectureDto> getLecture(@PathVariable("lectureId") Long lectureId) {
         return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByLectureId(lectureId));
     }
 
@@ -47,7 +47,7 @@ public class LectureController {
     @DeleteMapping("/{lectureId}")
     public ResponseEntity deleteLecture(@PathVariable("lectureId") Long lectureId) {
         lectureService.deleteLecture(lectureId);
-        return ResponseEntity.status(HttpStatus.OK).body("lecture id: " + lectureId + " 삭제완료");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")

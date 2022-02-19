@@ -62,13 +62,6 @@ public class AdminController {
      * USER
      */
 
-    // 관리자가 사용자 조회
-    @ApiOperation(value = "관리자가 사용자 조회", notes = "사용자의 모든 정보를 조회할 수 있다.")
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<ResponseUserByAdminDto> getUser(@PathVariable("userId") Long userId){
-        return ResponseEntity.ok(adminService.getUser(userId));
-    }
-
     // 관리자가 전체 유저 조회
     @ApiOperation(value = "관리자가 모든 사용자 조회", notes = "모든 사용자의 상세한 정보를 알 수 있다.")
     @GetMapping("/users")
@@ -76,9 +69,22 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getAllUsers());
     }
 
+    // 관리자가 사용자 조회
+    @ApiOperation(value = "관리자가 사용자 조회", notes = "사용자의 모든 정보를 조회할 수 있다.")
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<ResponseUserByAdminDto> getUser(@PathVariable("userId") Long userId){
+        return ResponseEntity.ok(adminService.getUser(userId));
+    }
+
     /**
      * LECTURE
      */
+
+    @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")
+    @GetMapping("/lectures")
+    public ResponseEntity<List<LectureDto>> getAllLecture(){
+        return ResponseEntity.ok(lectureService.getLectureByAll());
+    }
 
     @ApiOperation(value = "강의 조회", notes = "원하는 강의 번호로 강의를 조회할 수 있다.")
     @GetMapping("/lectures/{lectureId}")
@@ -92,12 +98,6 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")
-    @GetMapping("/lectures/list")
-    public ResponseEntity<List<LectureDto>> getAllLecture(){
-        return ResponseEntity.ok(lectureService.getLectureByAll());
-    }
-
     @ApiOperation(value = "카테고리별 강의 조회", notes = "현재까지 생성된 강의를 카테고리별로 조회할 수 있다.")
     @GetMapping("/lectures/category/{categoryId}")
     public ResponseEntity<List<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) {
@@ -108,22 +108,23 @@ public class AdminController {
      * STUDENT
      */
 
-    @ApiOperation(value = "수강 취소", notes = "학생이 신청했던 강의를 취소할 수 있다.")
+    @ApiOperation(value = "수강 철회", notes = "학생이 신청했던 강의를 철회할 수 있다.")
     @DeleteMapping("/students/{lectureId}")
     public ResponseEntity deleteStudent(@PathVariable("lectureId") Long lectureId) {
         studentService.cancel(lectureId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @ApiOperation(value = "학생의 수강 강좌 조회", notes = "특정 학생 수강 신청한 모든 강의를 조회할 수 있다.")
-    @GetMapping("/students/user/{userId}")
+    // URL 고민해 봐야 할 것 같습니다.
+    @ApiOperation(value = "학생의 수강 강좌 조회", notes = "특정 학생이 수강하는 모든 강의를 조회할 수 있다.")
+    @GetMapping("/students/users/{userId}")
     public ResponseEntity<List<ResponseLectureDto>> getLecturesByUserId(@PathVariable("userId") Long userId)  {
         return ResponseEntity.status(HttpStatus.OK).body(studentService.getLecturesByUserIdByAdmin(userId));
     }
 
     //수강생 전체 조회 (강의자 권한)
     @ApiOperation(value = "특정 강의의 수강생 조회", notes = "특정 강의의 모든 수강생을 조회할 수 있다.")
-    @GetMapping("/students/lecture/{lectureId}")
+    @GetMapping("/students/lectures/{lectureId}")
     public ResponseEntity<List<ResponseStudentByLecturerDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) {
         return ResponseEntity.status(HttpStatus.OK).body(studentService.getStudentsByLectureId(lectureId));
     }
@@ -133,13 +134,13 @@ public class AdminController {
      */
 
     @ApiOperation("관리자의 주문 전체 목록 조회")
-    @GetMapping("/orders/list")
+    @GetMapping("/orders")
     public ResponseEntity<List<ResponseOrderByAdminDto>> getAllByAdmin() {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrdersByAdmin());
     }
 
     @ApiOperation("관리자의 사용자별 목록 조회")
-    @GetMapping("/orders/user/{userId}")
+    @GetMapping("/orders/users/{userId}")
     public ResponseEntity<List<ResponseOrderByAdminDto>> getByUserIdByAdmin(@PathVariable("userId") Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderByUserIdByAdmin(userId));
     }
