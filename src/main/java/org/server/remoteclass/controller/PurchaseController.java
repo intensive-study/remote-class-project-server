@@ -25,19 +25,20 @@ public class PurchaseController {
 
     @ApiOperation(value = "구매 생성", notes = "구매 생성으로 구매 완료처리함.")
     @PostMapping
-    public ResponseEntity<PurchaseDto> createPurchase(@RequestBody @Valid RequestPurchaseDto requestPurchaseDto) {
+    public ResponseEntity createPurchase(@RequestBody @Valid RequestPurchaseDto requestPurchaseDto) {
         purchaseService.createPurchase(requestPurchaseDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    // 자신의 구매 내역만 조회할 수 있기에 굳이 /myList가 필요없을 것 같아요.
     @ApiOperation(value = "구매 내역 전체 조회", notes = "생성된 전체 구매 내열 조회함.")
-    @GetMapping("/myList")
+    @GetMapping
     public ResponseEntity<List<ResponsePurchaseDto>> getAllPurchase() throws IdNotExistException {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getAllPurchaseByUserId());
     }
 
     @ApiOperation(value = "특정 구매 내역 조회", notes = "생성된 특정 구매 내열 조회함.")
-    @GetMapping("/myList/{purchaseId}")
+    @GetMapping("/{purchaseId}")
     public ResponseEntity<ResponsePurchaseDto> getAllPurchase(@PathVariable("purchaseId") @Valid Long purchaseId) {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getPurchaseByUserIdAndPurchaseId(purchaseId));
     }
