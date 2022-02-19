@@ -82,14 +82,14 @@ public class AdminController {
 
     @ApiOperation(value = "강의 조회", notes = "원하는 강의 번호로 강의를 조회할 수 있다.")
     @GetMapping("/lectures/{lectureId}")
-    public ResponseEntity<LectureDto> readLecture(@PathVariable("lectureId") Long lectureId){
+    public ResponseEntity<LectureDto> getLecture(@PathVariable("lectureId") Long lectureId){
         return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByLectureId(lectureId));
     }
     @ApiOperation(value = "강의 삭제", notes = "강의를 삭제할 수 있다.")
     @DeleteMapping("/lectures/{lectureId}")
     public ResponseEntity deleteLecture(@PathVariable("lectureId") Long lectureId) {
         lectureService.deleteLecture(lectureId);
-        return ResponseEntity.status(HttpStatus.OK).body("lecture id: " + lectureId + " 삭제완료");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")
@@ -112,7 +112,7 @@ public class AdminController {
     @DeleteMapping("/students/{lectureId}")
     public ResponseEntity deleteStudent(@PathVariable("lectureId") Long lectureId) {
         studentService.cancel(lectureId);
-        return ResponseEntity.status(HttpStatus.OK).body("lecture id: " + lectureId + " 수강 취소");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "학생의 수강 강좌 조회", notes = "특정 학생 수강 신청한 모든 강의를 조회할 수 있다.")
@@ -134,19 +134,19 @@ public class AdminController {
 
     @ApiOperation("관리자의 주문 전체 목록 조회")
     @GetMapping("/orders/list")
-    public ResponseEntity<List<ResponseOrderByAdminDto>> getAllByAdmin() throws IdNotExistException, ForbiddenException {
+    public ResponseEntity<List<ResponseOrderByAdminDto>> getAllByAdmin() {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrdersByAdmin());
     }
 
     @ApiOperation("관리자의 사용자별 목록 조회")
     @GetMapping("/orders/user/{userId}")
-    public ResponseEntity<List<ResponseOrderByAdminDto>> getByUserIdByAdmin(@PathVariable("userId") Long userId) throws IdNotExistException, ForbiddenException {
+    public ResponseEntity<List<ResponseOrderByAdminDto>> getByUserIdByAdmin(@PathVariable("userId") Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderByUserIdByAdmin(userId));
     }
 
     @ApiOperation("관리자의 특정 주문 목록 조회")
     @GetMapping("/orders/{orderId}")
-    public ResponseEntity<ResponseOrderByAdminDto> getByOrderIdByAdmin(@PathVariable("orderId") Long orderId) throws IdNotExistException, ForbiddenException {
+    public ResponseEntity<ResponseOrderByAdminDto> getByOrderIdByAdmin(@PathVariable("orderId") Long orderId) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderByOrderIdByAdmin(orderId));
     }
 
@@ -178,14 +178,14 @@ public class AdminController {
     //쿠폰 비활성화(관리자 권한)
     @ApiOperation(value = "쿠폰 비활성화", notes = "더 이상 쿠폰을 발급받을 수 없게 쿠폰을 비활성화 한다.")
     @PutMapping("/coupons/deactivate/{couponId}")
-    public ResponseEntity createCoupon(@PathVariable("couponId") Long couponId) throws IdNotExistException {
+    public ResponseEntity createCoupon(@PathVariable("couponId") Long couponId) {
         couponService.deactivateCoupon(couponId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "쿠폰 삭제", notes = "쿠폰 목록에서 쿠폰을 삭제한다.")
     @DeleteMapping("/coupons/{couponId}")
-    public ResponseEntity deleteCoupon(@PathVariable("couponId") Long couponId) throws IdNotExistException {
+    public ResponseEntity deleteCoupon(@PathVariable("couponId") Long couponId) {
         couponService.deleteCoupon(couponId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
