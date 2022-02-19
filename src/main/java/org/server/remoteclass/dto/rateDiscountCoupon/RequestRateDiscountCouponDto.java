@@ -1,4 +1,4 @@
-package org.server.remoteclass.dto.rateDiscount;
+package org.server.remoteclass.dto.rateDiscountCoupon;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestRateDiscountDto {
+public class RequestRateDiscountCouponDto {
     private String title;
     private int couponValidDays;
     private int discountRate;

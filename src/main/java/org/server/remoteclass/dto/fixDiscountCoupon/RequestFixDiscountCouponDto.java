@@ -1,4 +1,4 @@
-package org.server.remoteclass.dto.fixDiscount;
+package org.server.remoteclass.dto.fixDiscountCoupon;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestFixDiscountDto {
+public class RequestFixDiscountCouponDto {
     private String title;
     private int couponValidDays;
     private int discountPrice;

@@ -11,6 +11,6 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @DiscriminatorValue("R")
-public class RateDiscount extends Coupon {
+public class RateDiscountCoupon extends Coupon {
     private int discountRate;
 }

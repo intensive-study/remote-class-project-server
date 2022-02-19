@@ -5,10 +5,9 @@ import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.entity.Coupon;
-import org.server.remoteclass.entity.FixDiscount;
-import org.server.remoteclass.entity.RateDiscount;
+import org.server.remoteclass.entity.FixDiscountCoupon;
+import org.server.remoteclass.entity.RateDiscountCoupon;
 import org.server.remoteclass.exception.IdNotExistException;
-import org.server.remoteclass.exception.ResultCode;
 import org.server.remoteclass.jpa.CouponRepository;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -34,13 +32,13 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public ResponseCouponDto getCouponByCouponId(Long couponId) {
-        if (couponRepository.findByCouponId(couponId).orElse(null) instanceof FixDiscount) {
+        if (couponRepository.findByCouponId(couponId).orElse(null) instanceof FixDiscountCoupon) {
             log.info("FixDiscount 타입입니다.");
-            return ResponseCouponDto.from((FixDiscount) couponRepository.findByCouponId(couponId).orElse(null));
+            return ResponseCouponDto.from((FixDiscountCoupon) couponRepository.findByCouponId(couponId).orElse(null));
         }
 
         log.info("RateDiscount 타입입니다.");
-        return ResponseCouponDto.from((RateDiscount) couponRepository.findByCouponId(couponId).orElse(null));
+        return ResponseCouponDto.from((RateDiscountCoupon) couponRepository.findByCouponId(couponId).orElse(null));
 
     }
 
@@ -51,11 +49,11 @@ public class CouponServiceImpl implements CouponService {
         List<ResponseCouponDto> list = new ArrayList<>();
 
         for (Coupon coupon : coupons) {
-            if(coupon instanceof FixDiscount){
-                list.add(ResponseCouponDto.from((FixDiscount) coupon));
+            if(coupon instanceof FixDiscountCoupon){
+                list.add(ResponseCouponDto.from((FixDiscountCoupon) coupon));
             }
             else {
-                list.add(ResponseCouponDto.from((RateDiscount) coupon));
+                list.add(ResponseCouponDto.from((RateDiscountCoupon) coupon));
             }
         }
 
