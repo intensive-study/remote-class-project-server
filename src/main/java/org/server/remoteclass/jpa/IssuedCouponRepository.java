@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IssuedCouponRepository extends JpaRepository<IssuedCoupon, Long> {
+    IssuedCoupon findByIssuedCouponId(Long issuedCouponId);
 
     // 내가 가지고 있는 쿠폰 조회 기능
     @Query("SELECT m FROM IssuedCoupon m where m.user.userId = :userId")
