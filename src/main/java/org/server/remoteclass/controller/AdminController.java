@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.dto.event.RequestEventDto;
+import org.server.remoteclass.dto.lecture.LectureDto;
 import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
 import org.server.remoteclass.exception.ForbiddenException;
@@ -11,6 +12,7 @@ import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.admin.AdminService;
 import org.server.remoteclass.service.coupon.CouponService;
 import org.server.remoteclass.service.event.EventService;
+import org.server.remoteclass.service.lecture.LectureService;
 import org.server.remoteclass.service.order.OrderService;
 import org.server.remoteclass.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,18 +28,18 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final LectureService lectureService;
     private final StudentService studentService;
     private final OrderService orderService;
     private final CouponService couponService;
     private final EventService eventService;
 
     @Autowired
-    public AdminController(AdminService adminService,
-                           StudentService studentService,
-                           OrderService orderService,
-                           CouponService couponService,
-                           EventService eventService){
+    public AdminController(AdminService adminService, LectureService lectureService,
+                           StudentService studentService,OrderService orderService,
+                           CouponService couponService, EventService eventService){
         this.adminService = adminService;
+        this.lectureService = lectureService;
         this.studentService = studentService;
         this.orderService = orderService;
         this.couponService = couponService;
@@ -71,6 +73,30 @@ public class AdminController {
     /**
      * LECTURE
      */
+
+    @ApiOperation(value = "강의 조회", notes = "원하는 강의 번호로 강의를 조회할 수 있다.")
+    @GetMapping("/lectures/{lectureId}")
+    public ResponseEntity<LectureDto> readLecture(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+        return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByLectureId(lectureId));
+    }
+    @ApiOperation(value = "강의 삭제", notes = "강의를 삭제할 수 있다.")
+    @DeleteMapping("/lectures/{lectureId}")
+    public ResponseEntity deleteLecture(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+        lectureService.deleteLecture(lectureId);
+        return ResponseEntity.status(HttpStatus.OK).body("lecture id: " + lectureId + " 삭제완료");
+    }
+
+    @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")
+    @GetMapping("/lectures/list")
+    public ResponseEntity<List<LectureDto>> getAllLecture(){
+        return ResponseEntity.ok(lectureService.getLectureByAll());
+    }
+
+    @ApiOperation(value = "카테고리별 강의 조회", notes = "현재까지 생성된 강의를 카테고리별로 조회할 수 있다.")
+    @GetMapping("/lectures/category/{categoryId}")
+    public ResponseEntity<List<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
+        return ResponseEntity.ok(lectureService.getLectureByCategoryId(categoryId));
+    }
 
     /**
      * STUDENT

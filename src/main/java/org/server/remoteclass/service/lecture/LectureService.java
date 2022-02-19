@@ -9,11 +9,11 @@ import java.util.List;
 public interface LectureService {
 
     //강의 생성
-    LectureDto createLecture(LectureDto lectureFormDto) throws IdNotExistException, ForbiddenException;
+    LectureDto createLecture(LectureDto lectureDto) throws IdNotExistException, ForbiddenException;
     //강의 조회
     LectureDto getLectureByLectureId(Long lectureId) throws IdNotExistException;
     //강의 수정
-    LectureDto updateLecture(LectureDto lectureFormDto) throws IdNotExistException;
+    LectureDto updateLecture(LectureDto lectureDto) throws IdNotExistException;
     //강의 삭제
     void deleteLecture(Long lectureId) throws IdNotExistException;
 

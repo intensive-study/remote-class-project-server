@@ -2,6 +2,7 @@ package org.server.remoteclass.service.lecture;
 
 import org.modelmapper.ModelMapper;
 
+import org.server.remoteclass.constant.UserRole;
 import org.server.remoteclass.dto.lecture.LectureDto;
 import org.server.remoteclass.entity.Category;
 import org.server.remoteclass.entity.Lecture;
@@ -50,9 +51,9 @@ public class LectureServiceImpl implements LectureService{
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
         // User의 Role이 Lecturer인 경우 강의 생성, 아니면 403 코드 반환
-//        if(user.getUserRole() != UserRole.ROLE_LECTURER){
-//            throw new ForbiddenException("접근 권한이 없습니다.", ResultCode.FORBIDDEN);
-//        }
+        if(user.getUserRole() != UserRole.ROLE_LECTURER){
+            throw new ForbiddenException("접근 권한이 없습니다.", ResultCode.FORBIDDEN);
+        }
         Lecture lecture = modelMapper.map(lectureDto, Lecture.class);
         Category category = categoryRepository.findById(lectureDto.getCategoryId())
                 .orElseThrow(() -> new IdNotExistException("카테고리 존재하지 않음", ResultCode.ID_NOT_EXIST));
