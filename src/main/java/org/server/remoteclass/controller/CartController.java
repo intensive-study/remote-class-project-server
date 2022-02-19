@@ -31,7 +31,7 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @ApiOperation(value = "장바구니 취소", notes = "학생이 신청했던 강의를 장바구니에서 뺄 수 있다.")
+    @ApiOperation(value = "장바구니 개별 삭제", notes = "학생이 신청했던 강의를 장바구니에서 뺄 수 있다.")
     @DeleteMapping("/{lectureId}")
     public ResponseEntity deleteCart(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
         cartService.deleteCart(lectureId);
@@ -39,7 +39,7 @@ public class CartController {
     }
 
     @ApiOperation(value = "장바구니 전체 삭제", notes = "학생이 신청했던 강의 전체를 장바구니에서 뺄 수 있다.")
-    @DeleteMapping("/all")
+    @DeleteMapping("/")
     public ResponseEntity deleteAllCart() throws IdNotExistException {
         cartService.deleteAllCart();
         return ResponseEntity.status(HttpStatus.OK).build();

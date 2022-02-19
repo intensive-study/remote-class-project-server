@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicInsert
-@DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
 public class Cart {
     @Id
