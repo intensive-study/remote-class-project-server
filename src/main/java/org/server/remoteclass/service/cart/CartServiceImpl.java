@@ -3,7 +3,6 @@ package org.server.remoteclass.service.cart;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.UserRole;
-import org.server.remoteclass.dto.cart.CartDto;
 import org.server.remoteclass.dto.cart.RequestCartDto;
 import org.server.remoteclass.dto.cart.ResponseCartDto;
 import org.server.remoteclass.entity.Cart;
@@ -48,21 +47,27 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDto createCart(RequestCartDto requestCartDto) throws IdNotExistException, NameDuplicateException {
+    public ResponseCartDto createCart(RequestCartDto requestCartDto) throws IdNotExistException, NameDuplicateException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
         Cart cart = new Cart();
         if(user.getUserRole() == UserRole.ROLE_STUDENT){
+            //이미 수강한 수업이 아니면서 장바구니에 없는 강의일때 장바구니에 넣을 수 있습니다.
             if(!studentRepository.existsByLecture_LectureIdAndUser_UserId(requestCartDto.getLectureId(), user.getUserId())) {
-                cart.setUser(user);
-                cart.setLecture(lectureRepository.findById(requestCartDto.getLectureId()).orElse(null));
+                if(!cartRepository.existsByLecture_LectureIdAndUser_UserId(requestCartDto.getLectureId(), user.getUserId())) {
+                    cart.setUser(user);
+                    cart.setLecture(lectureRepository.findById(requestCartDto.getLectureId()).orElse(null));
+                }
+                else{
+                    throw new NameDuplicateException("장바구니에 있는 강의입니다", ResultCode.NAME_DUPLICATION);
+                }
             }
             else{
                 throw new NameDuplicateException("이미 수강한 강의입니다.", ResultCode.NAME_DUPLICATION);
             }
         }
-        return CartDto.from(cartRepository.save(cart));
+        return ResponseCartDto.from(cartRepository.save(cart));
     }
 
     @Override
