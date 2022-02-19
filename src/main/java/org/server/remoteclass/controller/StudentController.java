@@ -32,13 +32,13 @@ public class StudentController {
 
     @ApiOperation(value = "수강 신청", notes = "학생이 수강 신청할 수 있다.")
     @PostMapping
-    public ResponseEntity<StudentDto> applyLecture(@RequestBody @Valid RequestStudentDto requestStudentDto) throws IdNotExistException, NameDuplicateException {
+    public ResponseEntity<StudentDto> createStudent(@RequestBody @Valid RequestStudentDto requestStudentDto) throws IdNotExistException, NameDuplicateException {
         return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(requestStudentDto));
     }
 
     @ApiOperation(value = "수강 취소", notes = "학생이 신청했던 강의를 취소할 수 있다.")
     @DeleteMapping("/{lectureId}")
-    public ResponseEntity deleteLecture(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+    public ResponseEntity deleteStudent(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
         studentService.cancel(lectureId);
         return ResponseEntity.status(HttpStatus.OK).body("lecture id: " + lectureId + " 수강 취소");
     }

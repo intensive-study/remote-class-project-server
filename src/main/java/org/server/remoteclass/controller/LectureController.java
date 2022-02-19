@@ -57,7 +57,7 @@ public class LectureController {
     }
 
     @ApiOperation(value = "카테고리별 강의 조회", notes = "현재까지 생성된 강의를 카테고리별로 조회할 수 있다.")
-    @GetMapping("/list/{categoryId}")
+    @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
         return ResponseEntity.ok(lectureService.getLectureByCategoryId(categoryId));
     }
