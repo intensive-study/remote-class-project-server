@@ -20,6 +20,6 @@ public interface StudentService {
     List<ResponseLectureDto> getLecturesByUserId() throws IdNotExistException, ForbiddenException;
     //강좌별 전체 수강생 조회
     List<ResponseStudentByLecturerDto> getStudentsByLectureId(Long lectureId) throws IdNotExistException, ForbiddenException;
-
+    List<ResponseLectureDto> getLecturesByUserIdByAdmin(Long userId) throws IdNotExistException, ForbiddenException;
 
 }

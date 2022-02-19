@@ -5,7 +5,9 @@ import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.dto.event.RequestEventDto;
 import org.server.remoteclass.dto.lecture.LectureDto;
+import org.server.remoteclass.dto.lecture.ResponseLectureDto;
 import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;
+import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
@@ -101,6 +103,26 @@ public class AdminController {
     /**
      * STUDENT
      */
+
+    @ApiOperation(value = "수강 취소", notes = "학생이 신청했던 강의를 취소할 수 있다.")
+    @DeleteMapping("/students/{lectureId}")
+    public ResponseEntity deleteStudent(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+        studentService.cancel(lectureId);
+        return ResponseEntity.status(HttpStatus.OK).body("lecture id: " + lectureId + " 수강 취소");
+    }
+
+    @ApiOperation(value = "학생의 수강 강좌 조회", notes = "특정 학생 수강 신청한 모든 강의를 조회할 수 있다.")
+    @GetMapping("/students/user/{userId}")
+    public ResponseEntity<List<ResponseLectureDto>> getLecturesByUserId(@PathVariable("userId") Long userId) throws IdNotExistException, ForbiddenException {
+        return ResponseEntity.status(HttpStatus.OK).body(studentService.getLecturesByUserIdByAdmin(userId));
+    }
+
+    //수강생 전체 조회 (강의자 권한)
+    @ApiOperation(value = "특정 강의의 수강생 조회", notes = "특정 강의의 모든 수강생을 조회할 수 있다.")
+    @GetMapping("/students/lecture/{lectureId}")
+    public ResponseEntity<List<ResponseStudentByLecturerDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) throws IdNotExistException, ForbiddenException {
+        return ResponseEntity.status(HttpStatus.OK).body(studentService.getStudentsByLectureId(lectureId));
+    }
 
     /**
      * ORDER

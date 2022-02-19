@@ -22,6 +22,17 @@ public class ResponseLectureDto {
     private Long categoryId;
     private Long lecturer;
 
+    public ResponseLectureDto(Student student){
+        this.lectureId = student.getStudentId();
+        this.title = student.getLecture().getTitle();
+        this.description = student.getLecture().getDescription();
+        this.price = student.getLecture().getPrice();
+        this.startDate = student.getLecture().getStartDate();
+        this.endDate = student.getLecture().getEndDate();
+        this.categoryId = student.getLecture().getCategory().getCategoryId();
+        this.lecturer = student.getLecture().getUser().getUserId();
+    }
+
     public static ResponseLectureDto from(Student student){
         if(student == null) return null;
         return ResponseLectureDto.builder()
