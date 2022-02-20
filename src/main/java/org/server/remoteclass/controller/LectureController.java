@@ -29,7 +29,7 @@ public class LectureController {
 
     @ApiOperation(value = "강의 생성", notes = "새로운 강의를 생성할 수 있다.")
     @PostMapping
-    public ResponseEntity<ResponseLectureDto createLecture(@RequestBody @Valid RequestLectureDto requestLectureDto) {
+    public ResponseEntity createLecture(@RequestBody @Valid RequestLectureDto requestLectureDto) {
         lectureService.createLecture(requestLectureDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -49,8 +49,7 @@ public class LectureController {
     // 수정, 삭제의 경우도 Status Code를 고려해 봐야 할 것 같습니다.
     @ApiOperation(value = "강의 수정", notes = "강의 상세내용을 수정할 수 있다.")
     @PutMapping
-
-    public ResponseEntity<ResponseLectureDto updateLecture(@RequestBody @Valid RequestModifyLectureDto requestModifyLectureDto) {
+    public ResponseEntity updateLecture(@RequestBody @Valid RequestModifyLectureDto requestModifyLectureDto) {
         lectureService.updateLecture(requestModifyLectureDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

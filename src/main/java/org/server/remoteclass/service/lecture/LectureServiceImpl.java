@@ -59,7 +59,7 @@ public class LectureServiceImpl implements LectureService{
 
         Lecture lecture = modelMapper.map(requestLectureDto, Lecture.class);
         Category category = categoryRepository.findById(requestLectureDto.getCategoryId())
-                .orElseThrow(() -> new IdNotExistException("카테고리 존재하지 않음", ResultCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("카테고리 존재하지 않음", ErrorCode.ID_NOT_EXIST));
 
         lecture.setCategory(category);
         lecture.setUser(user);

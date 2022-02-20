@@ -80,7 +80,7 @@ public class AdminController {
 
     @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")
     @GetMapping("/lectures")
-    public ResponseEntity<List<LectureDto>> getAllLecture(){
+    public ResponseEntity<List<ResponseLectureDto>> getAllLecture(){
         return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByAll());
     }
 
