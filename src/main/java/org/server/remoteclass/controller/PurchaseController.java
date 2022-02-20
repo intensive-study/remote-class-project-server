@@ -29,7 +29,6 @@ public class PurchaseController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // 자신의 구매 내역만 조회할 수 있기에 굳이 /myList가 필요없을 것 같아요.
     @ApiOperation(value = "구매 내역 전체 조회", notes = "생성된 전체 구매 내열 조회함.")
     @GetMapping
     public ResponseEntity<List<ResponsePurchaseDto>> getAllPurchase() throws IdNotExistException {

@@ -114,15 +114,15 @@ public class AdminController {
     }
 
     // URL 고민해 봐야 할 것 같습니다.
-    @ApiOperation(value = "학생의 수강 강좌 조회", notes = "특정 학생이 수강하는 모든 강의를 조회할 수 있다.")
-    @GetMapping("/students/users/{userId}")
+    @ApiOperation(value = "수강 강좌 조회", notes = "특정 학생이 수강하는 모든 강의를 조회할 수 있다.")
+    @GetMapping("/students/lectures/{userId}")
     public ResponseEntity<List<ResponseLectureDto>> getLecturesByUserId(@PathVariable("userId") Long userId)  {
         return ResponseEntity.status(HttpStatus.OK).body(studentService.getLecturesByUserIdByAdmin(userId));
     }
 
-    //수강생 전체 조회 (강의자 권한)
-    @ApiOperation(value = "특정 강의의 수강생 조회", notes = "특정 강의의 모든 수강생을 조회할 수 있다.")
-    @GetMapping("/students/lectures/{lectureId}")
+    //수강생 전체 조회
+    @ApiOperation(value = "수강생 조회", notes = "특정 강의의 모든 수강생을 조회할 수 있다.")
+    @GetMapping("/students/lecture/{lectureId}")
     public ResponseEntity<List<ResponseStudentByLecturerDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) {
         return ResponseEntity.status(HttpStatus.OK).body(studentService.getStudentsByLectureId(lectureId));
     }
@@ -131,19 +131,19 @@ public class AdminController {
      * ORDER
      */
 
-    @ApiOperation("관리자의 주문 전체 목록 조회")
+    @ApiOperation(value = "전체 주문 조회", notes = "모든 주문 내역을 조회할 수 있다.")
     @GetMapping("/orders")
     public ResponseEntity<List<ResponseOrderByAdminDto>> getAllByAdmin() {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrdersByAdmin());
     }
 
-    @ApiOperation("관리자의 사용자별 목록 조회")
-    @GetMapping("/orders/users/{userId}")
+    @ApiOperation(value = "사용자별 주문 조회", notes = "특정 사용자의 모든 주문내역을 조회할 수 있다.")
+    @GetMapping("/orders/user/{userId}")
     public ResponseEntity<List<ResponseOrderByAdminDto>> getByUserIdByAdmin(@PathVariable("userId") Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderByUserIdByAdmin(userId));
     }
 
-    @ApiOperation("관리자의 특정 주문 목록 조회")
+    @ApiOperation(value = "주문 내역 조회", notes = "특정 주문내역을 조회할 수 있다.")
     @GetMapping("/orders/{orderId}")
     public ResponseEntity<ResponseOrderByAdminDto> getByOrderIdByAdmin(@PathVariable("orderId") Long orderId) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderByOrderIdByAdmin(orderId));

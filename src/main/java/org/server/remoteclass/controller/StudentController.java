@@ -48,7 +48,6 @@ public class StudentController {
     }
 
     //수강생 전체 조회 (강의자 권한) -> 강사 권한으로 바꿔야 되겠죠..?
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiOperation(value = "전체 수강생 조회", notes = "강의자가 현재까지 수강신청한 모든 수강생을 조회할 수 있다.")
     @GetMapping("/{lectureId}")
     public ResponseEntity<List<ResponseStudentByLecturerDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) {
