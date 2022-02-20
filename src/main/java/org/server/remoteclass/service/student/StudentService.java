@@ -1,6 +1,6 @@
 package org.server.remoteclass.service.student;
 
-import org.server.remoteclass.dto.lecture.ResponseLectureDto;
+import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
 import org.server.remoteclass.dto.student.RequestStudentDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
 import org.server.remoteclass.dto.student.StudentDto;
@@ -17,9 +17,9 @@ public interface StudentService {
     //수강 취소
     void cancel(Long lectureId);
     //한 수강생의 수강 강좌 리스트 조회
-    List<ResponseLectureDto> getLecturesByUserId() ;
+    List<ResponseLectureFromStudentDto> getLecturesByUserId();
     //강좌별 전체 수강생 조회
     List<ResponseStudentByLecturerDto> getStudentsByLectureId(Long lectureId);
-    List<ResponseLectureDto> getLecturesByUserIdByAdmin(Long userId);
+    List<ResponseLectureFromStudentDto> getLecturesByUserIdByAdmin(Long userId);
 
 }

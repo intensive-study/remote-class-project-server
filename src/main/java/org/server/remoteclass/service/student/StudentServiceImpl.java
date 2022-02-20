@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.Authority;
 import org.server.remoteclass.constant.UserRole;
-import org.server.remoteclass.dto.lecture.ResponseLectureDto;
+import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
 import org.server.remoteclass.dto.student.RequestStudentDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
 import org.server.remoteclass.dto.student.StudentDto;
@@ -79,7 +79,7 @@ public class StudentServiceImpl implements StudentService{
 
     //현재 수강생의 수강 강좌 리스트 조회
     @Override
-    public List<ResponseLectureDto> getLecturesByUserId() {
+    public List<ResponseLectureFromStudentDto> getLecturesByUserId() {
 
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
@@ -92,7 +92,7 @@ public class StudentServiceImpl implements StudentService{
         else{
             throw new ForbiddenException("조회 권한이 없습니다.", ErrorCode.FORBIDDEN);
         }
-        return students.stream().map(lecture->ResponseLectureDto.from(lecture)).collect(Collectors.toList());
+        return students.stream().map(lecture-> ResponseLectureFromStudentDto.from(lecture)).collect(Collectors.toList());
     }
 
     //강좌별 전체 수강생 목록
@@ -118,8 +118,8 @@ public class StudentServiceImpl implements StudentService{
 
     //특정 수강생의 수강 강좌 리스트 조회
     @Override
-    public List<ResponseLectureDto> getLecturesByUserIdByAdmin(Long userId)  {
 
+    public List<ResponseLectureFromStudentDto> getLecturesByUserIdByAdmin(Long userId)  {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
@@ -131,7 +131,7 @@ public class StudentServiceImpl implements StudentService{
         else{
             throw new ForbiddenException("조회 권한이 없습니다.", ErrorCode.FORBIDDEN);
         }
-        return students.stream().map(ResponseLectureDto::new).collect(Collectors.toList());
+        return students.stream().map(ResponseLectureFromStudentDto::new).collect(Collectors.toList());
     }
 
 }

@@ -4,8 +4,8 @@ import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.dto.event.RequestEventDto;
-import org.server.remoteclass.dto.lecture.LectureDto;
 import org.server.remoteclass.dto.lecture.ResponseLectureDto;
+import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
 import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
@@ -86,19 +86,22 @@ public class AdminController {
 
     @ApiOperation(value = "강의 조회", notes = "원하는 강의 번호로 강의를 조회할 수 있다.")
     @GetMapping("/lectures/{lectureId}")
-    public ResponseEntity<LectureDto> getLecture(@PathVariable("lectureId") Long lectureId){
+
+    public ResponseEntity<ResponseLectureDto> getLecture(@PathVariable("lectureId") Long lectureId){
         return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByLectureId(lectureId));
     }
+  
     @ApiOperation(value = "강의 삭제", notes = "강의를 삭제할 수 있다.")
     @DeleteMapping("/lectures/{lectureId}")
     public ResponseEntity deleteLecture(@PathVariable("lectureId") Long lectureId) {
         lectureService.deleteLecture(lectureId);
+
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "카테고리별 강의 조회", notes = "현재까지 생성된 강의를 카테고리별로 조회할 수 있다.")
     @GetMapping("/lectures/category/{categoryId}")
-    public ResponseEntity<List<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) {
+    public ResponseEntity<List<ResponseLectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) {
         return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByCategoryId(categoryId));
     }
 
@@ -116,7 +119,7 @@ public class AdminController {
     // URL 고민해 봐야 할 것 같습니다.
     @ApiOperation(value = "수강 강좌 조회", notes = "특정 학생이 수강하는 모든 강의를 조회할 수 있다.")
     @GetMapping("/students/lectures/{userId}")
-    public ResponseEntity<List<ResponseLectureDto>> getLecturesByUserId(@PathVariable("userId") Long userId)  {
+    public ResponseEntity<List<ResponseLectureFromStudentDto>> getLecturesByUserId(@PathVariable("userId") Long userId)  {
         return ResponseEntity.status(HttpStatus.OK).body(studentService.getLecturesByUserIdByAdmin(userId));
     }
 
