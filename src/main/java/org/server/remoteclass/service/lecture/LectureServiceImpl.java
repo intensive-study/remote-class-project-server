@@ -3,7 +3,9 @@ package org.server.remoteclass.service.lecture;
 import org.modelmapper.ModelMapper;
 
 import org.server.remoteclass.constant.UserRole;
-import org.server.remoteclass.dto.lecture.LectureDto;
+import org.server.remoteclass.dto.lecture.RequestModifyLectureDto;
+import org.server.remoteclass.dto.lecture.RequestLectureDto;
+import org.server.remoteclass.dto.lecture.ResponseLectureDto;
 import org.server.remoteclass.entity.Category;
 import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.User;
@@ -45,7 +47,7 @@ public class LectureServiceImpl implements LectureService{
     //강의 생성
     @Override
     @Transactional
-    public LectureDto createLecture(LectureDto lectureDto) throws IdNotExistException, ForbiddenException {
+    public ResponseLectureDto createLecture(RequestLectureDto requestLectureDto) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
@@ -54,46 +56,46 @@ public class LectureServiceImpl implements LectureService{
         if(user.getUserRole() != UserRole.ROLE_LECTURER){
             throw new ForbiddenException("접근 권한이 없습니다.", ResultCode.FORBIDDEN);
         }
-        Lecture lecture = modelMapper.map(lectureDto, Lecture.class);
-        Category category = categoryRepository.findById(lectureDto.getCategoryId())
+        Lecture lecture = modelMapper.map(requestLectureDto, Lecture.class);
+        Category category = categoryRepository.findById(requestLectureDto.getCategoryId())
                 .orElseThrow(() -> new IdNotExistException("카테고리 존재하지 않음", ResultCode.ID_NOT_EXIST));
         lecture.setCategory(category);
         lecture.setUser(user);
 
-        return LectureDto.from(lectureRepository.save(lecture));
+        return ResponseLectureDto.from(lectureRepository.save(lecture));
     }
 
     //특정 강의 조회
     @Override
-    public LectureDto getLectureByLectureId(Long lectureId) {
-        return LectureDto.from(lectureRepository.findById(lectureId).orElse(null));
+    public ResponseLectureDto getLectureByLectureId(Long lectureId) {
+        return ResponseLectureDto.from(lectureRepository.findById(lectureId).orElse(null));
     }
 
     //강의 수정
     @Override
     @Transactional
-    public LectureDto updateLecture(LectureDto lectureDto) throws IdNotExistException{
+    public ResponseLectureDto updateLecture(RequestModifyLectureDto requestModifyLectureDto) throws IdNotExistException{
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ResultCode.ID_NOT_EXIST));
 
-        Lecture lecture = lectureRepository.findById(lectureDto.getLectureId())
+        Lecture lecture = lectureRepository.findById(requestModifyLectureDto.getLectureId())
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ResultCode.ID_NOT_EXIST));
 
         //로그인한 userId와 수정할 강좌의 userId가 같지않으면 수정권한 없음.
         if(user.getUserId() != lecture.getUser().getUserId()){
             throw new InvalidDataAccessApiUsageException("수정 권한이 없습니다.");
         }
-        Category category = categoryRepository.findById(lectureDto.getCategoryId())
+        Category category = categoryRepository.findById(requestModifyLectureDto.getCategoryId())
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 카테고리", ResultCode.ID_NOT_EXIST));
 
         Lecture modifiedLecture = Lecture.builder()
-                        .lectureId(lectureDto.getLectureId()).title(lectureDto.getTitle())
-                        .description(lectureDto.getDescription()).price(lectureDto.getPrice())
-                        .startDate(lectureDto.getStartDate()).endDate(lectureDto.getEndDate())
+                        .lectureId(requestModifyLectureDto.getLectureId()).title(requestModifyLectureDto.getTitle())
+                        .description(requestModifyLectureDto.getDescription()).price(requestModifyLectureDto.getPrice())
+                        .startDate(requestModifyLectureDto.getStartDate()).endDate(requestModifyLectureDto.getEndDate())
                         .category(category).user(user).build();
 
-        return LectureDto.from(lectureRepository.save(modifiedLecture));
+        return ResponseLectureDto.from(lectureRepository.save(modifiedLecture));
     }
 
     //강의 삭제
@@ -115,16 +117,16 @@ public class LectureServiceImpl implements LectureService{
 
     //강의 전체 조회
     @Override
-    public List<LectureDto> getLectureByAll() {
+    public List<ResponseLectureDto> getLectureByAll() {
         List<Lecture> lectures = lectureRepository.findAll();
-        return lectures.stream().map(lecture->LectureDto.from(lecture)).collect(Collectors.toList());
+        return lectures.stream().map(lecture->ResponseLectureDto.from(lecture)).collect(Collectors.toList());
     }
 
     //카테고리별 강의 조회
     @Override
-    public List<LectureDto> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
+    public List<ResponseLectureDto> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
         categoryRepository.findById(categoryId).orElseThrow(()->new IdNotExistException("존재하지 않는 카테고리", ResultCode.ID_NOT_EXIST));
         List<Lecture> lectures = lectureRepository.findByCategory_CategoryId(categoryId);
-        return lectures.stream().map(lecture->LectureDto.from(lecture)).collect(Collectors.toList());
+        return lectures.stream().map(lecture->ResponseLectureDto.from(lecture)).collect(Collectors.toList());
     }
 }

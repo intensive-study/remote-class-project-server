@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @Builder
 @AllArgsConstructor @NoArgsConstructor
-public class ResponseLectureDto {
+public class RequestModifyLectureDto {
 
-    // 강의 조회에 사용하는 Dto
+    // 강의 수정에 사용하는 Dto
     private Long lectureId;
     private String title;
     private String description;
@@ -20,9 +20,9 @@ public class ResponseLectureDto {
     private Long categoryId;
     private Long lecturer;
 
-    public static ResponseLectureDto from(Lecture lecture){
+    public static RequestModifyLectureDto from(Lecture lecture){
         if(lecture == null) return null;
-        return ResponseLectureDto.builder()
+        return RequestModifyLectureDto.builder()
                 .lectureId(lecture.getLectureId())
                 .title(lecture.getTitle())
                 .description(lecture.getDescription())

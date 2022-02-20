@@ -1,8 +1,9 @@
 package org.server.remoteclass.controller;
 
-
 import io.swagger.annotations.ApiOperation;
-import org.server.remoteclass.dto.lecture.LectureDto;
+import org.server.remoteclass.dto.lecture.RequestModifyLectureDto;
+import org.server.remoteclass.dto.lecture.RequestLectureDto;
+import org.server.remoteclass.dto.lecture.ResponseLectureDto;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.lecture.LectureService;
@@ -27,20 +28,20 @@ public class LectureController {
 
     @ApiOperation(value = "강의 생성", notes = "새로운 강의를 생성할 수 있다.")
     @PostMapping
-    public ResponseEntity<LectureDto> createLecture(@RequestBody @Valid LectureDto lectureDto) throws IdNotExistException, ForbiddenException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.createLecture(lectureDto));
+    public ResponseEntity<ResponseLectureDto> createLecture(@RequestBody @Valid RequestLectureDto requestLectureDto) throws IdNotExistException, ForbiddenException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.createLecture(requestLectureDto));
     }
 
     @ApiOperation(value = "강의 조회", notes = "원하는 강의 번호로 강의를 조회할 수 있다.")
     @GetMapping("/{lectureId}")
-    public ResponseEntity<LectureDto> readLecture(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+    public ResponseEntity<ResponseLectureDto> readLecture(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
         return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByLectureId(lectureId));
     }
 
     @ApiOperation(value = "강의 수정", notes = "강의 상세내용을 수정할 수 있다.")
     @PutMapping
-    public ResponseEntity<LectureDto> updateLecture(@RequestBody @Valid LectureDto lectureDto) throws IdNotExistException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.updateLecture(lectureDto));
+    public ResponseEntity<ResponseLectureDto> updateLecture(@RequestBody @Valid RequestModifyLectureDto requestModifyLectureDto) throws IdNotExistException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.updateLecture(requestModifyLectureDto));
     }
 
     @ApiOperation(value = "강의 삭제", notes = "강의를 삭제할 수 있다.")
@@ -52,13 +53,13 @@ public class LectureController {
 
     @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")
     @GetMapping("/list")
-    public ResponseEntity<List<LectureDto>> getAllLecture(){
+    public ResponseEntity<List<ResponseLectureDto>> getAllLecture(){
         return ResponseEntity.ok(lectureService.getLectureByAll());
     }
 
     @ApiOperation(value = "카테고리별 강의 조회", notes = "현재까지 생성된 강의를 카테고리별로 조회할 수 있다.")
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
+    public ResponseEntity<List<ResponseLectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
         return ResponseEntity.ok(lectureService.getLectureByCategoryId(categoryId));
     }
 }
