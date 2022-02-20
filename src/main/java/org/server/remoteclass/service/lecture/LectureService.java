@@ -9,18 +9,18 @@ import java.util.List;
 public interface LectureService {
 
     //강의 생성
-    LectureDto createLecture(LectureDto lectureDto) throws IdNotExistException, ForbiddenException;
+    LectureDto createLecture(LectureDto lectureDto);
     //강의 조회
-    LectureDto getLectureByLectureId(Long lectureId) throws IdNotExistException;
+    LectureDto getLectureByLectureId(Long lectureId);
     //강의 수정
-    LectureDto updateLecture(LectureDto lectureDto) throws IdNotExistException;
+    LectureDto updateLecture(LectureDto lectureDto);
     //강의 삭제
-    void deleteLecture(Long lectureId) throws IdNotExistException;
+    void deleteLecture(Long lectureId);
 
     //전체 강의 조회
     List<LectureDto> getLectureByAll();
 
     //카테고리별 조회
-    List<LectureDto> getLectureByCategoryId(Long CategoryId) throws IdNotExistException;
+    List<LectureDto> getLectureByCategoryId(Long CategoryId);
 
 }

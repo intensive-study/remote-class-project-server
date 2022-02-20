@@ -45,7 +45,7 @@ public class LectureServiceImpl implements LectureService{
     //강의 생성
     @Override
     @Transactional
-    public LectureDto createLecture(LectureDto lectureDto) throws IdNotExistException, ForbiddenException {
+    public LectureDto createLecture(LectureDto lectureDto) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
@@ -72,7 +72,7 @@ public class LectureServiceImpl implements LectureService{
     //강의 수정
     @Override
     @Transactional
-    public LectureDto updateLecture(LectureDto lectureDto) throws IdNotExistException{
+    public LectureDto updateLecture(LectureDto lectureDto){
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
@@ -99,7 +99,7 @@ public class LectureServiceImpl implements LectureService{
     //강의 삭제
     @Override
     @Transactional
-    public void deleteLecture(Long lectureId) throws IdNotExistException{
+    public void deleteLecture(Long lectureId){
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
@@ -122,7 +122,7 @@ public class LectureServiceImpl implements LectureService{
 
     //카테고리별 강의 조회
     @Override
-    public List<LectureDto> getLectureByCategoryId(Long categoryId) throws IdNotExistException{
+    public List<LectureDto> getLectureByCategoryId(Long categoryId){
         categoryRepository.findById(categoryId).orElseThrow(()->new IdNotExistException("존재하지 않는 카테고리", ErrorCode.ID_NOT_EXIST));
         List<Lecture> lectures = lectureRepository.findByCategory_CategoryId(categoryId);
         return lectures.stream().map(lecture->LectureDto.from(lecture)).collect(Collectors.toList());

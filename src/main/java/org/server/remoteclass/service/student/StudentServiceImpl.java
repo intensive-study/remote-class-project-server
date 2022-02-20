@@ -68,7 +68,7 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     @Transactional
-    public void cancel(Long lectureId) throws IdNotExistException {
+    public void cancel(Long lectureId) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
