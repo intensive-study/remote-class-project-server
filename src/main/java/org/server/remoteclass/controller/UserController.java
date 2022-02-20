@@ -6,6 +6,7 @@ import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.jpa.UserRepository;
 import org.server.remoteclass.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -37,21 +38,21 @@ public class UserController {
     @ApiOperation(value = "나의 정보 확인", notes = "자신의 정보를 상세하게 조회할 수 있다.")
     @GetMapping("/myself")
     public ResponseEntity<ResponseUserByAdminDto> getMyInfo(){
-        return ResponseEntity.ok(userService.getMyInfoWithAuthorities());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getMyInfoWithAuthorities());
     }
 
     // 사용자가 사용자 조회
     @ApiOperation(value = "사용자가 다른 사용자 조회", notes = "다른 사용자의 기본 정보(이름, 역할) 등을 조회할 수 있다.")
     @GetMapping("/{userId}")
     public ResponseEntity<ResponseUserDto> getUser(@PathVariable("userId") Long userId){
-        return ResponseEntity.ok(userService.getUserByUserId(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserByUserId(userId));
     }
 
     // 전체 유저 조회
     @ApiOperation(value = "사용자가 전체 사용자 조회", notes = "전체 사용자를 조회하며 기본 정보를 조회할 수 있다.")
     @GetMapping
     public ResponseEntity<List<ResponseUserDto>> getAllUsers(){
-        return ResponseEntity.ok(userService.getUsersByAll());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUsersByAll());
     }
 
 

@@ -9,8 +9,6 @@ import org.server.remoteclass.dto.lecture.ResponseLectureDto;
 import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
-import org.server.remoteclass.exception.ForbiddenException;
-import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.admin.AdminService;
 import org.server.remoteclass.service.coupon.CouponService;
 import org.server.remoteclass.service.event.EventService;
@@ -66,14 +64,14 @@ public class AdminController {
     @ApiOperation(value = "관리자가 모든 사용자 조회", notes = "모든 사용자의 상세한 정보를 알 수 있다.")
     @GetMapping("/users")
     public ResponseEntity<List<ResponseUserByAdminDto>> getAllUsers(){
-        return ResponseEntity.ok(adminService.getAllUsers());
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllUsers());
     }
 
     // 관리자가 사용자 조회
     @ApiOperation(value = "관리자가 사용자 조회", notes = "사용자의 모든 정보를 조회할 수 있다.")
     @GetMapping("/users/{userId}")
     public ResponseEntity<ResponseUserByAdminDto> getUser(@PathVariable("userId") Long userId){
-        return ResponseEntity.ok(adminService.getUser(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.getUser(userId));
     }
 
     /**
@@ -83,7 +81,7 @@ public class AdminController {
     @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")
     @GetMapping("/lectures")
     public ResponseEntity<List<LectureDto>> getAllLecture(){
-        return ResponseEntity.ok(lectureService.getLectureByAll());
+        return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByAll());
     }
 
     @ApiOperation(value = "강의 조회", notes = "원하는 강의 번호로 강의를 조회할 수 있다.")
@@ -101,7 +99,7 @@ public class AdminController {
     @ApiOperation(value = "카테고리별 강의 조회", notes = "현재까지 생성된 강의를 카테고리별로 조회할 수 있다.")
     @GetMapping("/lectures/category/{categoryId}")
     public ResponseEntity<List<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) {
-        return ResponseEntity.ok(lectureService.getLectureByCategoryId(categoryId));
+        return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByCategoryId(categoryId));
     }
 
     /**

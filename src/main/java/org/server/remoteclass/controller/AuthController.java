@@ -34,14 +34,14 @@ public class AuthController {
     @ApiOperation(value = "로그인", notes = "email, password를 통해 회원가입한다.")
     @PostMapping("/login")
     public ResponseEntity<ResponseTokenDto> authorize(@Valid @RequestBody LoginDto loginDto){
-        return ResponseEntity.ok(authService.login(loginDto));
+        return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginDto));
     }
 
     @ApiOperation(value = "토큰 재발급", notes = "access 토큰과 refresh 토큰으로 토큰을 재발급받는다.")
     @PostMapping("/reissue")
     public ResponseEntity<ResponseTokenDto> reissue(
             @RequestBody RequestTokenDto requestTokenDto){
-        return ResponseEntity.ok(authService.reissue(requestTokenDto));
+        return ResponseEntity.status(HttpStatus.OK).body(authService.reissue(requestTokenDto));
     }
 
 }
