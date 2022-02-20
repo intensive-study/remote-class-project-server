@@ -10,8 +10,7 @@ import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.entity.RefreshToken;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.constant.UserRole;
-import org.server.remoteclass.exception.EmailDuplicateException;
-import org.server.remoteclass.exception.ErrorCode;
+import org.server.remoteclass.exception.*;
 import org.server.remoteclass.jpa.RefreshTokenRepository;
 import org.server.remoteclass.jpa.UserRepository;
 import org.server.remoteclass.jwt.TokenProvider;
@@ -89,16 +88,16 @@ public class AuthServiceImpl implements AuthService{
     public ResponseTokenDto reissue(RequestTokenDto requestTokenDto){
         // 1. Refresh Token 검증
         if(!tokenProvider.validateToken(requestTokenDto.getRefreshToken())){
-            throw new RuntimeException("Refresh Token이 유효하지 않습니다.");
+            throw new IdNotExistException("Refresh Token이 유효하지 않습니다.", ErrorCode.ID_NOT_EXIST);
         }
         // 2. Access Token 에서 User Id 가져오기
         Authentication authentication = tokenProvider.getAuthentication(requestTokenDto.getAccessToken());
         // 3. 저장소에서 User Id를 기반으로 Refresh Token 값 가져옴
         RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+                .orElseThrow(() -> new ForbiddenException("로그아웃 된 사용자입니다.", ErrorCode.FORBIDDEN));
         // 4. Refresh Token 일치하는 지 검사
         if(!refreshToken.getValue().equals(requestTokenDto.getRefreshToken())){
-            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
+            throw new BadRequestArgumentException("토큰의 유저 정보가 일치하지 않습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
         // 5. 새로운 토큰 생성
         ResponseTokenDto responseTokenDto = tokenProvider.createToken(authentication);

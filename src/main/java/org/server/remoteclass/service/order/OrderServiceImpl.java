@@ -104,12 +104,12 @@ public class OrderServiceImpl implements OrderService {
     public void cancelOrder(Long orderId) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ErrorCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
         if(user.getUserId() != order.getUser().getUserId()){
-            throw new ForbiddenException("취소 권한이 없습니다", ErrorCode.FORBIDDEN);
+            throw new ForbiddenException("주문 취소 권한이 없습니다", ErrorCode.FORBIDDEN);
         }
         order.setOrderStatus(OrderStatus.CANCEL);
     }
@@ -119,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
     public List<ResponseOrderDto> getMyOrdersByUserId() throws IdNotExistException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(user.getUserId());
         return orders.stream().map(ResponseOrderDto::new).collect(Collectors.toList());
     }
@@ -129,13 +129,13 @@ public class OrderServiceImpl implements OrderService {
     public List<ResponseOrderByAdminDto> getAllOrdersByAdmin() throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         List<Order> orders;
         if(user.getAuthority() == Authority.ROLE_ADMIN){
             orders = orderRepository.findByOrderByOrderDateDesc();
         }
         else{
-            throw new ForbiddenException("접근 권한 없습니다", ErrorCode.FORBIDDEN);
+            throw new ForbiddenException("조회 권한이 없습니다", ErrorCode.FORBIDDEN);
         }
         return orders.stream().map(ResponseOrderByAdminDto::new).collect(Collectors.toList());
     }
@@ -145,13 +145,13 @@ public class OrderServiceImpl implements OrderService {
     public List<ResponseOrderByAdminDto> getOrderByUserIdByAdmin(Long userId) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         List<Order> orders;
         if(user.getAuthority() == Authority.ROLE_ADMIN){
             orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(userId);
         }
         else{
-            throw new ForbiddenException("접근 권한 없습니다", ErrorCode.FORBIDDEN);
+            throw new ForbiddenException("조회 권한이 없습니다", ErrorCode.FORBIDDEN);
         }
         return orders.stream().map(ResponseOrderByAdminDto::new).collect(Collectors.toList());
     }
@@ -162,14 +162,14 @@ public class OrderServiceImpl implements OrderService {
     public ResponseOrderByAdminDto getOrderByOrderIdByAdmin(Long orderId) throws IdNotExistException, ForbiddenException {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         Order order;
         if(user.getAuthority() == Authority.ROLE_ADMIN){
             order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ErrorCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
         }
         else{
-            throw new ForbiddenException("접근 권한 없습니다", ErrorCode.FORBIDDEN);
+            throw new ForbiddenException("조회 권한이 없습니다", ErrorCode.FORBIDDEN);
         }
         return new ResponseOrderByAdminDto(order);
     }

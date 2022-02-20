@@ -51,7 +51,7 @@ public class PurchaseServiceImpl implements PurchaseService{
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         //orderId를 입력하면 order 객체 받아오기
         Order order = orderRepository.findById(requestPurchaseDto.getOrderId())
-                .orElseThrow(() -> new IdNotExistException("유효한 주문 번호가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
         Purchase purchase = null;
         // pending상태만 주문 가능. 취소되거나 이미 완료된 주문이면 더이상 구매하지 못함.
         if(order.getOrderStatus() == OrderStatus.PENDING){
@@ -107,7 +107,7 @@ public class PurchaseServiceImpl implements PurchaseService{
         // 조회를 예외처리 해 줄 필요가 있나요? 오히려 올바른 범위가 아닌 경우에만(-1과 같은 경우)에만 해주면 될 것 같은데요..
         // 그냥 null을 반환해주면 되지 않을까요?
         Purchase purchase = purchaseRepository.findById(purchaseId)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 주문", ErrorCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("해당 구매내역이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
 
         return new ResponsePurchaseDto(purchase);
     }

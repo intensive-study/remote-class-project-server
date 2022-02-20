@@ -90,7 +90,7 @@ public class StudentServiceImpl implements StudentService{
             students = studentRepository.findByUser_UserIdOrderByLecture_StartDateDesc(user.getUserId());
         }
         else{
-            throw new ForbiddenException("접근 권한이 없습니다.", ErrorCode.FORBIDDEN);
+            throw new ForbiddenException("조회 권한이 없습니다.", ErrorCode.FORBIDDEN);
         }
         return students.stream().map(lecture->ResponseLectureDto.from(lecture)).collect(Collectors.toList());
     }
@@ -111,7 +111,7 @@ public class StudentServiceImpl implements StudentService{
             students = studentRepository.findByLecture_LectureId(lectureId);
         }
         else{
-            throw new ForbiddenException("접근 권한이 없습니다", ErrorCode.FORBIDDEN);
+            throw new ForbiddenException("조회 권한이 없습니다", ErrorCode.FORBIDDEN);
         }
         return students.stream().map(student-> ResponseStudentByLecturerDto.from(student)).collect(Collectors.toList());
     }
@@ -129,7 +129,7 @@ public class StudentServiceImpl implements StudentService{
             students = studentRepository.findByUser_UserIdOrderByLecture_StartDateDesc(userId);
         }
         else{
-            throw new ForbiddenException("접근 권한이 없습니다.", ErrorCode.FORBIDDEN);
+            throw new ForbiddenException("조회 권한이 없습니다.", ErrorCode.FORBIDDEN);
         }
         return students.stream().map(ResponseLectureDto::new).collect(Collectors.toList());
     }
