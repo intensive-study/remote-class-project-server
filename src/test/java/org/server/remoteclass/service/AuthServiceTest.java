@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.server.remoteclass.dto.auth.LoginDto;
 import org.server.remoteclass.dto.user.RequestUserDto;
-import org.server.remoteclass.dto.auth.TokenRequestDto;
+import org.server.remoteclass.dto.auth.RequestTokenDto;
 import org.server.remoteclass.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -92,10 +92,10 @@ public class AuthServiceTest {
         System.out.println("실행됨");
         String accessToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.accessToken");
         String refreshToken = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.refreshToken");
-        TokenRequestDto tokenRequestDto = new TokenRequestDto();
-        tokenRequestDto.setAccessToken(accessToken);
-        tokenRequestDto.setRefreshToken(refreshToken);
-        String json2 = mapper.writeValueAsString(tokenRequestDto);
+        RequestTokenDto requestTokenDto = new RequestTokenDto();
+        requestTokenDto.setAccessToken(accessToken);
+        requestTokenDto.setRefreshToken(refreshToken);
+        String json2 = mapper.writeValueAsString(requestTokenDto);
         System.out.println(accessToken);
         System.out.println(refreshToken);
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders.post("/reissue")
