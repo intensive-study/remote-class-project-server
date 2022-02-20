@@ -4,8 +4,8 @@ import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.dto.event.RequestEventDto;
-import org.server.remoteclass.dto.lecture.LectureDto;
 import org.server.remoteclass.dto.lecture.ResponseLectureDto;
+import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
 import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
@@ -22,10 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import javax.validation.Valid;
@@ -85,7 +82,7 @@ public class AdminController {
 
     @ApiOperation(value = "강의 조회", notes = "원하는 강의 번호로 강의를 조회할 수 있다.")
     @GetMapping("/lectures/{lectureId}")
-    public ResponseEntity<LectureDto> readLecture(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
+    public ResponseEntity<ResponseLectureDto> readLecture(@PathVariable("lectureId") Long lectureId) throws IdNotExistException {
         return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByLectureId(lectureId));
     }
     @ApiOperation(value = "강의 삭제", notes = "강의를 삭제할 수 있다.")
@@ -97,13 +94,13 @@ public class AdminController {
 
     @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")
     @GetMapping("/lectures/list")
-    public ResponseEntity<List<LectureDto>> getAllLecture(){
+    public ResponseEntity<List<ResponseLectureDto>> getAllLecture(){
         return ResponseEntity.ok(lectureService.getLectureByAll());
     }
 
     @ApiOperation(value = "카테고리별 강의 조회", notes = "현재까지 생성된 강의를 카테고리별로 조회할 수 있다.")
     @GetMapping("/lectures/category/{categoryId}")
-    public ResponseEntity<List<LectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
+    public ResponseEntity<List<ResponseLectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) throws IdNotExistException{
         return ResponseEntity.ok(lectureService.getLectureByCategoryId(categoryId));
     }
 
@@ -120,7 +117,7 @@ public class AdminController {
 
     @ApiOperation(value = "학생의 수강 강좌 조회", notes = "특정 학생 수강 신청한 모든 강의를 조회할 수 있다.")
     @GetMapping("/students/user/{userId}")
-    public ResponseEntity<List<ResponseLectureDto>> getLecturesByUserId(@PathVariable("userId") Long userId) throws IdNotExistException, ForbiddenException {
+    public ResponseEntity<List<ResponseLectureFromStudentDto>> getLecturesByUserId(@PathVariable("userId") Long userId) throws IdNotExistException, ForbiddenException {
         return ResponseEntity.status(HttpStatus.OK).body(studentService.getLecturesByUserIdByAdmin(userId));
     }
 

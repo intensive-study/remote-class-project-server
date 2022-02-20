@@ -8,10 +8,9 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @Builder
 @AllArgsConstructor @NoArgsConstructor
-public class LectureDto {
+public class RequestLectureDto {
 
-    // 강의 생성 수정 조회 시에 사용하는 Dto
-    private Long lectureId;
+    // 강의 생성에 사용하는 Dto
     private String title;
     private String description;
     private Integer price;
@@ -20,10 +19,9 @@ public class LectureDto {
     private Long categoryId;
     private Long lecturer;
 
-    public static LectureDto from(Lecture lecture){
+    public static RequestLectureDto from(Lecture lecture){
         if(lecture == null) return null;
-        return LectureDto.builder()
-                .lectureId(lecture.getLectureId())
+        return RequestLectureDto.builder()
                 .title(lecture.getTitle())
                 .description(lecture.getDescription())
                 .price(lecture.getPrice())
