@@ -11,11 +11,11 @@ import java.util.List;
 public interface LectureService {
 
     //강의 생성
-    ResponseLectureDto createLecture(RequestLectureDto requestLectureDto);
+    void createLecture(RequestLectureDto requestLectureDto);
     //강의 조회
     ResponseLectureDto getLectureByLectureId(Long lectureId);
     //강의 수정
-    ResponseLectureDto updateLecture(RequestModifyLectureDto requestModifyLectureDto);
+    void updateLecture(RequestModifyLectureDto requestModifyLectureDto);
 
     //강의 삭제
     void deleteLecture(Long lectureId);

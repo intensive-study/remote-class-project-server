@@ -23,7 +23,7 @@ public class ResponseLectureFromStudentDto {
     private Long lecturer;
 
     public ResponseLectureFromStudentDto(Student student) {
-        this.lectureId = student.getStudentId();
+        this.lectureId = student.getLecture().getLectureId();
         this.title = student.getLecture().getTitle();
         this.description = student.getLecture().getDescription();
         this.price = student.getLecture().getPrice();

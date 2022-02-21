@@ -47,7 +47,7 @@ public class LectureServiceImpl implements LectureService{
     //강의 생성
     @Override
     @Transactional
-    public ResponseLectureDto createLecture(RequestLectureDto requestLectureDto) {
+    public void createLecture(RequestLectureDto requestLectureDto) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
@@ -63,8 +63,8 @@ public class LectureServiceImpl implements LectureService{
 
         lecture.setCategory(category);
         lecture.setUser(user);
-
-        return ResponseLectureDto.from(lectureRepository.save(lecture));
+        lectureRepository.save(lecture);
+//        return ResponseLectureDto.from(lectureRepository.save(lecture));
     }
 
     //특정 강의 조회
@@ -76,7 +76,7 @@ public class LectureServiceImpl implements LectureService{
     //강의 수정
     @Override
     @Transactional
-    public ResponseLectureDto updateLecture(RequestModifyLectureDto requestModifyLectureDto) {
+    public void updateLecture(RequestModifyLectureDto requestModifyLectureDto) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
@@ -93,12 +93,15 @@ public class LectureServiceImpl implements LectureService{
                 .orElseThrow(() -> new IdNotExistException("해당 카테고리가 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
 
         Lecture modifiedLecture = Lecture.builder()
-                        .lectureId(requestModifyLectureDto.getLectureId()).title(requestModifyLectureDto.getTitle())
-                        .description(requestModifyLectureDto.getDescription()).price(requestModifyLectureDto.getPrice())
-                        .startDate(requestModifyLectureDto.getStartDate()).endDate(requestModifyLectureDto.getEndDate())
+                        .lectureId(requestModifyLectureDto.getLectureId())
+                        .title(requestModifyLectureDto.getTitle())
+                        .description(requestModifyLectureDto.getDescription())
+                        .price(requestModifyLectureDto.getPrice())
+                        .startDate(requestModifyLectureDto.getStartDate())
+                        .endDate(requestModifyLectureDto.getEndDate())
                         .category(category).user(user).build();
-
-        return ResponseLectureDto.from(lectureRepository.save(modifiedLecture));
+        lectureRepository.save(modifiedLecture);
+//        return ResponseLectureDto.from(lectureRepository.save(modifiedLecture));
     }
 
     //강의 삭제
