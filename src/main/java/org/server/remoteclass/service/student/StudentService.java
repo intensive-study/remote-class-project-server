@@ -20,6 +20,7 @@ public interface StudentService {
     List<ResponseLectureFromStudentDto> getLecturesByUserId();
     //강좌별 전체 수강생 조회
     List<ResponseStudentByLecturerDto> getStudentsByLectureId(Long lectureId);
+    //수강생의 수강 강의 조회
     List<ResponseLectureFromStudentDto> getLecturesByUserIdByAdmin(Long userId);
 
 }

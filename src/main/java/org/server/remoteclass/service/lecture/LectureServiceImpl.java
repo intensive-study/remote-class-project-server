@@ -15,6 +15,7 @@ import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.jpa.CategoryRepository;
 import org.server.remoteclass.jpa.LectureRepository;
 import org.server.remoteclass.jpa.UserRepository;
+import org.server.remoteclass.util.AccessVerification;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +33,20 @@ public class LectureServiceImpl implements LectureService{
     private final LectureRepository lectureRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+    private final AccessVerification accessVerification;
 
     @Autowired
     public LectureServiceImpl(UserRepository userRepository,
                               LectureRepository lectureRepository,
                               CategoryRepository categoryRepository,
-                              BeanConfiguration beanConfiguration){
+                              BeanConfiguration beanConfiguration,
+                              AccessVerification accessVerification
+                              ){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.categoryRepository = categoryRepository;
         this.modelMapper = beanConfiguration.modelMapper();
+        this.accessVerification = accessVerification;
     }
 
     //강의 생성
@@ -52,11 +57,6 @@ public class LectureServiceImpl implements LectureService{
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
-        // User의 Role이 Lecturer인 경우 강의 생성, 아니면 403 코드 반환
-        if(user.getUserRole() != UserRole.ROLE_LECTURER){
-            throw new ForbiddenException("강의 생성 권한이 없습니다.", ErrorCode.FORBIDDEN);
-        }
-
         Lecture lecture = modelMapper.map(requestLectureDto, Lecture.class);
         Category category = categoryRepository.findById(requestLectureDto.getCategoryId())
                 .orElseThrow(() -> new IdNotExistException("카테고리 존재하지 않음", ErrorCode.ID_NOT_EXIST));
@@ -64,7 +64,6 @@ public class LectureServiceImpl implements LectureService{
         lecture.setCategory(category);
         lecture.setUser(user);
         lectureRepository.save(lecture);
-//        return ResponseLectureDto.from(lectureRepository.save(lecture));
     }
 
     //특정 강의 조회
@@ -101,7 +100,6 @@ public class LectureServiceImpl implements LectureService{
                         .endDate(requestModifyLectureDto.getEndDate())
                         .category(category).user(user).build();
         lectureRepository.save(modifiedLecture);
-//        return ResponseLectureDto.from(lectureRepository.save(modifiedLecture));
     }
 
     //강의 삭제

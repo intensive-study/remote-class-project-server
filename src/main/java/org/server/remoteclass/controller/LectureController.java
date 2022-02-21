@@ -11,6 +11,7 @@ import org.server.remoteclass.service.lecture.LectureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,6 +29,7 @@ public class LectureController {
     }
 
     @ApiOperation(value = "강의 생성", notes = "새로운 강의를 생성할 수 있다.")
+    @PreAuthorize("@accessVerification.hasAccessOnlyLecturer()")
     @PostMapping
     public ResponseEntity createLecture(@RequestBody @Valid RequestLectureDto requestLectureDto) {
         lectureService.createLecture(requestLectureDto);
@@ -48,6 +50,7 @@ public class LectureController {
 
     // 수정, 삭제의 경우도 Status Code를 고려해 봐야 할 것 같습니다.
     @ApiOperation(value = "강의 수정", notes = "강의 상세내용을 수정할 수 있다.")
+    @PreAuthorize("@accessVerification.hasAccessOnlyLecturer()")
     @PutMapping
     public ResponseEntity updateLecture(@RequestBody @Valid RequestModifyLectureDto requestModifyLectureDto) {
         lectureService.updateLecture(requestModifyLectureDto);
@@ -55,6 +58,7 @@ public class LectureController {
     }
 
     @ApiOperation(value = "강의 삭제", notes = "강의를 삭제할 수 있다.")
+    @PreAuthorize("@accessVerification.hasAccessOnlyLecturer()")
     @DeleteMapping("/{lectureId}")
     public ResponseEntity deleteLecture(@PathVariable("lectureId") Long lectureId) {
         lectureService.deleteLecture(lectureId);
