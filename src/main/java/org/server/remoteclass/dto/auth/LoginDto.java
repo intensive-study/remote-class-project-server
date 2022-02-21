@@ -16,10 +16,10 @@ import javax.validation.constraints.Size;
 public class LoginDto {
 
     @NotEmpty
-    @Size(max=20)
+    @Size(min = 8, max=30)
     private String email;
 
     @NotEmpty
-    @Size(min=8, max=30)
+    @Size(min=8, max=20)
     private String password;
 }

@@ -40,7 +40,7 @@ public class AuthController {
     @ApiOperation(value = "토큰 재발급", notes = "access 토큰과 refresh 토큰으로 토큰을 재발급받는다.")
     @PostMapping("/reissue")
     public ResponseEntity<ResponseTokenDto> reissue(
-            @RequestBody RequestTokenDto requestTokenDto){
+            @Valid @RequestBody RequestTokenDto requestTokenDto){
         return ResponseEntity.status(HttpStatus.OK).body(authService.reissue(requestTokenDto));
     }
 
