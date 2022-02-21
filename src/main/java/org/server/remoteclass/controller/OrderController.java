@@ -8,12 +8,14 @@ import org.server.remoteclass.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@PreAuthorize("@accessVerification.hasAccessOnlyStudent()")
 @RequestMapping("/orders")
 public class OrderController {
 

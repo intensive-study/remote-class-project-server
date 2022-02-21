@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PurchaseService {
 
-    PurchaseDto createPurchase(RequestPurchaseDto requestPurchaseDto);
+    void createPurchase(RequestPurchaseDto requestPurchaseDto);
     List<ResponsePurchaseDto> getAllPurchaseByUserId();
     ResponsePurchaseDto getPurchaseByUserIdAndPurchaseId(Long purchaseId);
 

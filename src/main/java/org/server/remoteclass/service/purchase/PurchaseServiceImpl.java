@@ -7,10 +7,12 @@ import org.server.remoteclass.dto.purchase.PurchaseDto;
 import org.server.remoteclass.dto.purchase.RequestPurchaseDto;
 import org.server.remoteclass.dto.purchase.ResponsePurchaseDto;
 import org.server.remoteclass.entity.*;
+import org.server.remoteclass.exception.BadRequestArgumentException;
 import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.jpa.*;
+import org.server.remoteclass.util.AccessVerification;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,28 +33,31 @@ public class PurchaseServiceImpl implements PurchaseService{
     private final OrderRepository orderRepository;
     private final IssuedCouponRepository issuedCouponRepository;
     private final PurchaseRepository purchaseRepository;
+    private final AccessVerification accessVerification;
     private final ModelMapper modelMapper;
 
     @Autowired
     public PurchaseServiceImpl(UserRepository userRepository, OrderRepository orderRepository,
                                PurchaseRepository purchaseRepository, IssuedCouponRepository issuedCouponRepository,
-                                BeanConfiguration beanConfiguration){
+                                BeanConfiguration beanConfiguration, AccessVerification accessVerification){
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
         this.issuedCouponRepository = issuedCouponRepository;
         this.purchaseRepository = purchaseRepository;
         this.modelMapper = beanConfiguration.modelMapper();
+        this.accessVerification = accessVerification;
     }
 
     @Override
     @Transactional
-    public PurchaseDto createPurchase(RequestPurchaseDto requestPurchaseDto) {
+    public void createPurchase(RequestPurchaseDto requestPurchaseDto) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         //orderId를 입력하면 order 객체 받아오기
         Order order = orderRepository.findById(requestPurchaseDto.getOrderId())
                 .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
+
         Purchase purchase = null;
         // pending상태만 주문 가능. 취소되거나 이미 완료된 주문이면 더이상 구매하지 못함.
         if(order.getOrderStatus() == OrderStatus.PENDING){
@@ -63,8 +69,10 @@ public class PurchaseServiceImpl implements PurchaseService{
             purchaseRepository.save(purchase);
         }
         else{
-            throw new ForbiddenException("주문 가능한 상태가 아닙니다", ErrorCode.FORBIDDEN);
+            throw new BadRequestArgumentException("주문 가능한 상태가 아닙니다", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
+        Integer totalPrice = order.getOriginalPrice();
+        Optional<IssuedCoupon> issuedCoupon = issuedCouponRepository.findByUserAndIssuedCouponId(user.getUserId(), order.getIssuedCoupon().getIssuedCouponId());
         /** 쿠폰 할인 관련 기능!!
         // 주문에서 정상가 끌어오고
         Integer totalPrice = order.getOriginalPrice();
@@ -83,7 +91,7 @@ public class PurchaseServiceImpl implements PurchaseService{
         }
         purchase.setPurchasePrice(totalPrice);
          */
-        return PurchaseDto.from(purchase);
+//        return PurchaseDto.from(purchase);
     }
 
     //전체 구매내역 조회
@@ -106,8 +114,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 
         // 조회를 예외처리 해 줄 필요가 있나요? 오히려 올바른 범위가 아닌 경우에만(-1과 같은 경우)에만 해주면 될 것 같은데요..
         // 그냥 null을 반환해주면 되지 않을까요?
-        Purchase purchase = purchaseRepository.findById(purchaseId)
-                .orElseThrow(() -> new IdNotExistException("해당 구매내역이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
+        Purchase purchase = purchaseRepository.findById(purchaseId).orElse(null);
 
         return new ResponsePurchaseDto(purchase);
     }

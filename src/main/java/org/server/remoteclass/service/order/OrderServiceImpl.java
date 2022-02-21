@@ -8,11 +8,13 @@ import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
 import org.server.remoteclass.dto.order.*;
 import org.server.remoteclass.entity.*;
+import org.server.remoteclass.exception.BadRequestArgumentException;
 import org.server.remoteclass.exception.ForbiddenException;
 
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.jpa.*;
+import org.server.remoteclass.util.AccessVerification;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +35,14 @@ public class OrderServiceImpl implements OrderService {
     private final OrderLectureRepository orderLectureRepository;
     private final CouponRepository couponRepository;
     private final IssuedCouponRepository issuedCouponRepository;
+    private final AccessVerification accessVerification;
     private final ModelMapper modelMapper;
 
     @Autowired
     public OrderServiceImpl(UserRepository userRepository, LectureRepository lectureRepository,
                             OrderRepository orderRepository, OrderLectureRepository orderLectureRepository,
-                            CouponRepository couponRepository, IssuedCouponRepository issuedCouponRepository, BeanConfiguration beanConfiguration){
+                            CouponRepository couponRepository, IssuedCouponRepository issuedCouponRepository,
+                            BeanConfiguration beanConfiguration, AccessVerification accessVerification){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.orderRepository = orderRepository;
@@ -46,11 +50,12 @@ public class OrderServiceImpl implements OrderService {
         this.couponRepository = couponRepository;
         this.issuedCouponRepository = issuedCouponRepository;
         this.modelMapper = beanConfiguration.modelMapper();
+        this.accessVerification = accessVerification;
     }
 
     @Override
     @Transactional
-    public Long createOrder(RequestOrderDto requestOrderDto) {
+    public void createOrder(RequestOrderDto requestOrderDto) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
@@ -78,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
             // Forbidden의 경우 권한 문제인데, 이런 경우에 발생시켜도 되나? 싶습니다.
             // 400이나 404와 같은 코드를 내보내는 게 맞지 않을까요?
             if(issuedCoupon.isCouponUsed() || LocalDateTime.now().isAfter(issuedCoupon.getCouponValidDate())){
-                throw new ForbiddenException("이미 사용했거나 유효하지 않은 쿠폰입니다", ErrorCode.FORBIDDEN);
+                throw new BadRequestArgumentException("이미 사용했거나 유효하지 않은 쿠폰입니다", ErrorCode.BAD_REQUEST_ARGUMENT);
             }
             order.setIssuedCoupon(issuedCoupon);
         }
@@ -95,7 +100,6 @@ public class OrderServiceImpl implements OrderService {
         order.setOriginalPrice(orderRepository.findSumOrderByOrderId(order.getOrderId()));
         orderRepository.save(order);
 
-        return order.getOrderId();
     }
 
     //    주문 취소
@@ -130,13 +134,8 @@ public class OrderServiceImpl implements OrderService {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
-        List<Order> orders;
-        if(user.getAuthority() == Authority.ROLE_ADMIN){
-            orders = orderRepository.findByOrderByOrderDateDesc();
-        }
-        else{
-            throw new ForbiddenException("조회 권한이 없습니다", ErrorCode.FORBIDDEN);
-        }
+        List<Order> orders = orderRepository.findByOrderByOrderDateDesc();
+
         return orders.stream().map(ResponseOrderByAdminDto::new).collect(Collectors.toList());
     }
 
@@ -146,13 +145,8 @@ public class OrderServiceImpl implements OrderService {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
-        List<Order> orders;
-        if(user.getAuthority() == Authority.ROLE_ADMIN){
-            orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(userId);
-        }
-        else{
-            throw new ForbiddenException("조회 권한이 없습니다", ErrorCode.FORBIDDEN);
-        }
+        List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(userId);
+
         return orders.stream().map(ResponseOrderByAdminDto::new).collect(Collectors.toList());
     }
 
@@ -163,14 +157,9 @@ public class OrderServiceImpl implements OrderService {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
-        Order order;
-        if(user.getAuthority() == Authority.ROLE_ADMIN){
-            order = orderRepository.findById(orderId)
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
-        }
-        else{
-            throw new ForbiddenException("조회 권한이 없습니다", ErrorCode.FORBIDDEN);
-        }
+
         return new ResponseOrderByAdminDto(order);
     }
 }
