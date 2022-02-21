@@ -29,7 +29,7 @@ public class OrderController {
 
     @ApiOperation("주문 신청")
     @PostMapping
-    public ResponseEntity createOrder(@RequestBody RequestOrderDto requestOrderDto) {
+    public ResponseEntity createOrder(@Valid @RequestBody RequestOrderDto requestOrderDto) {
         orderService.createOrder(requestOrderDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
