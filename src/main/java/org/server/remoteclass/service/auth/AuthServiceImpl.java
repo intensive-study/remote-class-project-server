@@ -88,7 +88,7 @@ public class AuthServiceImpl implements AuthService{
     public ResponseTokenDto reissue(RequestTokenDto requestTokenDto){
         // 1. Refresh Token 검증
         if(!tokenProvider.validateToken(requestTokenDto.getRefreshToken())){
-            throw new IdNotExistException("Refresh Token이 유효하지 않습니다.", ErrorCode.ID_NOT_EXIST);
+            throw new UnauthorizedException("Refresh Token이 유효하지 않습니다.", ErrorCode.UNAUTHORIZED);
         }
         // 2. Access Token 에서 User Id 가져오기
         Authentication authentication = tokenProvider.getAuthentication(requestTokenDto.getAccessToken());

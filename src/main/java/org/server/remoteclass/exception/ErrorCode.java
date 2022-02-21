@@ -13,7 +13,8 @@ public enum ErrorCode {
     NON_AUTHORITATIVE_INFORMATION(HttpStatus.NON_AUTHORITATIVE_INFORMATION, "NON-AUTHORITATIVE-ERR-203", "수정 / 삭제 권한이 없습니다."),
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "NOT-ACCEPTABLE-QUERY-ERR-406", "해당 명령을 수행할 수 없습니다. (SOL 수행 실패)"),
     BAD_REQUEST_ARGUMENT(HttpStatus.BAD_REQUEST, "BAD_REQUEST_ARGUMENT-400", "메소드 호출 시 전달 값이 올바르지 않습니다."),
-    FORBIDDEN(HttpStatus.FORBIDDEN, "NO-RELEVANT-PERMISSIONS-ERR-403", "접근 권한이 없습니다.");
+    FORBIDDEN(HttpStatus.FORBIDDEN, "NO-RELEVANT-PERMISSIONS-ERR-403", "접근 권한이 없습니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED-401", "인증이 유효하지 않습니다.");
     private HttpStatus status;
     private String code;
     private String message;
