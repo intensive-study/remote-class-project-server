@@ -17,7 +17,7 @@ public class RequestLectureDto {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Long categoryId;
-    private Long lecturer;
+//    private Long lecturer;
 
     public static RequestLectureDto from(Lecture lecture){
         if(lecture == null) return null;
@@ -28,7 +28,7 @@ public class RequestLectureDto {
                 .startDate(LocalDateTime.from(lecture.getStartDate()))
                 .endDate(LocalDateTime.from(lecture.getEndDate()))
                 .categoryId(lecture.getCategory().getCategoryId())
-                .lecturer(lecture.getUser().getUserId())
+//                .lecturer(lecture.getUser().getUserId())
                 .build();
     }
 }
