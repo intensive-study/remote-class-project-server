@@ -26,7 +26,7 @@ public class FixDiscountCouponController {
     @PostMapping
     public ResponseEntity createFixDiscountCoupon(@RequestBody @Valid RequestFixDiscountCouponDto fixDiscountDto){
         fixDiscountCouponService.createFixDiscountCoupon(fixDiscountDto);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // 정액 할인 쿠폰 전체 조회
@@ -40,6 +40,6 @@ public class FixDiscountCouponController {
     @ApiOperation(value = "정액 할인 쿠폰을 쿠폰 번호로 조회")
     @GetMapping("/{couponId}")
     public ResponseEntity<ResponseFixDiscountCouponDto> getFixDiscountCoupon(@PathVariable("couponId") Long couponId){
-        return ResponseEntity.status(HttpStatus.CREATED).body(fixDiscountCouponService.getFixDiscountCoupon(couponId));
+        return ResponseEntity.status(HttpStatus.OK).body(fixDiscountCouponService.getFixDiscountCoupon(couponId));
     }
 }
