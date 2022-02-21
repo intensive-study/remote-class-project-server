@@ -13,7 +13,7 @@ import java.util.List;
 public interface StudentService {
 
     //수강신청
-    StudentDto createStudent(RequestStudentDto requestStudentDto);
+    void createStudent(RequestStudentDto requestStudentDto);
     //수강 취소
     void cancel(Long lectureId);
     //한 수강생의 수강 강좌 리스트 조회
