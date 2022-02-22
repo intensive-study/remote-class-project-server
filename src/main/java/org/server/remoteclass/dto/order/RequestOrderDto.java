@@ -17,7 +17,7 @@ public class RequestOrderDto {
     //주문 신청할때 입력하는 dto
     @NotEmpty // 리스트라 @NotEmpty 해도 되는지 확실치 않습니다.
     private List<RequestOrderLectureDto> orderLectures = new ArrayList<>();
-    @NotEmpty
+//    @NotEmpty
     private Payment payment; //결제방법
 
     private String bank;  //입금은행

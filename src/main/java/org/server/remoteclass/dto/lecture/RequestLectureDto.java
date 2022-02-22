@@ -18,17 +18,16 @@ public class RequestLectureDto {
     private String title;
     @NotEmpty
     private String description;
-    @NotNull//@NotEmpty
+    @NotNull
     @Min(0)
     private Integer price;
-    @NotNull//@NotEmpty
+    @NotNull
     private LocalDateTime startDate;
-    @NotNull//@NotEmpty
+    @NotNull
     private LocalDateTime endDate;
-    @NotNull//@NotEmpty
+    @NotNull
     @Min(1)
     private Long categoryId;
-//    private Long lecturer;
 
     public static RequestLectureDto from(Lecture lecture){
         if(lecture == null) return null;
@@ -39,7 +38,6 @@ public class RequestLectureDto {
                 .startDate(LocalDateTime.from(lecture.getStartDate()))
                 .endDate(LocalDateTime.from(lecture.getEndDate()))
                 .categoryId(lecture.getCategory().getCategoryId())
-//                .lecturer(lecture.getUser().getUserId())
                 .build();
     }
 }
