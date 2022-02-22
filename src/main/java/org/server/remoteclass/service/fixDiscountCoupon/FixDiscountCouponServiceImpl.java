@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.fixDiscountCoupon.RequestFixDiscountCouponDto;
 import org.server.remoteclass.dto.fixDiscountCoupon.ResponseFixDiscountCouponDto;
 import org.server.remoteclass.entity.FixDiscountCoupon;
+import org.server.remoteclass.jpa.CouponRepository;
 import org.server.remoteclass.jpa.FixDiscountCouponRepository;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,15 @@ import java.util.stream.Collectors;
 public class FixDiscountCouponServiceImpl implements FixDiscountCouponService {
 
     private final ModelMapper modelMapper;
+    private final CouponRepository couponRepository;
     private final FixDiscountCouponRepository fixDiscountCouponRepository;
 
     public FixDiscountCouponServiceImpl(BeanConfiguration beanConfiguration,
-                                        FixDiscountCouponRepository fixDiscountCouponRepository){
+                                        FixDiscountCouponRepository fixDiscountCouponRepository,
+                                        CouponRepository couponRepository){
         this.modelMapper = beanConfiguration.modelMapper();
         this.fixDiscountCouponRepository = fixDiscountCouponRepository;
+        this.couponRepository = couponRepository;
     }
 
     @Override
@@ -33,6 +37,7 @@ public class FixDiscountCouponServiceImpl implements FixDiscountCouponService {
         fixDiscountCoupon.setCouponValid(true);
         fixDiscountCoupon.setCouponValidDays(requestFixDiscountCouponDto.getCouponValidDays());
         fixDiscountCoupon.setDiscountPrice(requestFixDiscountCouponDto.getDiscountPrice());
+//        couponRepository.save(fixDiscountCoupon); -> 이 방법으로 해도 됨.
         fixDiscountCouponRepository.save(fixDiscountCoupon);
     }
 
