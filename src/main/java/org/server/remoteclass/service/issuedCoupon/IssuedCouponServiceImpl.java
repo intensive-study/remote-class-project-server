@@ -62,11 +62,8 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
         issuedCoupon.setUser(user);
         log.info("issuedCoupon couponCode" + issuedCoupon.getCoupon().getCouponCode());
         log.info("issued Coupon으로 couponId 확인 : " + issuedCoupon.getCoupon().getCouponId());
-//        coupon.getIssuedCouponList().add(issuedCoupon);
         couponRepository.save(coupon);
-//        log.info("쿠폰 리스트 확인" + coupon.getIssuedCouponList());
         issuedCouponRepository.save(issuedCoupon);
-//        return IssuedCouponDto.from(issuedCouponRepository.save(issuedCoupon));
     }
 
     @Override

@@ -31,4 +31,11 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.OK).body(eventService.getEvent(eventId));
     }
 
+    @ApiOperation(value = "이벤트 번호로 이벤트 삭제")
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity deleteEvent(@PathVariable("eventId") Long eventId){
+        eventService.deleteEvent(eventId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }
