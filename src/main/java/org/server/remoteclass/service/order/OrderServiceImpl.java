@@ -115,7 +115,12 @@ public class OrderServiceImpl implements OrderService {
         if(user.getUserId() != order.getUser().getUserId()){
             throw new ForbiddenException("주문 취소 권한이 없습니다", ErrorCode.FORBIDDEN);
         }
-        order.setOrderStatus(OrderStatus.CANCEL);
+        if(order.getOrderStatus() == OrderStatus.PENDING) {
+            order.setOrderStatus(OrderStatus.CANCEL);
+        }
+        else{
+            throw new BadRequestArgumentException("취소 가능한 상태가 아닙니다", ErrorCode.BAD_REQUEST_ARGUMENT);
+        }
     }
 
     //사용자 본인것만 조회
