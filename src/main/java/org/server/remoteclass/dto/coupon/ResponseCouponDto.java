@@ -22,8 +22,8 @@ public class ResponseCouponDto {
 
     private Long couponId;
     private String couponCode;
-    private boolean couponValid;
-    private int couponValidDays;
+    private Boolean couponValid;
+    private Integer couponValidDays;
     private LocalDateTime createdDate;
     private List<ResponseIssuedCouponDto> issuedCouponList = new ArrayList<>();
 

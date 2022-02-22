@@ -17,7 +17,7 @@ public class RequestUserDto {
     @Range(min = 8, max = 30)
     private String email;
     @NotEmpty
-    @Max(20)
+    @Range(max = 20)
     private String name;
     @NotEmpty
     @Range(min = 8, max = 20)

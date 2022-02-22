@@ -2,6 +2,7 @@ package org.server.remoteclass.dto.coupon;
 
 import lombok.*;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -14,5 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class RequestCouponDto {
     @NotNull
-    private int couponValidDays;
+    @Min(0)
+    private Integer couponValidDays;
 }

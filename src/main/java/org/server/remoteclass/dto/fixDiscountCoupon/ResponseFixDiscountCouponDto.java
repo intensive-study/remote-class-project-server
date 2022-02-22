@@ -14,11 +14,11 @@ public class ResponseFixDiscountCouponDto {
 
     private Long couponId;
     private String couponCode;
-    private boolean couponValid;
+    private Boolean couponValid;
 
     private String title;
-    private int couponValidDays;
-    private int discountPrice;
+    private Integer couponValidDays;
+    private Integer discountPrice;
 
     private LocalDateTime createdDate;
 

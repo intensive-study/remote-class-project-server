@@ -2,6 +2,7 @@ package org.server.remoteclass.dto.purchase;
 
 import lombok.*;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -9,5 +10,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor @NoArgsConstructor
 public class RequestPurchaseDto {
     @NotNull
+    @Min(0)
     private Long orderId;
 }

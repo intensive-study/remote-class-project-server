@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -16,7 +17,9 @@ public class RequestRateDiscountCouponDto {
     @NotEmpty
     private String title;
     @NotNull
-    private int couponValidDays;
+    @Min(0)
+    private Integer couponValidDays;
     @NotNull
-    private int discountRate;
+    @Min(0)
+    private Integer discountRate;
 }

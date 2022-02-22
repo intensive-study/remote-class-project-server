@@ -3,6 +3,7 @@ package org.server.remoteclass.dto.lecture;
 import lombok.*;
 import org.server.remoteclass.entity.Lecture;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -18,12 +19,14 @@ public class RequestLectureDto {
     @NotEmpty
     private String description;
     @NotNull//@NotEmpty
+    @Min(0)
     private Integer price;
     @NotNull//@NotEmpty
     private LocalDateTime startDate;
     @NotNull//@NotEmpty
     private LocalDateTime endDate;
     @NotNull//@NotEmpty
+    @Min(1)
     private Long categoryId;
 //    private Long lecturer;
 

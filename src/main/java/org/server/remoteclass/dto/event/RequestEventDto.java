@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -27,7 +28,8 @@ public class RequestEventDto {
 
     //쿠폰 관련 정보
     @NotNull
-    private int couponValidDays;
+    @Min(0)
+    private Integer couponValidDays;
 
     public RequestEventDto(){
 
