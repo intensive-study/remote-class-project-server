@@ -62,7 +62,7 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     @Transactional
-    public void deactivateCoupon(Long couponId) throws IdNotExistException {
+    public void deactivateCoupon(Long couponId) {
         Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId).orElse(null);
         coupon.setCouponValid(false);
 //        Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId)
@@ -95,7 +95,7 @@ public class CouponServiceImpl implements CouponService {
     //쿠폰 삭제
     @Override
     @Transactional
-    public void deleteCoupon(Long couponId) throws IdNotExistException{
+    public void deleteCoupon(Long couponId) {
 //        Coupon coupon = (Coupon) couponRepository
 //                .findByCouponId(couponId)
 //                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다", ResultCode.ID_NOT_EXIST));

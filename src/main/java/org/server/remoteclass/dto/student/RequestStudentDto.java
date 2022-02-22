@@ -1,10 +1,8 @@
 package org.server.remoteclass.dto.student;
 
 import lombok.*;
-import org.server.remoteclass.entity.Student;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 
@@ -16,13 +14,5 @@ public class RequestStudentDto {
     @NotNull
     @Min(1)
     private Long lectureId;
-
-    public RequestStudentDto(){
-
-    }
-
-    public RequestStudentDto(Long lectureId){
-        this.lectureId = lectureId;
-    }
 
 }

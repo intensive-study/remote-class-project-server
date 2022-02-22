@@ -32,7 +32,7 @@ public class StudentController {
 
     @ApiOperation(value = "수강 신청", notes = "학생이 수강 신청할 수 있다.")
     @PostMapping
-    public ResponseEntity<StudentDto> createStudent(@RequestBody @Valid RequestStudentDto requestStudentDto) {
+    public ResponseEntity createStudent(@RequestBody @Valid RequestStudentDto requestStudentDto) {
         studentService.createStudent(requestStudentDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
