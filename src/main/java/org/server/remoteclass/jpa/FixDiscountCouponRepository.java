@@ -11,4 +11,7 @@ public interface FixDiscountCouponRepository extends JpaRepository<FixDiscountCo
     Optional<FixDiscountCoupon> findByCouponCode(String couponCode);
     List<FixDiscountCoupon> findAll();
     void deleteByCouponId(Long couponId);
+
+    boolean existsByCouponId(Long couponId);
+
 }

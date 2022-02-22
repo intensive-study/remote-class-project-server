@@ -11,4 +11,6 @@ public interface RateDiscountCouponRepository extends JpaRepository<RateDiscount
     Optional<RateDiscountCoupon> findByCouponCode(String couponCode);
     List<RateDiscountCoupon> findAll();
     void deleteByCouponId(Long couponId);
+
+    boolean existsByCouponId(Long couponId);
 }
