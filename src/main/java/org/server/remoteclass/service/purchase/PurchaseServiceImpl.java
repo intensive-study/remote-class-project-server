@@ -65,33 +65,18 @@ public class PurchaseServiceImpl implements PurchaseService{
             purchase.setPurchaseDate(LocalDateTime.now());
             order.setOrderStatus(OrderStatus.COMPLETE);//해당 orderId의 주문에는 status를 complete로 변경하기
             purchase.setOrder(order);
-            purchase.setPurchasePrice(order.getOriginalPrice());
+            if(order.getSalePrice() == null){ // 할인가격이 없으면 원가만
+                purchase.setPurchasePrice(order.getOriginalPrice());
+            }
+            else{ //할인가격이 있으면 할인가격이 최종가격으로
+                purchase.setPurchasePrice(order.getSalePrice());
+            }
             purchaseRepository.save(purchase);
         }
         else{
             throw new BadRequestArgumentException("주문 가능한 상태가 아닙니다", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
-        Integer totalPrice = order.getOriginalPrice();
-        Optional<IssuedCoupon> issuedCoupon = issuedCouponRepository.findByUserAndIssuedCouponId(user.getUserId(), order.getIssuedCoupon().getIssuedCouponId());
-        /** 쿠폰 할인 관련 기능!!
-        // 주문에서 정상가 끌어오고
-        Integer totalPrice = order.getOriginalPrice();
-        //쿠폰이 있으면
-        if(order.getIssuedCoupon()){
-            //쿠폰 객체 끌어오고
-            IssuedCoupon issuedCoupon = issuedCouponRepository.findByUserAndIssuedCouponId(user.getUserId(), order.getIssuedCoupon().getIssuedCouponId());
-            // how to map issued-coupon-fix/rate??????
-            //쿠폰이 정률인지 정액인지
-            if(fix){ //정액쿠폰
-                totalPrice -= discountPrice;
-            }
-            if(rate){
-                totalPrice *= (1-discountRate);
-            }
-        }
-        purchase.setPurchasePrice(totalPrice);
-         */
-//        return PurchaseDto.from(purchase);
+
     }
 
     //전체 구매내역 조회

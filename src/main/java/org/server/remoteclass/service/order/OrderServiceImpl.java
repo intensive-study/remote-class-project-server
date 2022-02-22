@@ -2,7 +2,6 @@ package org.server.remoteclass.service.order;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.server.remoteclass.constant.Authority;
 import org.server.remoteclass.constant.OrderStatus;
 
 import org.server.remoteclass.constant.Payment;
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,7 +33,8 @@ public class OrderServiceImpl implements OrderService {
     private final LectureRepository lectureRepository;
     private final OrderRepository orderRepository;
     private final OrderLectureRepository orderLectureRepository;
-    private final CouponRepository couponRepository;
+    private final FixDiscountCouponRepository fixDiscountCouponRepository;
+    private final RateDiscountCouponRepository rateDiscountCouponRepository;
     private final IssuedCouponRepository issuedCouponRepository;
     private final AccessVerification accessVerification;
     private final ModelMapper modelMapper;
@@ -41,13 +42,14 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     public OrderServiceImpl(UserRepository userRepository, LectureRepository lectureRepository,
                             OrderRepository orderRepository, OrderLectureRepository orderLectureRepository,
-                            CouponRepository couponRepository, IssuedCouponRepository issuedCouponRepository,
+                            FixDiscountCouponRepository fixDiscountCouponRepository, RateDiscountCouponRepository rateDiscountCouponRepository,IssuedCouponRepository issuedCouponRepository,
                             BeanConfiguration beanConfiguration, AccessVerification accessVerification){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.orderRepository = orderRepository;
         this.orderLectureRepository = orderLectureRepository;
-        this.couponRepository = couponRepository;
+        this.fixDiscountCouponRepository = fixDiscountCouponRepository;
+        this.rateDiscountCouponRepository = rateDiscountCouponRepository;
         this.issuedCouponRepository = issuedCouponRepository;
         this.modelMapper = beanConfiguration.modelMapper();
         this.accessVerification = accessVerification;
@@ -63,30 +65,27 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
         order.setOrderStatus(OrderStatus.PENDING);
-        order.setOrderDate(LocalDateTime.now());
         order.setPayment(requestOrderDto.getPayment());
         if(requestOrderDto.getPayment() == Payment.BANK_ACCOUNT){
             order.setBank(requestOrderDto.getBank());
             order.setAccount(requestOrderDto.getAccount());
         }
-        IssuedCoupon issuedCoupon;
+        IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
         if(requestOrderDto.getIssuedCouponId() == null){ //쿠폰값 입력 안했을때
             order.setIssuedCoupon(null);
         }
         else{  //쿠폰값 입력했을때
-            issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
-            if(issuedCoupon==null){  //없는 쿠폰 입력했을 때
-                throw new IdNotExistException("존재하지 않는 쿠폰입니다", ErrorCode.ID_NOT_EXIST);
+            if(requestOrderDto.getIssuedCouponId() != null){
+                if(issuedCoupon==null){  //없는 쿠폰 입력했을 때
+                    throw new IdNotExistException("존재하지 않는 쿠폰입니다", ErrorCode.ID_NOT_EXIST);
+                }
+                // 이미 사용한 쿠폰 입력했을 때 or 유효하지 않는 쿠폰 입력했을 때
+                if(issuedCoupon.isCouponUsed() || LocalDateTime.now().isAfter(issuedCoupon.getCouponValidDate())){
+                    throw new BadRequestArgumentException("이미 사용했거나 유효하지 않은 쿠폰입니다", ErrorCode.BAD_REQUEST_ARGUMENT);
+                }
+                order.setIssuedCoupon(issuedCoupon);
+                issuedCoupon.setCouponUsed(true);
             }
-            // 이미 사용한 쿠폰 입력했을 때 or 유효하지 않는 쿠폰 입력했을 때
-
-            // Forbidden의 경우 권한 문제인데, 이런 경우에 발생시켜도 되나? 싶습니다.
-            // 400이나 404와 같은 코드를 내보내는 게 맞지 않을까요?
-            if(issuedCoupon.isCouponUsed() || LocalDateTime.now().isAfter(issuedCoupon.getCouponValidDate())){
-                throw new BadRequestArgumentException("이미 사용했거나 유효하지 않은 쿠폰입니다", ErrorCode.BAD_REQUEST_ARGUMENT);
-            }
-            order.setIssuedCoupon(issuedCoupon);
-        }
         orderRepository.save(order);
 
         List<OrderLecture> orderLectureList = order.getOrderLectures();
@@ -98,6 +97,18 @@ public class OrderServiceImpl implements OrderService {
             orderLectureList.add(orderLectureRepository.save(orderLecture));
         }
         order.setOriginalPrice(orderRepository.findSumOrderByOrderId(order.getOrderId()));
+
+        Integer price = order.getOriginalPrice();
+        if(fixDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
+            Optional<FixDiscountCoupon> fixDiscountCoupon = fixDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
+            price -= fixDiscountCoupon.get().getDiscountPrice();
+        }
+        else if(rateDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
+            Optional<RateDiscountCoupon> rateDiscountCoupon = rateDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
+            price *= (1-rateDiscountCoupon.get().getDiscountRate());
+        }
+            order.setSalePrice(price);
+        }
         orderRepository.save(order);
 
     }

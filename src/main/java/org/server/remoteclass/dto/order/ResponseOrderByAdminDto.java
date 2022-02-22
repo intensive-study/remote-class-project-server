@@ -25,6 +25,7 @@ public class ResponseOrderByAdminDto {
     private String account;  //예금주
     private Long issuedCouponId;       //적용하는 쿠폰 아이디
     private Integer originalPrice;
+    private Integer salePrice;
 
     public ResponseOrderByAdminDto(Order order){
         this.orderId = order.getOrderId();
@@ -37,9 +38,11 @@ public class ResponseOrderByAdminDto {
         this.account = order.getAccount();
         if(order.getIssuedCoupon() == null){
             this.issuedCouponId = null;
+            this.salePrice = null;
         }
         else {
             this.issuedCouponId = order.getIssuedCoupon().getIssuedCouponId();
+            this.salePrice = order.getSalePrice();
         }
         this.originalPrice = order.getOriginalPrice();
     }

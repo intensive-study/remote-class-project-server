@@ -52,4 +52,7 @@ public class Order {
     @Column(name="original_price")
     private Integer originalPrice;
 
+    @Column(name="sale_price")
+    private Integer salePrice;
+
 }
