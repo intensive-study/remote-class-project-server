@@ -3,12 +3,10 @@ package org.server.remoteclass.service.purchase;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.OrderStatus;
-import org.server.remoteclass.dto.purchase.PurchaseDto;
 import org.server.remoteclass.dto.purchase.RequestPurchaseDto;
 import org.server.remoteclass.dto.purchase.ResponsePurchaseDto;
 import org.server.remoteclass.entity.*;
 import org.server.remoteclass.exception.BadRequestArgumentException;
-import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.jpa.*;
@@ -21,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -62,7 +59,6 @@ public class PurchaseServiceImpl implements PurchaseService{
         // pending상태만 주문 가능. 취소되거나 이미 완료된 주문이면 더이상 구매하지 못함.
         if(order.getOrderStatus() == OrderStatus.PENDING){
             purchase = modelMapper.map(requestPurchaseDto, Purchase.class);
-            purchase.setPurchaseDate(LocalDateTime.now());
             order.setOrderStatus(OrderStatus.COMPLETE);//해당 orderId의 주문에는 status를 complete로 변경하기
             purchase.setOrder(order);
             if(order.getSalePrice() == null){ // 할인가격이 없으면 원가만
@@ -97,8 +93,6 @@ public class PurchaseServiceImpl implements PurchaseService{
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
-        // 조회를 예외처리 해 줄 필요가 있나요? 오히려 올바른 범위가 아닌 경우에만(-1과 같은 경우)에만 해주면 될 것 같은데요..
-        // 그냥 null을 반환해주면 되지 않을까요?
         Purchase purchase = purchaseRepository.findById(purchaseId).orElse(null);
 
         return new ResponsePurchaseDto(purchase);
