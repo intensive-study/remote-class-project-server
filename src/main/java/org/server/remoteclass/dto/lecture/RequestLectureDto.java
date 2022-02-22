@@ -4,6 +4,7 @@ import lombok.*;
 import org.server.remoteclass.entity.Lecture;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter @Setter
@@ -16,13 +17,13 @@ public class RequestLectureDto {
     private String title;
     @NotEmpty
     private String description;
-    @NotEmpty
+    @NotNull//@NotEmpty
     private Integer price;
-    @NotEmpty
+    @NotNull//@NotEmpty
     private LocalDateTime startDate;
-    @NotEmpty
+    @NotNull//@NotEmpty
     private LocalDateTime endDate;
-    @NotEmpty
+    @NotNull//@NotEmpty
     private Long categoryId;
 //    private Long lecturer;
 

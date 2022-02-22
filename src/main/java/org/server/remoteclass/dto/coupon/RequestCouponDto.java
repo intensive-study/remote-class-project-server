@@ -3,6 +3,7 @@ package org.server.remoteclass.dto.coupon;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 
@@ -12,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestCouponDto {
-    @NotEmpty
+    @NotNull
     private int couponValidDays;
 }

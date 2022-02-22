@@ -19,11 +19,10 @@ public class RequestOrderDto {
     private List<RequestOrderLectureDto> orderLectures = new ArrayList<>();
     @NotEmpty
     private Payment payment; //결제방법
-    @NotEmpty
+
     private String bank;  //입금은행
-    @NotEmpty
     private String account;  //예금주
-    @NotEmpty
+
     private Long issuedCouponId;       //적용하는 쿠폰 아이디
 
     public static RequestOrderDto from(Order order){
