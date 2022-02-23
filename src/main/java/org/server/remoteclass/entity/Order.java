@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,6 +19,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @DynamicInsert
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
 
     @Id
@@ -35,6 +38,7 @@ public class Order {
     private OrderStatus orderStatus; //주문상태
 
     @Column(name="order_date", nullable = false)
+    @CreatedDate
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
@@ -42,6 +46,7 @@ public class Order {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String bank;  //입금은행
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String account;  //예금주
 
@@ -51,5 +56,8 @@ public class Order {
 
     @Column(name="original_price")
     private Integer originalPrice;
+
+    @Column(name="sale_price")
+    private Integer salePrice;
 
 }

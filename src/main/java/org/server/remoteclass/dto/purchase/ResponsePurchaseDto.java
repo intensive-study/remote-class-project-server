@@ -12,11 +12,8 @@ import java.time.LocalDateTime;
 public class ResponsePurchaseDto {
 
     private Long purchaseId;
-    @NotNull
     private Long orderId;
-    @NotNull
     private Integer purchasePrice;
-    @NotNull
     private LocalDateTime purchaseDate;
 
     public ResponsePurchaseDto(Purchase purchase) {

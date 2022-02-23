@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class ResponseIssuedCouponDto {
 
     private Long issuedCouponId;
-    private boolean couponUsed;
+    private Boolean couponUsed;
     private String couponCode;
     private LocalDateTime couponValidDate; // 쿠폰 유효기간이라 봐주시면 됩니다.
 

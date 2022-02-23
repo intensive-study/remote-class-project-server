@@ -12,11 +12,11 @@ public interface CouponService {
     //쿠폰 생성
     ResponseCouponDto createCoupon(RequestCouponDto requestCouponDto);
     //쿠폰 비활성화
-    void deactivateCoupon(Long couponId) throws IdNotExistException;
+    void deactivateCoupon(Long couponId);
     //모든 쿠폰 조회
     List<ResponseCouponDto> getAllCoupons();
     //쿠폰 코드로 쿠폰 조회
     ResponseCouponDto getCouponByCouponCode(String couponCode);
     //쿠폰 삭제
-    void deleteCoupon(Long couponId) throws IdNotExistException;
+    void deleteCoupon(Long couponId);
 }

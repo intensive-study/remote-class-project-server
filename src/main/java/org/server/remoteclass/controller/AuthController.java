@@ -3,8 +3,8 @@ package org.server.remoteclass.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.server.remoteclass.dto.auth.LoginDto;
-import org.server.remoteclass.dto.auth.TokenDto;
-import org.server.remoteclass.dto.auth.TokenRequestDto;
+import org.server.remoteclass.dto.auth.ResponseTokenDto;
+import org.server.remoteclass.dto.auth.RequestTokenDto;
 import org.server.remoteclass.dto.user.RequestUserDto;
 import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.service.auth.AuthService;
@@ -27,21 +27,21 @@ public class AuthController {
 
     @ApiOperation(value = "사용자 회원가입", notes = "email, name, password를 통해 회원가입한다.")
     @PostMapping("/signup")
-    public ResponseEntity<ResponseUserDto> signup(@Valid @RequestBody RequestUserDto requestUserDto){
+    public ResponseEntity<ResponseUserDto> signup(@Valid @RequestBody RequestUserDto requestUserDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(requestUserDto));
     }
 
     @ApiOperation(value = "로그인", notes = "email, password를 통해 회원가입한다.")
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> authorize(@Valid @RequestBody LoginDto loginDto){
-        return ResponseEntity.ok(authService.login(loginDto));
+    public ResponseEntity<ResponseTokenDto> authorize(@Valid @RequestBody LoginDto loginDto){
+        return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginDto));
     }
 
     @ApiOperation(value = "토큰 재발급", notes = "access 토큰과 refresh 토큰으로 토큰을 재발급받는다.")
     @PostMapping("/reissue")
-    public ResponseEntity<TokenDto> reissue(
-            @RequestBody TokenRequestDto tokenRequestDto){
-        return ResponseEntity.ok(authService.reissue(tokenRequestDto));
+    public ResponseEntity<ResponseTokenDto> reissue(
+            @Valid @RequestBody RequestTokenDto requestTokenDto){
+        return ResponseEntity.status(HttpStatus.OK).body(authService.reissue(requestTokenDto));
     }
 
 }

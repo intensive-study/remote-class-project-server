@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -14,11 +15,11 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class LoginDto {
 
-    @NotNull
-    @Size(max=20)
+    @NotEmpty
+    @Size(min = 8, max=30)
     private String email;
 
-    @NotNull
-    @Size(min=8, max=30)
+    @NotEmpty
+    @Size(min=8, max=20)
     private String password;
 }

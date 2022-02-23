@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.server.remoteclass.dto.issuedcoupon.ResponseIssuedCouponDto;
 import org.server.remoteclass.entity.Coupon;
-import org.server.remoteclass.entity.FixDiscount;
-import org.server.remoteclass.entity.RateDiscount;
+import org.server.remoteclass.entity.FixDiscountCoupon;
+import org.server.remoteclass.entity.RateDiscountCoupon;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,8 +22,8 @@ public class ResponseCouponDto {
 
     private Long couponId;
     private String couponCode;
-    private boolean couponValid;
-    private int couponValidDays;
+    private Boolean couponValid;
+    private Integer couponValidDays;
     private LocalDateTime createdDate;
     private List<ResponseIssuedCouponDto> issuedCouponList = new ArrayList<>();
 
@@ -51,29 +51,29 @@ public class ResponseCouponDto {
                 .build();
     }
 
-    public static ResponseCouponDto from(FixDiscount fixDiscount){
-        if(fixDiscount == null) return null;
+    public static ResponseCouponDto from(FixDiscountCoupon fixDiscountCoupon){
+        if(fixDiscountCoupon == null) return null;
         return ResponseCouponDto.builder()
-                .couponId(fixDiscount.getCouponId())
-                .couponCode(fixDiscount.getCouponCode())
-                .couponValid(fixDiscount.isCouponValid())
-                .couponValidDays(fixDiscount.getCouponValidDays())
-                .title(fixDiscount.getTitle())
-                .discountPrice(fixDiscount.getDiscountPrice())
-                .createdDate(fixDiscount.getCreatedDate())
+                .couponId(fixDiscountCoupon.getCouponId())
+                .couponCode(fixDiscountCoupon.getCouponCode())
+                .couponValid(fixDiscountCoupon.isCouponValid())
+                .couponValidDays(fixDiscountCoupon.getCouponValidDays())
+                .title(fixDiscountCoupon.getTitle())
+                .discountPrice(fixDiscountCoupon.getDiscountPrice())
+                .createdDate(fixDiscountCoupon.getCreatedDate())
                 .build();
     }
 
-    public static ResponseCouponDto from(RateDiscount rateDiscount){
-        if(rateDiscount == null) return null;
+    public static ResponseCouponDto from(RateDiscountCoupon rateDiscountCoupon){
+        if(rateDiscountCoupon == null) return null;
         return ResponseCouponDto.builder()
-                .couponId(rateDiscount.getCouponId())
-                .couponCode(rateDiscount.getCouponCode())
-                .couponValid(rateDiscount.isCouponValid())
-                .couponValidDays(rateDiscount.getCouponValidDays())
-                .createdDate(rateDiscount.getCreatedDate())
-                .title(rateDiscount.getTitle())
-                .discountRate(rateDiscount.getDiscountRate())
+                .couponId(rateDiscountCoupon.getCouponId())
+                .couponCode(rateDiscountCoupon.getCouponCode())
+                .couponValid(rateDiscountCoupon.isCouponValid())
+                .couponValidDays(rateDiscountCoupon.getCouponValidDays())
+                .createdDate(rateDiscountCoupon.getCreatedDate())
+                .title(rateDiscountCoupon.getTitle())
+                .discountRate(rateDiscountCoupon.getDiscountRate())
                 .build();
     }
 }
