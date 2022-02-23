@@ -147,9 +147,7 @@ public class OrderServiceImpl implements OrderService {
     //관리자 전체 조회
     @Override
     public List<ResponseOrderByAdminDto> getAllOrdersByAdmin() throws IdNotExistException, ForbiddenException {
-        User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+
         List<Order> orders = orderRepository.findByOrderByOrderDateDesc();
 
         return orders.stream().map(ResponseOrderByAdminDto::new).collect(Collectors.toList());
@@ -158,9 +156,7 @@ public class OrderServiceImpl implements OrderService {
     //관리자가 사용자별로 조회
     @Override
     public List<ResponseOrderByAdminDto> getOrderByUserIdByAdmin(Long userId) throws IdNotExistException, ForbiddenException {
-        User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+
         List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(userId);
 
         return orders.stream().map(ResponseOrderByAdminDto::new).collect(Collectors.toList());
@@ -170,9 +166,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public ResponseOrderByAdminDto getOrderByOrderIdByAdmin(Long orderId) throws IdNotExistException, ForbiddenException {
-        User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
 

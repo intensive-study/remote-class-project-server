@@ -3,10 +3,6 @@ package org.server.remoteclass.service.student;
 import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
 import org.server.remoteclass.dto.student.RequestStudentDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
-import org.server.remoteclass.dto.student.StudentDto;
-import org.server.remoteclass.exception.ForbiddenException;
-import org.server.remoteclass.exception.IdNotExistException;
-import org.server.remoteclass.exception.EmailDuplicateException;
 
 import java.util.List;
 

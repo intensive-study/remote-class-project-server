@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
 import org.server.remoteclass.dto.student.RequestStudentDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
-import org.server.remoteclass.dto.student.StudentDto;
 import org.server.remoteclass.service.student.StudentService;
 import org.server.remoteclass.util.AccessVerification;
 import org.springframework.beans.factory.annotation.Autowired;

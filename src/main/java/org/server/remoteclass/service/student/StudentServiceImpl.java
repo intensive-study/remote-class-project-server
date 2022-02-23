@@ -2,8 +2,6 @@ package org.server.remoteclass.service.student;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.server.remoteclass.constant.Authority;
-import org.server.remoteclass.constant.UserRole;
 import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
 import org.server.remoteclass.dto.student.RequestStudentDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
@@ -18,11 +16,9 @@ import org.server.remoteclass.util.AccessVerification;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,11 +95,7 @@ public class StudentServiceImpl implements StudentService{
     @Override
     public List<ResponseStudentByLecturerDto> getStudentsByLectureId(Long lectureId) {
 
-        User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
-
-        Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() -> new IdNotExistException("존재하지 않는 강의입니다.", ErrorCode.ID_NOT_EXIST));
+        lectureRepository.findById(lectureId).orElseThrow(() -> new IdNotExistException("존재하지 않는 강의입니다.", ErrorCode.ID_NOT_EXIST));
 
         //강의자 본인 권한이거나 관리자 권한일때
 //        if(user.getUserId() == lecture.getUser().getUserId()){
@@ -115,9 +107,6 @@ public class StudentServiceImpl implements StudentService{
     //특정 수강생의 수강 강좌 리스트 조회
     @Override
     public List<ResponseLectureFromStudentDto> getLecturesByUserIdByAdmin(Long userId)  {
-        User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
         List<Student> students = studentRepository.findByUser_UserIdOrderByLecture_StartDateDesc(userId);
 

@@ -5,12 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.server.remoteclass.dto.auth.AuthorityDto;
 import org.server.remoteclass.entity.Student;
-import org.server.remoteclass.constant.UserRole;
-
-import java.time.LocalDateTime;
-import java.util.Set;
 
 @Data
 @Builder
@@ -23,10 +18,6 @@ public class ResponseStudentByLecturerDto {
     private Long userId;
     private String email;
     private String name;
-    private String password;
-    private UserRole userRole;
-    private LocalDateTime registerDate;
-    private Set<AuthorityDto> authorityDtoSet;
 
     public static ResponseStudentByLecturerDto from(Student student){
         if(student == null) return null;
