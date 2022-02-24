@@ -2,16 +2,16 @@ package org.server.remoteclass.controller;
 
 import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.cart.RequestCartDto;
-import org.server.remoteclass.dto.cart.ResponseCartDto;
 import org.server.remoteclass.service.cart.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
+@PreAuthorize("@accessVerification.hasAccessOnlyStudent()")
 @RequestMapping("/carts")
 public class CartController {
     private final CartService cartService;
@@ -44,20 +44,7 @@ public class CartController {
 
     @ApiOperation(value = "장바구니 조회", notes = "장바구니에 추가한 모든 강의를 조회할 수 있다.")
     @GetMapping
-    public ResponseEntity<List<ResponseCartDto>> getAllCartsByUserId() {
+    public ResponseEntity getAllCartsByUserId() {
         return ResponseEntity.status(HttpStatus.OK).body(cartService.getCartsByUserId());
     }
-
-    @ApiOperation(value = "장바구니 가격 합", notes = "장바구니에 추가한 모든 강의의 합을 조회할 수 있다.")
-    @GetMapping("/sum")
-    public ResponseEntity getSumCartByUserId() {
-        return ResponseEntity.status(HttpStatus.OK).body(cartService.sumCartByUserId());
-    }
-
-    @ApiOperation(value = "장바구니 개수 합", notes = "장바구니에 추가한 모든 강의 개수를 조회할 수 있다.")
-    @GetMapping("/count")
-    public ResponseEntity getCountCartByUserId() {
-        return ResponseEntity.status(HttpStatus.OK).body(cartService.countCartByUserId());
-    }
-
 }
