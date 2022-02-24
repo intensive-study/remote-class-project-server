@@ -36,11 +36,14 @@ public class PurchaseServiceImpl implements PurchaseService{
     private final ModelMapper modelMapper;
 
     @Autowired
-    public PurchaseServiceImpl(UserRepository userRepository,LectureRepository lectureRepository,
+    public PurchaseServiceImpl(UserRepository userRepository,
+                               LectureRepository lectureRepository,
                                StudentRepository studentRepository,
                                OrderRepository orderRepository,
-                               PurchaseRepository purchaseRepository, IssuedCouponRepository issuedCouponRepository,
-                                BeanConfiguration beanConfiguration, AccessVerification accessVerification){
+                               PurchaseRepository purchaseRepository,
+                               IssuedCouponRepository issuedCouponRepository,
+                               BeanConfiguration beanConfiguration,
+                               AccessVerification accessVerification){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.studentRepository = studentRepository;

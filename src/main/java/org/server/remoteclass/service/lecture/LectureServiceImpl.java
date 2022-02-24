@@ -2,7 +2,6 @@ package org.server.remoteclass.service.lecture;
 
 import org.modelmapper.ModelMapper;
 
-import org.server.remoteclass.constant.UserRole;
 import org.server.remoteclass.dto.lecture.RequestModifyLectureDto;
 import org.server.remoteclass.dto.lecture.RequestLectureDto;
 import org.server.remoteclass.dto.lecture.ResponseLectureDto;

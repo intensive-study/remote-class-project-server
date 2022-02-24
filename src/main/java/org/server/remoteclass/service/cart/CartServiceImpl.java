@@ -37,9 +37,12 @@ public class CartServiceImpl implements CartService {
     private final AccessVerification accessVerification;
 
     @Autowired
-    public CartServiceImpl(UserRepository userRepository, LectureRepository lectureRepository,
-                           StudentRepository studentRepository, CartRepository cartRepository,
-                            BeanConfiguration beanConfiguration,AccessVerification accessVerification){
+    public CartServiceImpl(UserRepository userRepository,
+                           LectureRepository lectureRepository,
+                           StudentRepository studentRepository,
+                           CartRepository cartRepository,
+                           BeanConfiguration beanConfiguration,
+                           AccessVerification accessVerification){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.studentRepository = studentRepository;

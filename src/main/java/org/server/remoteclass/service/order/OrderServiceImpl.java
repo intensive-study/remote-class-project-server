@@ -40,10 +40,15 @@ public class OrderServiceImpl implements OrderService {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public OrderServiceImpl(UserRepository userRepository, LectureRepository lectureRepository,
-                            OrderRepository orderRepository, OrderLectureRepository orderLectureRepository,
-                            FixDiscountCouponRepository fixDiscountCouponRepository, RateDiscountCouponRepository rateDiscountCouponRepository,IssuedCouponRepository issuedCouponRepository,
-                            BeanConfiguration beanConfiguration, AccessVerification accessVerification){
+    public OrderServiceImpl(UserRepository userRepository,
+                            LectureRepository lectureRepository,
+                            OrderRepository orderRepository,
+                            OrderLectureRepository orderLectureRepository,
+                            FixDiscountCouponRepository fixDiscountCouponRepository,
+                            RateDiscountCouponRepository rateDiscountCouponRepository,
+                            IssuedCouponRepository issuedCouponRepository,
+                            BeanConfiguration beanConfiguration,
+                            AccessVerification accessVerification){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.orderRepository = orderRepository;
