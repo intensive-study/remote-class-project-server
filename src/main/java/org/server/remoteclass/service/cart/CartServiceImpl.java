@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.cart.RequestCartDto;
 import org.server.remoteclass.dto.cart.ResponseCartDto;
+import org.server.remoteclass.dto.cart.ResponseCartListDto;
 import org.server.remoteclass.entity.Cart;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.exception.BadRequestArgumentException;
@@ -100,15 +101,20 @@ public class CartServiceImpl implements CartService {
     //현재 장바구니 전체 리스트 조회
     @Override
     @Transactional(readOnly = true)
-    public List<ResponseCartDto> getCartsByUserId() {
+    public ResponseCartListDto getCartsByUserId() {
 
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
 
+        ResponseCartListDto responseCartListDto = new ResponseCartListDto();
         List<Cart> carts = cartRepository.findByUser_UserIdOrderByCreatedDateDesc(user.getUserId());
+        responseCartListDto.setResponseCartDtoList(carts.stream()
+                .map(cart->ResponseCartDto.from(cart)).collect(Collectors.toList()));
+        responseCartListDto.setSumCart(cartRepository.findSumCartByUserId(user.getUserId()));
+        responseCartListDto.setCountCart(cartRepository.findCountCartByUserId(user.getUserId()));
 
-        return carts.stream().map(cart->ResponseCartDto.from(cart)).collect(Collectors.toList());
+        return responseCartListDto;
     }
 
 

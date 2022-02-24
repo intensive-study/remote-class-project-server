@@ -1,9 +1,8 @@
 package org.server.remoteclass.service.cart;
 
 import org.server.remoteclass.dto.cart.RequestCartDto;
-import org.server.remoteclass.dto.cart.ResponseCartDto;
+import org.server.remoteclass.dto.cart.ResponseCartListDto;
 
-import java.util.List;
 
 public interface CartService {
 
@@ -15,7 +14,7 @@ public interface CartService {
     void deleteAllCart();
 
     //나의 장바구니 리스트
-    List<ResponseCartDto> getCartsByUserId();
+    ResponseCartListDto getCartsByUserId();
     // 장바구니 금액 계산
     Integer sumCartByUserId();
     // 장바구니 개수 계산
