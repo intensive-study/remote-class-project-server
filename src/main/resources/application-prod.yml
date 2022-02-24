@@ -12,7 +12,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        format-sql: true
+        format_sql: true
     database: mysql
     generate-ddl: true
     show-sql: true
