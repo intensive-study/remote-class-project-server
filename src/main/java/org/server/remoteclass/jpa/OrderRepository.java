@@ -1,10 +1,8 @@
 package org.server.remoteclass.jpa;
 
 import org.server.remoteclass.entity.Order;
-import org.server.remoteclass.entity.OrderLecture;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -24,5 +22,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "join o.lecture l " +
             "where o.order.orderId=:orderId")
     Integer findSumOrderByOrderId(Long orderId);
+
+    List<Order> findByOrderLectures_Lecture_LectureId(Long lectureId);
 
 }

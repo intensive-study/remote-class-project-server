@@ -2,16 +2,13 @@ package org.server.remoteclass.service.student;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
 import org.server.remoteclass.dto.student.RequestStudentDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
-import org.server.remoteclass.entity.Lecture;
-import org.server.remoteclass.entity.Student;
-import org.server.remoteclass.entity.User;
+import org.server.remoteclass.entity.*;
 import org.server.remoteclass.exception.*;
-import org.server.remoteclass.jpa.LectureRepository;
-import org.server.remoteclass.jpa.StudentRepository;
-import org.server.remoteclass.jpa.UserRepository;
+import org.server.remoteclass.jpa.*;
 import org.server.remoteclass.util.AccessVerification;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
@@ -19,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,16 +28,24 @@ public class StudentServiceImpl implements StudentService{
     private final UserRepository userRepository;
     private final LectureRepository lectureRepository;
     private final StudentRepository studentRepository;
+    private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
     private final AccessVerification accessVerification;
+    private PurchaseRepository purchaseRepository;
 
     @Autowired
-    public StudentServiceImpl(UserRepository userRepository, LectureRepository lectureRepository,
-                              StudentRepository studentRepository, BeanConfiguration beanConfiguration,
+    public StudentServiceImpl(UserRepository userRepository,
+                              LectureRepository lectureRepository,
+                              StudentRepository studentRepository,
+                              OrderRepository orderRepository,
+                              PurchaseRepository purchaseRepository,
+                              BeanConfiguration beanConfiguration,
                               AccessVerification accessVerification){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.studentRepository = studentRepository;
+        this.orderRepository = orderRepository;
+        this.purchaseRepository = purchaseRepository;
         this.modelMapper = beanConfiguration.modelMapper();
         this.accessVerification = accessVerification;
     }
@@ -70,8 +76,21 @@ public class StudentServiceImpl implements StudentService{
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
-        if(studentRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())){
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(() -> new IdNotExistException("해당 강의가 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
+
+        if(studentRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())
+        && lecture.getStartDate().isAfter(LocalDateTime.now())){
             studentRepository.deleteByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId());
+            Purchase purchase = new Purchase();
+            for(Order order : orderRepository.findByOrderLectures_Lecture_LectureId(lectureId)){
+                if(order.getOrderStatus() == OrderStatus.COMPLETE){
+                    order.setOrderStatus(OrderStatus.CANCEL);
+                    purchase.setOrder(order);
+                    purchase.setPurchasePrice(-lecture.getPrice());
+                    purchaseRepository.save(purchase);
+                }
+            }
         }
         else{
             throw new IdNotExistException("취소할 강의가 없습니다.", ErrorCode.ID_NOT_EXIST);
