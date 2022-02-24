@@ -70,22 +70,7 @@ public class OrderServiceImpl implements OrderService {
             order.setBank(requestOrderDto.getBank());
             order.setAccount(requestOrderDto.getAccount());
         }
-        IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
-        if(requestOrderDto.getIssuedCouponId() == null){ //쿠폰값 입력 안했을때
-            order.setIssuedCoupon(null);
-        }
-        else{  //쿠폰값 입력했을때
-            if(requestOrderDto.getIssuedCouponId() != null){
-                if(issuedCoupon==null){  //없는 쿠폰 입력했을 때
-                    throw new IdNotExistException("존재하지 않는 쿠폰입니다", ErrorCode.ID_NOT_EXIST);
-                }
-                // 이미 사용한 쿠폰 입력했을 때 or 유효하지 않는 쿠폰 입력했을 때
-                if(issuedCoupon.isCouponUsed() || LocalDateTime.now().isAfter(issuedCoupon.getCouponValidDate())){
-                    throw new BadRequestArgumentException("이미 사용했거나 유효하지 않은 쿠폰입니다", ErrorCode.BAD_REQUEST_ARGUMENT);
-                }
-                order.setIssuedCoupon(issuedCoupon);
-                issuedCoupon.setCouponUsed(true);
-            }
+
         orderRepository.save(order);
 
         List<OrderLecture> orderLectureList = order.getOrderLectures();
@@ -98,17 +83,33 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setOriginalPrice(orderRepository.findSumOrderByOrderId(order.getOrderId()));
 
-        Integer price = order.getOriginalPrice();
-        if(fixDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
-            Optional<FixDiscountCoupon> fixDiscountCoupon = fixDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
-            price -= fixDiscountCoupon.get().getDiscountPrice();
+        IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
+        if(requestOrderDto.getIssuedCouponId() == null){ //쿠폰값 입력 안했을때
+            order.setIssuedCoupon(null);
         }
-        else if(rateDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
-            Optional<RateDiscountCoupon> rateDiscountCoupon = rateDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
-            price *= (1-rateDiscountCoupon.get().getDiscountRate());
-        }
+        else {  //쿠폰값 입력했을때
+            if (issuedCoupon == null) {  //없는 쿠폰 입력했을 때
+                throw new IdNotExistException("존재하지 않는 쿠폰입니다", ErrorCode.ID_NOT_EXIST);
+            }
+            // 이미 사용한 쿠폰 입력했을 때 or 유효하지 않는 쿠폰 입력했을 때
+            if (issuedCoupon.isCouponUsed() || LocalDateTime.now().isAfter(issuedCoupon.getCouponValidDate())) {
+                throw new BadRequestArgumentException("이미 사용했거나 유효하지 않은 쿠폰입니다", ErrorCode.BAD_REQUEST_ARGUMENT);
+            }
+            order.setIssuedCoupon(issuedCoupon);
+            issuedCoupon.setCouponUsed(true);
+
+            Integer price = order.getOriginalPrice();
+            if(fixDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
+                Optional<FixDiscountCoupon> fixDiscountCoupon = fixDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
+                price -= fixDiscountCoupon.get().getDiscountPrice();
+            }
+            else if(rateDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
+                Optional<RateDiscountCoupon> rateDiscountCoupon = rateDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
+                price *= (1-rateDiscountCoupon.get().getDiscountRate());
+            }
             order.setSalePrice(price);
         }
+
         orderRepository.save(order);
 
     }
