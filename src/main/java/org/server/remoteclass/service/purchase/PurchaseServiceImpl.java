@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 public class PurchaseServiceImpl implements PurchaseService{
 
     private final UserRepository userRepository;
+    private final LectureRepository lectureRepository;
+    private final StudentRepository studentRepository;
     private final OrderRepository orderRepository;
     private final IssuedCouponRepository issuedCouponRepository;
     private final PurchaseRepository purchaseRepository;
@@ -34,10 +36,14 @@ public class PurchaseServiceImpl implements PurchaseService{
     private final ModelMapper modelMapper;
 
     @Autowired
-    public PurchaseServiceImpl(UserRepository userRepository, OrderRepository orderRepository,
+    public PurchaseServiceImpl(UserRepository userRepository,LectureRepository lectureRepository,
+                               StudentRepository studentRepository,
+                               OrderRepository orderRepository,
                                PurchaseRepository purchaseRepository, IssuedCouponRepository issuedCouponRepository,
                                 BeanConfiguration beanConfiguration, AccessVerification accessVerification){
         this.userRepository = userRepository;
+        this.lectureRepository = lectureRepository;
+        this.studentRepository = studentRepository;
         this.orderRepository = orderRepository;
         this.issuedCouponRepository = issuedCouponRepository;
         this.purchaseRepository = purchaseRepository;
@@ -48,6 +54,11 @@ public class PurchaseServiceImpl implements PurchaseService{
     @Override
     @Transactional
     public void createPurchase(RequestPurchaseDto requestPurchaseDto) {
+
+        User user = SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+
 
         //orderId를 입력하면 order 객체 받아오기
         Order order = orderRepository.findById(requestPurchaseDto.getOrderId())
@@ -65,6 +76,22 @@ public class PurchaseServiceImpl implements PurchaseService{
                 purchase.setPurchasePrice(order.getSalePrice());
             }
             purchaseRepository.save(purchase);
+            /**
+             * 구매가 완료되면 수강생 테이블에 자동으로 삽입되어야함.
+             */
+            for(OrderLecture orderLecture : order.getOrderLectures()){
+                if(studentRepository.existsByLecture_LectureIdAndUser_UserId(orderLecture.getLecture().getLectureId(), user.getUserId())) {
+                    throw new BadRequestArgumentException("이미 수강하고 있는 강의입니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+                }
+                else{
+                    Student student = new Student();
+                    student.setUser(user);
+                    Lecture lecture = lectureRepository.findById(orderLecture.getLecture().getLectureId())
+                            .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의입니다.", ErrorCode.ID_NOT_EXIST));
+                    student.setLecture(lecture);
+                    studentRepository.save(student);
+                }
+            }
         }
         else{
             throw new BadRequestArgumentException("주문 가능한 상태가 아닙니다", ErrorCode.BAD_REQUEST_ARGUMENT);
