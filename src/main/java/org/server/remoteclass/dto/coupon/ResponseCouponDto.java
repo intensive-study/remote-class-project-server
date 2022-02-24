@@ -41,13 +41,19 @@ public class ResponseCouponDto {
                 .couponValidDays(coupon.getCouponValidDays())
                 .createdDate(coupon.getCreatedDate())
                 .issuedCouponList(coupon.getIssuedCouponList().stream()
-                        .map(issuedCoupon ->
-                                        new ResponseIssuedCouponDto(
-                                                issuedCoupon.getIssuedCouponId(),
-                                                issuedCoupon.isCouponUsed(),
-                                                issuedCoupon.getCoupon().getCouponCode(),
-                                                issuedCoupon.getCouponValidDate())
+                        .map(ResponseIssuedCouponDto::NotIncludeCoupon
                         ).collect(Collectors.toList()))
+                .build();
+    }
+
+    public static ResponseCouponDto notIncludeIssuedCoupons(Coupon coupon){
+        if(coupon == null) return null;
+        return ResponseCouponDto.builder()
+                .couponId(coupon.getCouponId())
+                .couponCode(coupon.getCouponCode())
+                .couponValid(coupon.isCouponValid())
+                .couponValidDays(coupon.getCouponValidDays())
+                .createdDate(coupon.getCreatedDate())
                 .build();
     }
 

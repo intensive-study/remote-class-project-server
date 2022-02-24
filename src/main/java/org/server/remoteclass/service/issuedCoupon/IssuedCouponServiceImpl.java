@@ -74,8 +74,7 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
 
         List<IssuedCoupon> issuedCouponList = issuedCouponRepository.findByUser(user.getUserId());
         return issuedCouponList.stream()
-                .map(issuedCoupon ->
-                        ResponseIssuedCouponDto.from(issuedCoupon)
+                .map(ResponseIssuedCouponDto::from
                 ).collect(Collectors.toList());
     }
 
