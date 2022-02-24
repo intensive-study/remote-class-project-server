@@ -85,7 +85,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 
     // 특정 구매내역 조회
     @Override
-    public ResponsePurchaseDto getPurchaseByUserIdAndPurchaseId(Long purchaseId) throws IdNotExistException{
+    public ResponsePurchaseDto getPurchaseByUserIdAndPurchaseId(Long purchaseId) {
 
         Purchase purchase = purchaseRepository.findById(purchaseId).orElse(null);
 

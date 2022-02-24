@@ -117,24 +117,4 @@ public class CartServiceImpl implements CartService {
         return responseCartListDto;
     }
 
-
-    //장바구니 합
-    @Override
-    public Integer sumCartByUserId() {
-        User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
-
-        return cartRepository.findSumCartByUserId(user.getUserId());
-    }
-
-    // 장바구니 개수
-    @Override
-    public Integer countCartByUserId() {
-        User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
-
-        return cartRepository.findCountCartByUserId(user.getUserId());
-    }
 }
