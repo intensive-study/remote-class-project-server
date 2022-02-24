@@ -1,6 +1,7 @@
 package org.server.remoteclass.dto.event;
 
 import lombok.*;
+import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.entity.Event;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 public class ResponseEventDto {
 
     private Long eventId;
-    private Long couponId;
+    private ResponseCouponDto coupon;
     private String title;
     private LocalDateTime eventStartDate;
     private LocalDateTime eventEndDate;
@@ -23,7 +24,7 @@ public class ResponseEventDto {
         if(event == null) return null;
         return ResponseEventDto.builder()
                 .eventId(event.getEventId())
-                .couponId(event.getCoupon().getCouponId())
+                .coupon(ResponseCouponDto.notIncludeIssuedCoupons(event.getCoupon()))
                 .title(event.getTitle())
                 .eventStartDate(event.getEventStartDate())
                 .eventEndDate(event.getEventEndDate())
