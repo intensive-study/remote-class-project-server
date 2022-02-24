@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@PreAuthorize("@accessVerification.hasAccessOnlyStudent()")
+@PreAuthorize("hasRole('ROLE_USER')")
 @RequestMapping("/orders")
 public class OrderController {
 

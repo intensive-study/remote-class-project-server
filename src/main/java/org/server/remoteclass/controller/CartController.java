@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@PreAuthorize("@accessVerification.hasAccessOnlyStudent()")
+@PreAuthorize("hasRole('ROLE_USER')")
 @RequestMapping("/carts")
 public class CartController {
     private final CartService cartService;
