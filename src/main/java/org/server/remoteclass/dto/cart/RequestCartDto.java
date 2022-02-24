@@ -1,21 +1,16 @@
 package org.server.remoteclass.dto.cart;
 
 import lombok.*;
-import org.server.remoteclass.entity.OrderLecture;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 
 @Getter @Setter @NoArgsConstructor
-@Builder
 public class RequestCartDto {
 
     //장바구니에 입력하는 dto
+    @NotNull
+    @Min(1)
     private Long lectureId;
-
-    public RequestCartDto(OrderLecture orderLecture) {
-        this.lectureId = orderLecture.getLecture().getLectureId();
-    }
-
-    public RequestCartDto(Long lectureId){
-        this.lectureId = lectureId;
-    }
 }
