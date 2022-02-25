@@ -50,52 +50,6 @@ public class StudentServiceImpl implements StudentService{
         this.accessVerification = accessVerification;
     }
 
-    @Override
-    @Transactional
-    public void createStudent(RequestStudentDto requestStudentDto) {
-        User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
-
-        if(!studentRepository.existsByLecture_LectureIdAndUser_UserId(requestStudentDto.getLectureId(), user.getUserId())) {
-            Student student = new Student();
-            student.setUser(user);
-            Lecture lecture = lectureRepository.findById(requestStudentDto.getLectureId())
-                    .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의입니다.", ErrorCode.ID_NOT_EXIST));
-            student.setLecture(lecture);
-            studentRepository.save(student);
-        }
-        else{
-            throw new BadRequestArgumentException("이미 신청한 강의입니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
-        }
-    }
-
-    @Override
-    @Transactional
-    public void cancel(Long lectureId) {
-        User user = SecurityUtil.getCurrentUserEmail()
-                .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
-        Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new IdNotExistException("해당 강의가 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
-
-        if(studentRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())
-        && lecture.getStartDate().isAfter(LocalDateTime.now())){
-            studentRepository.deleteByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId());
-            Purchase purchase = new Purchase();
-            for(Order order : orderRepository.findByOrderLectures_Lecture_LectureId(lectureId)){
-                if(order.getOrderStatus() == OrderStatus.COMPLETE){
-                    order.setOrderStatus(OrderStatus.CANCEL);
-                    purchase.setOrder(order);
-                    purchase.setPurchasePrice(-lecture.getPrice());
-                    purchaseRepository.save(purchase);
-                }
-            }
-        }
-        else{
-            throw new IdNotExistException("취소할 강의가 없습니다.", ErrorCode.ID_NOT_EXIST);
-        }
-    }
 
     //현재 수강생의 수강 강좌 리스트 조회
     @Override
