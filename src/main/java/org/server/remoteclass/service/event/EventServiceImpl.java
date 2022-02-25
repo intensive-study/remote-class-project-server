@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.dto.event.RequestEventDto;
+import org.server.remoteclass.dto.event.RequestUpdateEventDto;
 import org.server.remoteclass.dto.event.ResponseEventDto;
 import org.server.remoteclass.entity.Coupon;
 import org.server.remoteclass.entity.Event;
@@ -13,6 +14,7 @@ import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.jpa.EventRepository;
 import org.server.remoteclass.service.coupon.CouponService;
 import org.server.remoteclass.util.BeanConfiguration;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,13 +68,21 @@ public class EventServiceImpl implements EventService{
     }
 
     @Override
-    public void updateEvent(RequestEventDto requestEventDto) {
+    @Transactional
+    public void updateEvent(RequestUpdateEventDto requestUpdateEventDto) {
+        Event event = eventRepository.findByEventId(requestUpdateEventDto.getEventId())
+                .orElseThrow(() -> new IdNotExistException("존재하는 이벤트가 없습니다.", ErrorCode.ID_NOT_EXIST));
 
+        event.setTitle(requestUpdateEventDto.getTitle());
+        event.setEventStartDate(requestUpdateEventDto.getEventStartDate());
+        event.setEventEndDate(requestUpdateEventDto.getEventEndDate());
+        event.getCoupon().setCouponValidDays(requestUpdateEventDto.getCouponValidDays());
     }
 
     @Override
+    @Transactional
     public void deleteEvent(Long eventId) {
-        eventRepository.findByEventId(eventId).orElseThrow(() -> new IdNotExistException("해당하는 이벤트가 없습니다", ErrorCode.ID_NOT_EXIST));
+        eventRepository.findByEventId(eventId).orElseThrow(() -> new IdNotExistException("존재하는 이벤트가 없습니다", ErrorCode.ID_NOT_EXIST));
         eventRepository.deleteByEventId(eventId);
     }
 
@@ -85,6 +95,7 @@ public class EventServiceImpl implements EventService{
         for (Event event : eventList) {
             if((LocalDateTime.now()).isAfter(event.getEventEndDate())){
                 // 이벤트와 연관된 쿠폰 비활성화하기
+                event.getCoupon().setCouponValid(false);
             }
         }
     }

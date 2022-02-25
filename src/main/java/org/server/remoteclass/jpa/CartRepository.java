@@ -3,6 +3,7 @@ package org.server.remoteclass.jpa;
 import org.server.remoteclass.entity.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
             "join fetch c.lecture l " +
             "join fetch l.user " +
             "where c.user.userId=:userId")
-    List<Cart> findByUser_UserIdOrderByCreatedDateDesc(Long userId);
+    List<Cart> findByUser_UserIdOrderByCreatedDateDesc(@Param("userId") Long userId);
     //수강생이 강좌를 수강했었는지 여부
     boolean existsByLecture_LectureIdAndUser_UserId(Long lectureId, Long userId);
     //강의 아이디로 삭제

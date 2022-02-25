@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.dto.event.RequestEventDto;
+import org.server.remoteclass.dto.event.RequestUpdateEventDto;
 import org.server.remoteclass.dto.fixDiscountCoupon.RequestFixDiscountCouponDto;
 import org.server.remoteclass.dto.fixDiscountCoupon.RequestUpdateFixDiscountCouponDto;
 import org.server.remoteclass.dto.fixDiscountCoupon.ResponseFixDiscountCouponDto;
@@ -289,14 +290,21 @@ public class AdminController {
      * EVENT
      */
     @ApiOperation(value = "이벤트 생성", notes = "이벤트 생성과 동시에 이벤트와 연계된 쿠폰을 생성한다.")
-    @PostMapping
+    @PostMapping("/events")
     public ResponseEntity createEvent(@RequestBody @Valid RequestEventDto requestEventDto){
         eventService.createEvent(requestEventDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @ApiOperation(value = "이벤트 수정", notes = "이벤트 번호를 파라미터로 넘겨 해당하는 이벤트를 수정한다.")
+    @PutMapping("/events")
+    public ResponseEntity updateEvent(@Valid @RequestBody RequestUpdateEventDto requestUpdateEventDto){
+        eventService.updateEvent(requestUpdateEventDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @ApiOperation(value = "이벤트 삭제", notes = "이벤트 번호를 파라미터로 넘겨 해당하는 이벤트를 삭제한다.")
-    @DeleteMapping("/{eventId}")
+    @DeleteMapping("/events/{eventId}")
     public ResponseEntity deleteEvent(@PathVariable("eventId") Long eventId){
         eventService.deleteEvent(eventId);
         return ResponseEntity.status(HttpStatus.OK).build();
