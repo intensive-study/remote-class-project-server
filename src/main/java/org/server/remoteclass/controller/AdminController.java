@@ -1,7 +1,6 @@
 package org.server.remoteclass.controller;
 
 import io.swagger.annotations.ApiOperation;
-import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.dto.event.RequestEventDto;
 import org.server.remoteclass.dto.fixDiscountCoupon.RequestFixDiscountCouponDto;
@@ -9,6 +8,7 @@ import org.server.remoteclass.dto.fixDiscountCoupon.ResponseFixDiscountCouponDto
 import org.server.remoteclass.dto.lecture.ResponseLectureDto;
 import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
 import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;
+import org.server.remoteclass.dto.purchase.ResponsePurchaseDto;
 import org.server.remoteclass.dto.rateDiscountCoupon.RequestRateDiscountCouponDto;
 import org.server.remoteclass.dto.rateDiscountCoupon.ResponseRateDiscountCouponDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
@@ -19,6 +19,7 @@ import org.server.remoteclass.service.event.EventService;
 import org.server.remoteclass.service.fixDiscountCoupon.FixDiscountCouponService;
 import org.server.remoteclass.service.lecture.LectureService;
 import org.server.remoteclass.service.order.OrderService;
+import org.server.remoteclass.service.purchase.PurchaseService;
 import org.server.remoteclass.service.rateDiscountCoupon.RateDiscountCouponService;
 import org.server.remoteclass.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,20 +42,27 @@ public class AdminController {
     private final LectureService lectureService;
     private final StudentService studentService;
     private final OrderService orderService;
+    private final PurchaseService purchaseService;
     private final CouponService couponService;
     private final FixDiscountCouponService fixDiscountCouponService;
     private final RateDiscountCouponService rateDiscountCouponService;
     private final EventService eventService;
 
     @Autowired
-    public AdminController(AdminService adminService, LectureService lectureService,
-                           StudentService studentService,OrderService orderService,
-                           CouponService couponService, FixDiscountCouponService fixDiscountCouponService,
-                           RateDiscountCouponService rateDiscountCouponService, EventService eventService){
+    public AdminController(AdminService adminService,
+                           LectureService lectureService,
+                           StudentService studentService,
+                           OrderService orderService,
+                           PurchaseService purchaseService,
+                           CouponService couponService,
+                           FixDiscountCouponService fixDiscountCouponService,
+                           RateDiscountCouponService rateDiscountCouponService,
+                           EventService eventService){
         this.adminService = adminService;
         this.lectureService = lectureService;
         this.studentService = studentService;
         this.orderService = orderService;
+        this.purchaseService = purchaseService;
         this.couponService = couponService;
         this.fixDiscountCouponService = fixDiscountCouponService;
         this.rateDiscountCouponService = rateDiscountCouponService;
@@ -120,14 +128,6 @@ public class AdminController {
      * STUDENT
      */
 
-    @ApiOperation(value = "수강 철회", notes = "학생이 신청했던 강의를 철회할 수 있다.")
-    @DeleteMapping("/students/{lectureId}")
-    public ResponseEntity deleteStudent(@PathVariable("lectureId") Long lectureId) {
-        studentService.cancel(lectureId);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    // URL 고민해 봐야 할 것 같습니다.
     @ApiOperation(value = "수강 강좌 조회", notes = "특정 학생이 수강하는 모든 강의를 조회할 수 있다.")
     @GetMapping("/students/lectures/{userId}")
     public ResponseEntity<List<ResponseLectureFromStudentDto>> getLecturesByUserId(@PathVariable("userId") Long userId)  {
@@ -161,6 +161,15 @@ public class AdminController {
     @GetMapping("/orders/{orderId}")
     public ResponseEntity<ResponseOrderByAdminDto> getByOrderIdByAdmin(@PathVariable("orderId") Long orderId) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderByOrderIdByAdmin(orderId));
+    }
+    /**
+     * PURCHASE
+     */
+
+    @ApiOperation(value = "특정 사용자의 구매 내역 조회", notes = "특정 사용자의 생성된 전체 구매 내역 조회함.")
+    @GetMapping("/purchases")
+    public ResponseEntity<List<ResponsePurchaseDto>> getOnePurchaseByUserIdByAdmin(@PathVariable("userId") Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getPurchaseByUserIdByAdmin(userId));
     }
 
     /**
@@ -239,9 +248,6 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    /**
-     * ISSUEDCOUPON
-     */
 
     /**
      * EVENT

@@ -233,4 +233,11 @@ public class PurchaseServiceImpl implements PurchaseService{
 
         return new ResponsePurchaseDto(purchase);
     }
+
+
+    //특정 사용자의 구매내역 확인
+    public List<ResponsePurchaseDto> getPurchaseByUserIdByAdmin(Long userId){
+        List<Purchase> purchases = purchaseRepository.findByOrder_User_UserIdOrderByPurchaseDateDesc(userId);
+        return purchases.stream().map(ResponsePurchaseDto::new).collect(Collectors.toList());
+    }
 }
