@@ -33,7 +33,7 @@ public class PurchaseController {
 
     @ApiOperation(value = "구매 내역 전체 조회", notes = "생성된 전체 구매 내열 조회함.")
     @GetMapping
-    public ResponseEntity<List<ResponsePurchaseDto>> getAllPurchase() throws IdNotExistException {
+    public ResponseEntity<List<ResponsePurchaseDto>> getAllPurchase() {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getAllPurchaseByUserId());
     }
 

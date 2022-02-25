@@ -15,9 +15,5 @@ public interface CartService {
 
     //나의 장바구니 리스트
     ResponseCartListDto getCartsByUserId();
-    // 장바구니 금액 계산
-    Integer sumCartByUserId();
-    // 장바구니 개수 계산
-    Integer countCartByUserId();
 
 }
