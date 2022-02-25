@@ -2,7 +2,6 @@ package org.server.remoteclass.controller;
 
 import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.purchase.*;
-import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.purchase.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +30,21 @@ public class PurchaseController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @ApiOperation(value = "구매 내역 전체 조회", notes = "생성된 전체 구매 내열 조회함.")
+    @ApiOperation(value = "주문 부분 취소", notes = "학생이 신청했던 강의 일부를 취소할 수 있다.")
+    @DeleteMapping("/lecture/{lectureId}")
+    public ResponseEntity cancelPurchase(@PathVariable("lectureId") Long lectureId) {
+        purchaseService.cancel(lectureId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "주문 전체 취소", notes = "학생이 신청했던 강의 전체를 취소할 수 있다.")
+    @DeleteMapping("/purchase/{purchaseId}")
+    public ResponseEntity cancelAllPurchase(@PathVariable("purchaseId") Long purchaseId) {
+        purchaseService.cancelAll(purchaseId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "구매 내역 전체 조회", notes = "사용자의 생성된 전체 구매 내역 조회함.")
     @GetMapping
     public ResponseEntity<List<ResponsePurchaseDto>> getAllPurchase() {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getAllPurchaseByUserId());
