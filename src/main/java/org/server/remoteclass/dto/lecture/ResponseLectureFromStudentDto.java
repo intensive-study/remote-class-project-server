@@ -19,8 +19,8 @@ public class ResponseLectureFromStudentDto {
     private Integer price;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private Long categoryId;
-    private Long lecturer;
+    private String categoryName;
+    private String lecturer;
 
     public ResponseLectureFromStudentDto(Student student) {
         this.lectureId = student.getLecture().getLectureId();
@@ -29,8 +29,8 @@ public class ResponseLectureFromStudentDto {
         this.price = student.getLecture().getPrice();
         this.startDate = student.getLecture().getStartDate();
         this.endDate = student.getLecture().getEndDate();
-        this.categoryId = student.getLecture().getCategory().getCategoryId();
-        this.lecturer = student.getLecture().getUser().getUserId();
+        this.categoryName = student.getLecture().getCategory().getCategoryName();
+        this.lecturer = student.getLecture().getUser().getName();
     }
 
     public static ResponseLectureFromStudentDto from(Student student) {
@@ -42,8 +42,8 @@ public class ResponseLectureFromStudentDto {
                 .price(student.getLecture().getPrice())
                 .startDate(LocalDateTime.from(student.getLecture().getStartDate()))
                 .endDate(LocalDateTime.from(student.getLecture().getEndDate()))
-                .categoryId(student.getLecture().getCategory().getCategoryId())
-                .lecturer(student.getLecture().getUser().getUserId())
+                .categoryName(student.getLecture().getCategory().getCategoryName())
+                .lecturer(student.getLecture().getUser().getName())
                 .build();
     }
 }

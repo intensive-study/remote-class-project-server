@@ -12,7 +12,8 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        format-sql: true
+        default_batch_fetch_size: 100
+        format_sql: true
     database: mysql
     generate-ddl: true
     show-sql: true

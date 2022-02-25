@@ -28,6 +28,7 @@ public class ResponseOrderDto {
     private String bank;  //입금은행
     private String account;  //예금주
     private Long issuedCouponId;       //적용하는 쿠폰 아이디
+    private String issuedCouponName;
     private Integer originalPrice;
     private Integer salePrice;
 
@@ -45,6 +46,7 @@ public class ResponseOrderDto {
         }
         else {
             this.issuedCouponId = order.getIssuedCoupon().getIssuedCouponId();
+            this.issuedCouponName = order.getIssuedCoupon().getCoupon().getTitle();
             this.salePrice = order.getSalePrice();
         }
         this.originalPrice = order.getOriginalPrice();
