@@ -61,9 +61,9 @@ public class UserServiceImpl implements UserService{
     @Transactional
     @Override
     public void fromStudentToLecturer(Long userId) {
-        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IdNotExistException("존재하는 회원이 아닙니다.", ErrorCode.ID_NOT_EXIST));
         if(user.getUserRole() == UserRole.ROLE_LECTURER){
-            throw new AuthDuplicateException("현재 해당 권한을 가지고 있습니다", ErrorCode.AUTH_DUPLICATION);
+            throw new AuthDuplicateException("이미 해당 권한을 가지고 있습니다", ErrorCode.AUTH_DUPLICATION);
         }
         else{
             user.setUserRole(UserRole.ROLE_LECTURER);
@@ -74,9 +74,9 @@ public class UserServiceImpl implements UserService{
     @Transactional
     @Override
     public void fromLecturerToStudent(Long userId) {
-        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IdNotExistException("존재하는 회원이 아닙니다.", ErrorCode.ID_NOT_EXIST));
         if(user.getUserRole() == UserRole.ROLE_STUDENT){
-            throw new AuthDuplicateException("현재 해당 권한을 가지고 있습니다", ErrorCode.AUTH_DUPLICATION);
+            throw new AuthDuplicateException("이미 해당 권한을 가지고 있습니다", ErrorCode.AUTH_DUPLICATION);
         }
         else{
             user.setUserRole(UserRole.ROLE_STUDENT);
