@@ -62,7 +62,6 @@ public class PurchaseServiceImpl implements PurchaseService{
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
-
         //orderId를 입력하면 order 객체 받아오기
         Order order = orderRepository.findById(requestPurchaseDto.getOrderId())
                 .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
@@ -72,6 +71,7 @@ public class PurchaseServiceImpl implements PurchaseService{
             Purchase purchase = modelMapper.map(requestPurchaseDto, Purchase.class);
             order.setOrderStatus(OrderStatus.COMPLETE);//해당 orderId의 주문에는 status를 complete로 변경하기
             purchase.setOrder(order);
+            purchase.setValidPurchase(true);
             if(order.getSalePrice() == null){ // 할인가격이 없으면 원가만
                 purchase.setPurchasePrice(order.getOriginalPrice());
             }
@@ -92,6 +92,7 @@ public class PurchaseServiceImpl implements PurchaseService{
                     Lecture lecture = lectureRepository.findById(orderLecture.getLecture().getLectureId())
                             .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의입니다.", ErrorCode.ID_NOT_EXIST));
                     student.setLecture(lecture);
+                    student.setOrder(order);
                     studentRepository.save(student);
                 }
             }

@@ -35,6 +35,7 @@ public class Order {
     private List<OrderLecture> orderLectures = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(20) default 'PENDING'")
     private OrderStatus orderStatus; //주문상태
 
     @Column(name="order_date", nullable = false)

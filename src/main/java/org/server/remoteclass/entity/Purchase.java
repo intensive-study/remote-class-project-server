@@ -28,4 +28,8 @@ public class Purchase {
     @CreatedDate
     private LocalDateTime purchaseDate;
 
+    //유효한 구매내역으로 기본값 1(true)
+    @Column(columnDefinition = "boolean default 1")
+    private boolean validPurchase;
+
 }
