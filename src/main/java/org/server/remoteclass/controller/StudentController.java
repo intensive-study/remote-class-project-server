@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@PreAuthorize("hasRole('ROLE_USER') && @accessVerification.hasAccessOnlyStudent()")
+@PreAuthorize("hasRole('ROLE_USER')")
 @RequestMapping("/students")
 public class StudentController {
     private final StudentService studentService;

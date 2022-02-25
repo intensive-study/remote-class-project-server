@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@PreAuthorize("@accessVerification.hasAccessOnlyStudent()")
+@PreAuthorize("hasRole('ROLE_USER')")
 @RequestMapping("/purchases")
 public class PurchaseController {
     private final PurchaseService purchaseService;
