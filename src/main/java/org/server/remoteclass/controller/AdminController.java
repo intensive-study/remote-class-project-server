@@ -5,11 +5,13 @@ import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.dto.event.RequestEventDto;
 import org.server.remoteclass.dto.fixDiscountCoupon.RequestFixDiscountCouponDto;
+import org.server.remoteclass.dto.fixDiscountCoupon.RequestUpdateFixDiscountCouponDto;
 import org.server.remoteclass.dto.fixDiscountCoupon.ResponseFixDiscountCouponDto;
 import org.server.remoteclass.dto.lecture.ResponseLectureDto;
 import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
 import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;
 import org.server.remoteclass.dto.rateDiscountCoupon.RequestRateDiscountCouponDto;
+import org.server.remoteclass.dto.rateDiscountCoupon.RequestUpdateRateDiscountCouponDto;
 import org.server.remoteclass.dto.rateDiscountCoupon.ResponseRateDiscountCouponDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
@@ -180,6 +182,8 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(couponService.getCouponByCouponId(couponId));
     }
 
+    // 정액 할인 부분
+
     // 정액 할인 쿠폰 생성(관리자 권한)
     @ApiOperation(value = "정액 할인 쿠폰 생성", notes = "새로운 쿠폰을 생성할 수 있다.")
     @PostMapping("/coupons/fix-discount")
@@ -202,6 +206,16 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(fixDiscountCouponService.getFixDiscountCoupon(couponId));
     }
 
+    // 정액 할인 쿠폰 수정
+    @ApiOperation(value = "정액 할인 쿠폰 수정")
+    @PutMapping("/coupons/fix-discount")
+    public ResponseEntity updateFixDiscountCoupon(@Valid @RequestBody RequestUpdateFixDiscountCouponDto requestUpdateFixDiscountCouponDto){
+        fixDiscountCouponService.updateFixDiscountCoupon(requestUpdateFixDiscountCouponDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    // 정률 할인 부분
+
     // 정률 할인 쿠폰 생성(관리자 권한)
     @ApiOperation(value = "정률 할인 쿠폰 생성", notes = "새로운 쿠폰을 생성할 수 있다.")
     @PostMapping("/coupons/rate-discount")
@@ -222,6 +236,14 @@ public class AdminController {
     @GetMapping("/coupons/rate-discount/{couponId}")
     public ResponseEntity<ResponseRateDiscountCouponDto> getRateDiscountCoupon(@PathVariable("couponId") Long couponId){
         return ResponseEntity.status(HttpStatus.CREATED).body(rateDiscountCouponService.getRateDiscountCoupon(couponId));
+    }
+
+    // 정액 할인 쿠폰 수정
+    @ApiOperation(value = "정률 할인 쿠폰 수정")
+    @PutMapping("/coupons/rate-discount")
+    public ResponseEntity updateRateDiscountCoupon(@Valid @RequestBody RequestUpdateRateDiscountCouponDto requestUpdateRateDiscountCouponDto){
+        rateDiscountCouponService.updateRateDiscountCoupon(requestUpdateRateDiscountCouponDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     //쿠폰 비활성화(관리자 권한)

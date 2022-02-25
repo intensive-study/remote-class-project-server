@@ -1,6 +1,7 @@
 package org.server.remoteclass.dto.fixDiscountCoupon;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;

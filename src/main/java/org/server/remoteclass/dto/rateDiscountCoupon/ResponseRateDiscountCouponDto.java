@@ -15,9 +15,9 @@ public class ResponseRateDiscountCouponDto {
     private Long couponId;
     private String couponCode;
     private boolean couponValid;
-    private int couponValidDays;
+    private Integer couponValidDays;
     private LocalDateTime createdDate;
-    private int discountRate;
+    private Integer discountRate;
 
     public static ResponseRateDiscountCouponDto from(RateDiscountCoupon rateDiscountCoupon){
         if(rateDiscountCoupon == null) return null;
