@@ -9,4 +9,8 @@ public interface UserService {
     ResponseUserDto getUserByUserId(Long userId);
     ResponseUserByAdminDto getMyInfoWithAuthorities();
     List<ResponseUserDto> getUsersByAll();
+    // 학생 -> 강의자
+    void fromStudentToLecturer();
+    // 강의자 -> 학생
+    void fromLecturerToStudent();
 }
