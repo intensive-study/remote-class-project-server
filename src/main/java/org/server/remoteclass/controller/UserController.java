@@ -55,20 +55,4 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUsersByAll());
     }
 
-    //수강생 -> 강의자 변경 신청
-    @ApiOperation(value = "수강생에서 강의자로 역할 변경")
-    @PutMapping("/lecturer")
-    public ResponseEntity fromStudentToLecturer(){
-        userService.fromStudentToLecturer();
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    //강의자 -> 수강생 변경 신청
-    @ApiOperation(value = "강의자에서 수강생으로 역할 변경")
-    @PutMapping("/student")
-    public ResponseEntity fromLecturerToStudent(){
-        userService.fromLecturerToStudent();
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
 }

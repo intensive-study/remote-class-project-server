@@ -23,6 +23,7 @@ import org.server.remoteclass.service.lecture.LectureService;
 import org.server.remoteclass.service.order.OrderService;
 import org.server.remoteclass.service.rateDiscountCoupon.RateDiscountCouponService;
 import org.server.remoteclass.service.student.StudentService;
+import org.server.remoteclass.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,7 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final UserService userService;
     private final LectureService lectureService;
     private final StudentService studentService;
     private final OrderService orderService;
@@ -52,8 +54,10 @@ public class AdminController {
     public AdminController(AdminService adminService, LectureService lectureService,
                            StudentService studentService,OrderService orderService,
                            CouponService couponService, FixDiscountCouponService fixDiscountCouponService,
-                           RateDiscountCouponService rateDiscountCouponService, EventService eventService){
+                           RateDiscountCouponService rateDiscountCouponService, EventService eventService,
+                           UserService userService){
         this.adminService = adminService;
+        this.userService = userService;
         this.lectureService = lectureService;
         this.studentService = studentService;
         this.orderService = orderService;
@@ -85,6 +89,22 @@ public class AdminController {
     @GetMapping("/users/{userId}")
     public ResponseEntity<ResponseUserByAdminDto> getUser(@PathVariable("userId") Long userId){
         return ResponseEntity.status(HttpStatus.OK).body(adminService.getUser(userId));
+    }
+
+    //수강생 -> 강의자 변경 신청
+    @ApiOperation(value = "수강생에서 강의자로 역할 변경")
+    @PutMapping("/student/lecturer/{userId}")
+    public ResponseEntity fromStudentToLecturer(@PathVariable("userId") Long userId){
+        userService.fromStudentToLecturer(userId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    //강의자 -> 수강생 변경 신청
+    @ApiOperation(value = "강의자에서 수강생으로 역할 변경")
+    @PutMapping("/lecturer/student/{userId}")
+    public ResponseEntity fromLecturerToStudent(@PathVariable("userId") Long userId){
+        userService.fromLecturerToStudent(userId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**

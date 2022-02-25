@@ -6,6 +6,7 @@ import org.server.remoteclass.constant.UserRole;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
 import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.entity.User;
+import org.server.remoteclass.exception.AuthDuplicateException;
 import org.server.remoteclass.exception.EmailDuplicateException;
 import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.exception.IdNotExistException;
@@ -57,39 +58,28 @@ public class UserServiceImpl implements UserService{
     }
 
     // 에러가 발생하는 지점입니다.
+    @Transactional
     @Override
-    public void fromStudentToLecturer() {
-        User user = SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+    public void fromStudentToLecturer(Long userId) {
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         if(user.getUserRole() == UserRole.ROLE_LECTURER){
-            // 예외처리 필요
+            throw new AuthDuplicateException("현재 해당 권한을 가지고 있습니다", ErrorCode.AUTH_DUPLICATION);
         }
         else{
-            // 스프링 시큐리티 컨텍스트에서 얻어낸 유저 정보로 DB의 user 정보를 꺼내서 수정하는 과정입니다.
-            User user_db = userRepository.findByEmail(user.getEmail())
-                            .orElseThrow(() -> new IdNotExistException("해당하는 회원이 없습니다.", ErrorCode.ID_NOT_EXIST));
-            log.info("이메일 " + user_db.getEmail());
-            log.info("유저번호 : " + user.getUserId());
-            log.info("이름" + user_db.getName());
-            user_db.setUserRole(UserRole.ROLE_LECTURER);
-            user_db.setName("바뀌어라");
+            user.setUserRole(UserRole.ROLE_LECTURER);
             // 코드상으로 두 줄이 잘 작동하는 데, 저장하는 과정에서 오류가 생기는 것 같습니다.
         }
     }
 
+    @Transactional
     @Override
-    public void fromLecturerToStudent() {
-        User user = SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+    public void fromLecturerToStudent(Long userId) {
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         if(user.getUserRole() == UserRole.ROLE_STUDENT){
-            // 예외처리 필요
+            throw new AuthDuplicateException("현재 해당 권한을 가지고 있습니다", ErrorCode.AUTH_DUPLICATION);
         }
         else{
-            // 스프링 시큐리티 컨텍스트에서 얻어낸 유저 정보로 DB의 user 정보를 꺼내서 수정하는 과정입니다.
-            User user_db = userRepository.findByEmail(user.getEmail())
-                    .orElseThrow(() -> new IdNotExistException("해당하는 회원이 없습니다.", ErrorCode.ID_NOT_EXIST));
-            user_db.setUserRole(UserRole.ROLE_STUDENT);
-            userRepository.save(user_db);
+            user.setUserRole(UserRole.ROLE_STUDENT);
         }
     }
 }

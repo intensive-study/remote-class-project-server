@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
     EMAIL_DUPLICATION(HttpStatus.CONFLICT,"NAME-DUPLICATED-ERR-409","이미 가입된 이메일입니다."),
+    AUTH_DUPLICATION(HttpStatus.CONFLICT, "AUTH-DUPLICATED-ERR-409", "이미 해당 권한을 가지고 있습니다"),
     ID_NOT_EXIST(HttpStatus.NOT_FOUND,"ID-NOT-EXIST-ERR-404","해당 ID를 가진 데이터가 없습니다."),
     USERNAME_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR,"USERNAME-NOT-EXIST-ERR-500","해당 USERNAME 가진 데이터가 없습니다."),
     NON_AUTHORITATIVE_INFORMATION(HttpStatus.NON_AUTHORITATIVE_INFORMATION, "NON-AUTHORITATIVE-ERR-203", "수정 / 삭제 권한이 없습니다."),

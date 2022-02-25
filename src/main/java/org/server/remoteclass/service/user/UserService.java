@@ -10,7 +10,7 @@ public interface UserService {
     ResponseUserByAdminDto getMyInfoWithAuthorities();
     List<ResponseUserDto> getUsersByAll();
     // 학생 -> 강의자
-    void fromStudentToLecturer();
+    void fromStudentToLecturer(Long userId);
     // 강의자 -> 학생
-    void fromLecturerToStudent();
+    void fromLecturerToStudent(Long userId);
 }
