@@ -46,13 +46,13 @@ public class PurchaseController {
 
     @ApiOperation(value = "구매 내역 전체 조회", notes = "사용자의 생성된 전체 구매 내역 조회함.")
     @GetMapping
-    public ResponseEntity<List<ResponsePurchaseDto>> getAllPurchase() {
+    public ResponseEntity<List<ResponsePurchaseDto>> getMyAllPurchase() {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getAllPurchaseByUserId());
     }
 
-    @ApiOperation(value = "특정 구매 내역 조회", notes = "생성된 특정 구매 내열 조회함.")
+    @ApiOperation(value = "특정 구매 내역 조회", notes = "생성된 특정 구매 내역 조회함.")
     @GetMapping("/{purchaseId}")
-    public ResponseEntity<ResponsePurchaseDto> getAllPurchase(@PathVariable("purchaseId") @Valid Long purchaseId) {
+    public ResponseEntity<ResponsePurchaseDto> getMyOnePurchase(@PathVariable("purchaseId") @Valid Long purchaseId) {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getPurchaseByUserIdAndPurchaseId(purchaseId));
     }
 }
