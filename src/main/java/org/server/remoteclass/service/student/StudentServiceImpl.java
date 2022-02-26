@@ -113,4 +113,8 @@ public class StudentServiceImpl implements StudentService{
         return students.stream().map(ResponseLectureFromStudentDto::new).collect(Collectors.toList());
     }
 
+    @Override
+    public Boolean checkIfUserIsStudentInLecture(Long lectureId, Long userId) {
+        return studentRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, userId);
+    }
 }
