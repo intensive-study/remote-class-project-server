@@ -2,9 +2,7 @@ package org.server.remoteclass.service.student;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
-import org.server.remoteclass.dto.student.RequestStudentDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
 import org.server.remoteclass.entity.*;
 import org.server.remoteclass.exception.*;
@@ -16,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,13 +65,20 @@ public class StudentServiceImpl implements StudentService{
     //강좌별 전체 수강생 목록
     @Override
     public List<ResponseStudentByLecturerDto> getStudentsByLectureId(Long lectureId) {
+        User user = SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
-        lectureRepository.findById(lectureId).orElseThrow(() -> new IdNotExistException("존재하지 않는 강의입니다.", ErrorCode.ID_NOT_EXIST));
+        Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() -> new IdNotExistException("존재하지 않는 강의입니다.", ErrorCode.ID_NOT_EXIST));
 
-        //강의자 본인 권한이거나 관리자 권한일때
-//        if(user.getUserId() == lecture.getUser().getUserId()){
-        List<Student> students = studentRepository.findByLecture_LectureId(lectureId);
-
+        //강의자 본인 권한일때
+        List<Student> students = new ArrayList<>();
+        if(user.getUserId() == lecture.getUser().getUserId()) {
+            students = studentRepository.findByLecture_LectureId(lectureId);
+        }
+        else{
+            throw new ForbiddenException("조회 권한이 없습니다.", ErrorCode.FORBIDDEN);
+        }
         return students.stream().map(student-> ResponseStudentByLecturerDto.from(student)).collect(Collectors.toList());
     }
 
