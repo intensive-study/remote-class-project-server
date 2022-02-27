@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
+import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.entity.Coupon;
 import org.server.remoteclass.entity.FixDiscountCoupon;
 import org.server.remoteclass.entity.RateDiscountCoupon;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -52,14 +54,8 @@ public class CouponServiceImpl implements CouponService {
         List<ResponseCouponDto> list = new ArrayList<>();
 
         for (Coupon coupon : coupons) {
-            if(coupon instanceof FixDiscountCoupon){
-                list.add(ResponseCouponDto.from((FixDiscountCoupon) coupon));
-            }
-            else {
-                list.add(ResponseCouponDto.from((RateDiscountCoupon) coupon));
-            }
+            list.add(ResponseCouponDto.from(coupon));
         }
-
         return list;
     }
 
