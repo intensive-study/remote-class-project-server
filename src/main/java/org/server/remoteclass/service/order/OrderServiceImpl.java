@@ -33,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
     private final LectureRepository lectureRepository;
     private final OrderRepository orderRepository;
     private final OrderLectureRepository orderLectureRepository;
+    private final CartRepository cartRepository;
     private final FixDiscountCouponRepository fixDiscountCouponRepository;
     private final RateDiscountCouponRepository rateDiscountCouponRepository;
     private final IssuedCouponRepository issuedCouponRepository;
@@ -44,6 +45,7 @@ public class OrderServiceImpl implements OrderService {
                             LectureRepository lectureRepository,
                             OrderRepository orderRepository,
                             OrderLectureRepository orderLectureRepository,
+                            CartRepository cartRepository,
                             FixDiscountCouponRepository fixDiscountCouponRepository,
                             RateDiscountCouponRepository rateDiscountCouponRepository,
                             IssuedCouponRepository issuedCouponRepository,
@@ -53,12 +55,14 @@ public class OrderServiceImpl implements OrderService {
         this.lectureRepository = lectureRepository;
         this.orderRepository = orderRepository;
         this.orderLectureRepository = orderLectureRepository;
+        this.cartRepository = cartRepository;
         this.fixDiscountCouponRepository = fixDiscountCouponRepository;
         this.rateDiscountCouponRepository = rateDiscountCouponRepository;
         this.issuedCouponRepository = issuedCouponRepository;
         this.modelMapper = beanConfiguration.modelMapper();
         this.accessVerification = accessVerification;
     }
+
 
     @Override
     @Transactional
@@ -68,8 +72,6 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         Order order = new Order();
         order.setUser(user);
-        order.setOrderDate(LocalDateTime.now());
-        order.setOrderStatus(OrderStatus.PENDING);
         order.setPayment(requestOrderDto.getPayment());
         if(requestOrderDto.getPayment() == Payment.BANK_ACCOUNT){
             order.setBank(requestOrderDto.getBank());
@@ -90,6 +92,72 @@ public class OrderServiceImpl implements OrderService {
 
         IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
         if(requestOrderDto.getIssuedCouponId() == null){ //쿠폰값 입력 안했을때
+            order.setIssuedCoupon(null);
+            order.setSalePrice(null);
+        }
+        else {  //쿠폰값 입력했을때
+            if (issuedCoupon == null) {  //없는 쿠폰 입력했을 때
+                throw new IdNotExistException("존재하지 않는 쿠폰입니다", ErrorCode.ID_NOT_EXIST);
+            }
+            // 이미 사용한 쿠폰 입력했을 때 or 유효하지 않는 쿠폰 입력했을 때
+            if (issuedCoupon.isCouponUsed() || LocalDateTime.now().isAfter(issuedCoupon.getCouponValidDate())) {
+                throw new BadRequestArgumentException("이미 사용했거나 유효하지 않은 쿠폰입니다", ErrorCode.BAD_REQUEST_ARGUMENT);
+            }
+            order.setIssuedCoupon(issuedCoupon);
+            issuedCoupon.setCouponUsed(true);
+
+            Integer price = order.getOriginalPrice();
+            if(fixDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
+                Optional<FixDiscountCoupon> fixDiscountCoupon = fixDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
+                price -= fixDiscountCoupon.get().getDiscountPrice();
+            }
+            else if(rateDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
+                Optional<RateDiscountCoupon> rateDiscountCoupon = rateDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
+                double ratePrice = ((100-rateDiscountCoupon.get().getDiscountRate())*0.01);
+                price = (int)(price * ratePrice);
+            }
+            order.setSalePrice(price);
+        }
+
+        orderRepository.save(order);
+
+    }
+
+    @Override
+    @Transactional
+    public void createOrderFromCart(RequestOrderFromCartDto requestOrderFromCartDto) {
+        User user = SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+        Order order = new Order();
+        order.setUser(user);
+        order.setPayment(requestOrderFromCartDto.getPayment());
+        if(requestOrderFromCartDto.getPayment() == Payment.BANK_ACCOUNT){
+            order.setBank(requestOrderFromCartDto.getBank());
+            order.setAccount(requestOrderFromCartDto.getAccount());
+        }
+
+        orderRepository.save(order);
+
+        List<Cart> cartList = cartRepository.findByUser_UserIdOrderByCreatedDateDesc(user.getUserId());
+        if(cartList.isEmpty()){
+            throw new BadRequestArgumentException("장바구니가 비어있습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+        }
+        List<OrderLecture> orderLectureList = order.getOrderLectures();
+        for(Cart cart : cartList){
+            OrderLecture orderLecture = new OrderLecture();
+            Lecture lecture = lectureRepository.findById(cart.getLecture().getLectureId())
+                    .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ErrorCode.ID_NOT_EXIST));
+            orderLecture.setLecture(lecture);
+            orderLecture.setOrder(order);
+            orderLectureList.add(orderLectureRepository.save(orderLecture));
+            cartRepository.deleteAllByUser_UserId(user.getUserId());
+        }
+
+        order.setOriginalPrice(orderRepository.findSumOrderByOrderId(order.getOrderId()));
+
+        IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderFromCartDto.getIssuedCouponId());
+        if(requestOrderFromCartDto.getIssuedCouponId() == null){ //쿠폰값 입력 안했을때
             order.setIssuedCoupon(null);
             order.setSalePrice(null);
         }
@@ -172,7 +240,6 @@ public class OrderServiceImpl implements OrderService {
 
     //관리자가 주문번호별로 조회
     @Override
-    @Transactional(readOnly = true)
     public ResponseOrderByAdminDto getOrderByOrderIdByAdmin(Long orderId) {
 
         Order order = orderRepository.findById(orderId)
