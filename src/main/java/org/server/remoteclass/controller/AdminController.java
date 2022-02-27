@@ -267,10 +267,18 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    //쿠폰 활성화(관리자 권한)
+    @ApiOperation(value = "쿠폰 활성화")
+    @PutMapping("/coupons/activate/{couponId}")
+    public ResponseEntity activateCoupon(@PathVariable("couponId") Long couponId) {
+        couponService.activateCoupon(couponId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     //쿠폰 비활성화(관리자 권한)
     @ApiOperation(value = "쿠폰 비활성화", notes = "더 이상 쿠폰을 발급받을 수 없게 쿠폰을 비활성화 한다.")
     @PutMapping("/coupons/deactivate/{couponId}")
-    public ResponseEntity createCoupon(@PathVariable("couponId") Long couponId) {
+    public ResponseEntity deactivateCoupon(@PathVariable("couponId") Long couponId) {
         couponService.deactivateCoupon(couponId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

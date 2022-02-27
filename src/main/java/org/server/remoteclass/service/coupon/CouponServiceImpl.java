@@ -62,6 +62,16 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     @Transactional
+    public void activateCoupon(Long couponId) {
+        Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId).orElse(null);
+        if(coupon == null){
+            throw new IdNotExistException("존재하지 않는 쿠폰입니다.", ErrorCode.ID_NOT_EXIST);
+        }
+        coupon.setCouponValid(true);
+    }
+
+    @Override
+    @Transactional
     public void deactivateCoupon(Long couponId) {
         //제너릭(?)으로 구현해서 orElseThrow 문법이 작동하지 않는 것 같습니다. 그래서 orElse 사용하여
         //null 여부로 에러 처리를 해줬습니다.

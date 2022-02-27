@@ -11,6 +11,8 @@ public interface CouponService {
     ResponseCouponDto getCouponByCouponId(Long couponId);
     //쿠폰 생성
     ResponseCouponDto createCoupon(RequestCouponDto requestCouponDto);
+    //쿠폰 활성화
+    void activateCoupon(Long couponId);
     //쿠폰 비활성화
     void deactivateCoupon(Long couponId);
     //모든 쿠폰 조회
