@@ -15,5 +15,6 @@ public interface StudentService {
     List<ResponseStudentByLecturerDto> getStudentsByLectureId(Long lectureId);
     //수강생의 수강 강의 조회
     List<ResponseLectureFromStudentDto> getLecturesByUserIdByAdmin(Long userId);
+    List<ResponseStudentByLecturerDto> getStudentsByLectureIdByAdmin(Long lectureId);
 
 }

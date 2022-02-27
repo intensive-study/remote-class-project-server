@@ -86,4 +86,13 @@ public class StudentServiceImpl implements StudentService{
         return students.stream().map(ResponseLectureFromStudentDto::new).collect(Collectors.toList());
     }
 
+    //강좌별 전체 수강생 목록 (관리자)
+    @Override
+    public List<ResponseStudentByLecturerDto> getStudentsByLectureIdByAdmin(Long lectureId) {
+        lectureRepository.findById(lectureId).orElseThrow(() -> new IdNotExistException("존재하지 않는 강의입니다.", ErrorCode.ID_NOT_EXIST));
+
+        //강의자 본인 권한일때
+        List<Student> students = studentRepository.findByLecture_LectureId(lectureId);
+        return students.stream().map(student-> ResponseStudentByLecturerDto.from(student)).collect(Collectors.toList());
+    }
 }

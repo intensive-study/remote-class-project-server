@@ -239,15 +239,18 @@ public class PurchaseServiceImpl implements PurchaseService{
 
     //전체 구매내역 조회
     @Override
-    public List<ResponsePurchaseDto> getAllPurchasesByUserIdByAdmin(){
+    public List<ResponsePurchaseByAdminDto> getAllPurchasesByUserIdByAdmin(){
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         List<Purchase> purchases = purchaseRepository.findByOrder_User_UserIdOrderByPurchaseDateDesc(user.getUserId());
 
-    //특정 사용자의 구매내역 확인
-    public List<ResponsePurchaseDto> getPurchaseByUserIdByAdmin(Long userId){
+        return purchases.stream().map(ResponsePurchaseByAdminDto::new).collect(Collectors.toList());
+    }
+
+    //특정 사용자의 구매내역 확인(관리자)
+    public List<ResponsePurchaseByAdminDto> getPurchaseByUserIdByAdmin(Long userId){
         List<Purchase> purchases = purchaseRepository.findByOrder_User_UserIdOrderByPurchaseDateDesc(userId);
-        return purchases.stream().map(ResponsePurchaseDto::new).collect(Collectors.toList());
+        return purchases.stream().map(ResponsePurchaseByAdminDto::new).collect(Collectors.toList());
     }
 }

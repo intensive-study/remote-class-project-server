@@ -7,8 +7,7 @@ import org.server.remoteclass.dto.fixDiscountCoupon.RequestFixDiscountCouponDto;
 import org.server.remoteclass.dto.fixDiscountCoupon.ResponseFixDiscountCouponDto;
 import org.server.remoteclass.dto.lecture.ResponseLectureDto;
 import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
-import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;
-import org.server.remoteclass.dto.purchase.ResponsePurchaseDto;
+import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;import org.server.remoteclass.dto.purchase.ResponsePurchaseByAdminDto;
 import org.server.remoteclass.dto.rateDiscountCoupon.RequestRateDiscountCouponDto;
 import org.server.remoteclass.dto.rateDiscountCoupon.ResponseRateDiscountCouponDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
@@ -137,8 +136,8 @@ public class AdminController {
     //수강생 전체 조회
     @ApiOperation(value = "수강생 조회", notes = "특정 강의의 모든 수강생을 조회할 수 있다.")
     @GetMapping("/students/lecture/{lectureId}")
-    public ResponseEntity<List<ResponseStudentByLecturerDto>> getStudentsByLectureId(@PathVariable("lectureId") Long lectureId) {
-        return ResponseEntity.status(HttpStatus.OK).body(studentService.getStudentsByLectureId(lectureId));
+    public ResponseEntity<List<ResponseStudentByLecturerDto>> getStudentsByLectureIdByAdmin(@PathVariable("lectureId") Long lectureId) {
+        return ResponseEntity.status(HttpStatus.OK).body(studentService.getStudentsByLectureIdByAdmin(lectureId));
     }
 
     /**
@@ -168,13 +167,13 @@ public class AdminController {
 
     @ApiOperation(value = "구매 내역 전체 조회", notes = "생성된 전체 구매 내역 조회함.")
     @GetMapping("/purchases/")
-    public ResponseEntity<List<ResponsePurchaseDto>> getMyAllPurchasesByAdmin() {
+    public ResponseEntity<List<ResponsePurchaseByAdminDto>> getMyAllPurchasesByAdmin() {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getAllPurchasesByUserIdByAdmin());
     }
 
     @ApiOperation(value = "특정 사용자의 구매 내역 조회", notes = "특정 사용자의 생성된 전체 구매 내역 조회함.")
     @GetMapping("/purchases/user/{userId}")
-    public ResponseEntity<List<ResponsePurchaseDto>> getOnePurchaseByUserIdByAdmin(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<ResponsePurchaseByAdminDto>> getOnePurchaseByUserIdByAdmin(@PathVariable("userId") Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getPurchaseByUserIdByAdmin(userId));
     }
 
