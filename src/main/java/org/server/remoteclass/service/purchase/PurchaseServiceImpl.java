@@ -212,6 +212,9 @@ public class PurchaseServiceImpl implements PurchaseService{
             // student에서도 다 취소
             studentRepository.deleteByUser_UserIdAndOrder_OrderId(user.getUserId(), order.getOrderId());
         }
+        else{
+            throw new BadRequestArgumentException("해당 구매내역은 수강 취소 불가능합니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+        }
     }
 
     //전체 구매내역 조회
@@ -234,6 +237,13 @@ public class PurchaseServiceImpl implements PurchaseService{
         return new ResponsePurchaseDto(purchase);
     }
 
+    //전체 구매내역 조회
+    @Override
+    public List<ResponsePurchaseDto> getAllPurchasesByUserIdByAdmin(){
+        User user = SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+        List<Purchase> purchases = purchaseRepository.findByOrder_User_UserIdOrderByPurchaseDateDesc(user.getUserId());
 
     //특정 사용자의 구매내역 확인
     public List<ResponsePurchaseDto> getPurchaseByUserIdByAdmin(Long userId){

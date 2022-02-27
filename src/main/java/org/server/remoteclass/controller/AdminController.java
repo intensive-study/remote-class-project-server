@@ -166,6 +166,12 @@ public class AdminController {
      * PURCHASE
      */
 
+    @ApiOperation(value = "구매 내역 전체 조회", notes = "생성된 전체 구매 내역 조회함.")
+    @GetMapping("/purchases/")
+    public ResponseEntity<List<ResponsePurchaseDto>> getMyAllPurchasesByAdmin() {
+        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getAllPurchasesByUserIdByAdmin());
+    }
+
     @ApiOperation(value = "특정 사용자의 구매 내역 조회", notes = "특정 사용자의 생성된 전체 구매 내역 조회함.")
     @GetMapping("/purchases/user/{userId}")
     public ResponseEntity<List<ResponsePurchaseDto>> getOnePurchaseByUserIdByAdmin(@PathVariable("userId") Long userId) {

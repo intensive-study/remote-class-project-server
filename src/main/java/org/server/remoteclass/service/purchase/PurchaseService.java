@@ -14,6 +14,7 @@ public interface PurchaseService {
     ResponsePurchaseDto getPurchaseByUserIdAndPurchaseId(Long purchaseId);
 
     //관리자
+    List<ResponsePurchaseDto> getAllPurchasesByUserIdByAdmin();
     List<ResponsePurchaseDto> getPurchaseByUserIdByAdmin(Long userId);
 
 }
