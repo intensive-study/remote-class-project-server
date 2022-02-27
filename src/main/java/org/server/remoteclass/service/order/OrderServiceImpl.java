@@ -91,6 +91,7 @@ public class OrderServiceImpl implements OrderService {
         IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
         if(requestOrderDto.getIssuedCouponId() == null){ //쿠폰값 입력 안했을때
             order.setIssuedCoupon(null);
+            order.setSalePrice(null);
         }
         else {  //쿠폰값 입력했을때
             if (issuedCoupon == null) {  //없는 쿠폰 입력했을 때
@@ -110,7 +111,8 @@ public class OrderServiceImpl implements OrderService {
             }
             else if(rateDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
                 Optional<RateDiscountCoupon> rateDiscountCoupon = rateDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
-                price *= (1-rateDiscountCoupon.get().getDiscountRate());
+                double ratePrice = ((100-rateDiscountCoupon.get().getDiscountRate())*0.01);
+                price = (int)(price * ratePrice);
             }
             order.setSalePrice(price);
         }
