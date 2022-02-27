@@ -1,4 +1,8 @@
 spring:
+  redis:
+    host: localhost
+    port: 6379
+
   servlet:
     multipart:
       max-file-size: 10MB
@@ -33,6 +37,9 @@ spring:
     allow-bean-definition-overriding: true
     allow-circular-references: true
 
+swagger:
+  contact:
+    email: zmfl123097@gmail.com
 
 logging:
   level:
