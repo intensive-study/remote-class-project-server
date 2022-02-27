@@ -7,6 +7,7 @@ import org.server.remoteclass.dto.issuedcoupon.ResponseIssuedCouponDto;
 import org.server.remoteclass.entity.Coupon;
 import org.server.remoteclass.entity.IssuedCoupon;
 import org.server.remoteclass.entity.User;
+import org.server.remoteclass.exception.CouponDuplicateException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.jpa.CouponRepository;
@@ -47,14 +48,17 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
     public void issueCoupon(RequestIssuedCouponDto requestIssuedCouponDto){
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자입니다.", ErrorCode.ID_NOT_EXIST));
 
         Coupon coupon = (Coupon) couponRepository.findByCouponCode(requestIssuedCouponDto.getCouponCode()).orElse(null);
-//                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다.", ResultCode.ID_NOT_EXIST));
+        if(coupon == null){
+            throw new IdNotExistException("존재하지 않는 쿠폰 번호입니다", ErrorCode.ID_NOT_EXIST);
+        }
 
-//        IssuedCoupon check = couponRepository.findByCouponCode(issuedCouponDto.getCouponCode());
-        //발급 쿠폰 중복 조회 필요
-//        IssuedCoupon issuedCoupon = modelMapper.map(requestIssuedCouponDto, IssuedCoupon.class);
+        if(issuedCouponRepository.existsByUserAndCoupon(user.getUserId(), coupon.getCouponId()).isPresent()){
+            throw new CouponDuplicateException("이미 발급받은 쿠폰입니다.", ErrorCode.COUPON_DUPLICATION);
+        }
+
         IssuedCoupon issuedCoupon = new IssuedCoupon();
         issuedCoupon.setCoupon(coupon);
         issuedCoupon.setCouponUsed(false);
@@ -62,7 +66,6 @@ public class IssuedCouponServiceImpl implements IssuedCouponService{
         issuedCoupon.setUser(user);
         log.info("issuedCoupon couponCode" + issuedCoupon.getCoupon().getCouponCode());
         log.info("issued Coupon으로 couponId 확인 : " + issuedCoupon.getCoupon().getCouponId());
-        couponRepository.save(coupon);
         issuedCouponRepository.save(issuedCoupon);
     }
 
