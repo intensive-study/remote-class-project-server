@@ -9,6 +9,7 @@ import org.server.remoteclass.entity.FixDiscountCoupon;
 import org.server.remoteclass.entity.RateDiscountCoupon;
 import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.exception.IdNotExistException;
+import org.server.remoteclass.exception.StatusDuplicateException;
 import org.server.remoteclass.jpa.CouponRepository;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.springframework.stereotype.Service;
@@ -64,8 +65,13 @@ public class CouponServiceImpl implements CouponService {
     @Transactional
     public void activateCoupon(Long couponId) {
         Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId).orElse(null);
+
         if(coupon == null){
             throw new IdNotExistException("존재하지 않는 쿠폰입니다.", ErrorCode.ID_NOT_EXIST);
+        }
+
+        if(coupon.getCouponValid() == true){
+            throw new StatusDuplicateException("이미 해당 상태입니다.", ErrorCode.STATUS_DUPLICATION);
         }
         coupon.setCouponValid(true);
     }
@@ -75,9 +81,14 @@ public class CouponServiceImpl implements CouponService {
     public void deactivateCoupon(Long couponId) {
         //제너릭(?)으로 구현해서 orElseThrow 문법이 작동하지 않는 것 같습니다. 그래서 orElse 사용하여
         //null 여부로 에러 처리를 해줬습니다.
+
         Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId).orElse(null);
         if(coupon == null){
             throw new IdNotExistException("존재하지 않는 쿠폰입니다.", ErrorCode.ID_NOT_EXIST);
+        }
+
+        if(coupon.getCouponValid() == false){
+            throw new StatusDuplicateException("이미 해당 상태입니다.", ErrorCode.STATUS_DUPLICATION);
         }
         coupon.setCouponValid(false);
     }
