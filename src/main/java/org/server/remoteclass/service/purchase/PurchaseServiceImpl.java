@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
 import org.server.remoteclass.dto.purchase.RequestPurchaseDto;
+import org.server.remoteclass.dto.purchase.ResponsePurchaseByAdminDto;
 import org.server.remoteclass.dto.purchase.ResponsePurchaseDto;
 import org.server.remoteclass.entity.*;
 import org.server.remoteclass.exception.BadRequestArgumentException;
@@ -123,6 +124,7 @@ public class PurchaseServiceImpl implements PurchaseService{
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IdNotExistException("해당 강의가 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
+
         //수강 신청한 강의이고 시작을 아직 안했을 경우
         if(studentRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())
                 && lecture.getStartDate().isAfter(LocalDateTime.now())){
@@ -232,7 +234,8 @@ public class PurchaseServiceImpl implements PurchaseService{
     @Override
     public ResponsePurchaseDto getPurchaseByUserIdAndPurchaseId(Long purchaseId) {
 
-        Purchase purchase = purchaseRepository.findById(purchaseId).orElse(null);
+        Purchase purchase = purchaseRepository.findById(purchaseId)
+                .orElseThrow(() -> new IdNotExistException("존재하지 않는 구매내역입니다.", ErrorCode.ID_NOT_EXIST));
 
         return new ResponsePurchaseDto(purchase);
     }
