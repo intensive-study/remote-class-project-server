@@ -167,7 +167,7 @@ public class AdminController {
      */
 
     @ApiOperation(value = "특정 사용자의 구매 내역 조회", notes = "특정 사용자의 생성된 전체 구매 내역 조회함.")
-    @GetMapping("/purchases")
+    @GetMapping("/purchases/user/{userId}")
     public ResponseEntity<List<ResponsePurchaseDto>> getOnePurchaseByUserIdByAdmin(@PathVariable("userId") Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getPurchaseByUserIdByAdmin(userId));
     }

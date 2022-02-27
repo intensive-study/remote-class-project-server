@@ -8,9 +8,9 @@ import java.util.List;
 public interface PurchaseService {
 
     void createPurchase(RequestPurchaseDto requestPurchaseDto);
-    void cancel(Long lectureId);
-    void cancelAll(Long purchaseId);
-    List<ResponsePurchaseDto> getAllPurchaseByUserId();
+    void cancelPurchase(Long lectureId);
+    void cancelAllPurchases(Long purchaseId);
+    List<ResponsePurchaseDto> getAllPurchasesByUserId();
     ResponsePurchaseDto getPurchaseByUserIdAndPurchaseId(Long purchaseId);
 
     //관리자

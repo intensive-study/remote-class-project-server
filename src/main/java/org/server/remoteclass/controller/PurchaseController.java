@@ -33,21 +33,21 @@ public class PurchaseController {
     @ApiOperation(value = "주문 부분 취소", notes = "학생이 신청했던 강의 일부를 취소할 수 있다.")
     @DeleteMapping("/lecture/{lectureId}")
     public ResponseEntity cancelPurchase(@PathVariable("lectureId") Long lectureId) {
-        purchaseService.cancel(lectureId);
+        purchaseService.cancelPurchase(lectureId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "주문 전체 취소", notes = "학생이 신청했던 강의 전체를 취소할 수 있다.")
     @DeleteMapping("/purchase/{purchaseId}")
     public ResponseEntity cancelAllPurchase(@PathVariable("purchaseId") Long purchaseId) {
-        purchaseService.cancelAll(purchaseId);
+        purchaseService.cancelAllPurchases(purchaseId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "구매 내역 전체 조회", notes = "사용자의 생성된 전체 구매 내역 조회함.")
     @GetMapping
-    public ResponseEntity<List<ResponsePurchaseDto>> getMyAllPurchase() {
-        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getAllPurchaseByUserId());
+    public ResponseEntity<List<ResponsePurchaseDto>> getMyAllPurchases() {
+        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getAllPurchasesByUserId());
     }
 
     @ApiOperation(value = "특정 구매 내역 조회", notes = "생성된 특정 구매 내역 조회함.")

@@ -117,7 +117,7 @@ public class PurchaseServiceImpl implements PurchaseService{
     // 강의 부분 수강 취소
     @Override
     @Transactional
-    public void cancel(Long lectureId) {
+    public void cancelPurchase(Long lectureId) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
@@ -198,7 +198,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 
     @Override
     @Transactional
-    public void cancelAll(Long purchaseId){
+    public void cancelAllPurchases(Long purchaseId){
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
@@ -216,7 +216,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 
     //전체 구매내역 조회
     @Override
-    public List<ResponsePurchaseDto> getAllPurchaseByUserId(){
+    public List<ResponsePurchaseDto> getAllPurchasesByUserId(){
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
