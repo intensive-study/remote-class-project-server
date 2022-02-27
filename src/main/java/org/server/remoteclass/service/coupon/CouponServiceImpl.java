@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.dto.coupon.RequestCouponDto;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
-import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.entity.Coupon;
 import org.server.remoteclass.entity.FixDiscountCoupon;
 import org.server.remoteclass.entity.RateDiscountCoupon;
@@ -37,13 +36,9 @@ public class CouponServiceImpl implements CouponService {
     public ResponseCouponDto getCouponByCouponId(Long couponId) {
 
         Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId).orElse(null);
-
         if (coupon instanceof FixDiscountCoupon) {
-            log.info("FixDiscount 타입입니다.");
             return ResponseCouponDto.from((FixDiscountCoupon) coupon);
         }
-
-        log.info("RateDiscount 타입입니다.");
         return ResponseCouponDto.from((RateDiscountCoupon) coupon);
 
     }
@@ -54,7 +49,13 @@ public class CouponServiceImpl implements CouponService {
         List<ResponseCouponDto> list = new ArrayList<>();
 
         for (Coupon coupon : coupons) {
-            list.add(ResponseCouponDto.from(coupon));
+            if (coupon instanceof FixDiscountCoupon) {
+                list.add(ResponseCouponDto.from((FixDiscountCoupon) coupon));
+            }
+
+            else if(coupon instanceof RateDiscountCoupon){
+                list.add(ResponseCouponDto.from((RateDiscountCoupon) coupon));
+            }
         }
         return list;
     }
