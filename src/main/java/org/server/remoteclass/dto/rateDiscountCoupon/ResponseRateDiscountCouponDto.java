@@ -14,7 +14,8 @@ public class ResponseRateDiscountCouponDto {
 
     private Long couponId;
     private String couponCode;
-    private boolean couponValid;
+    private String title;
+    private Boolean couponValid;
     private Integer couponValidDays;
     private LocalDateTime createdDate;
     private Integer discountRate;
