@@ -109,7 +109,13 @@ public class OrderServiceImpl implements OrderService {
             Integer price = order.getOriginalPrice();
             if(fixDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
                 Optional<FixDiscountCoupon> fixDiscountCoupon = fixDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
-                price -= fixDiscountCoupon.get().getDiscountPrice();
+                if(fixDiscountCoupon.get().getDiscountPrice() < order.getOriginalPrice()){
+                    price -= fixDiscountCoupon.get().getDiscountPrice();
+                }
+//                else{
+//                    throw new BadRequestArgumentException("쿠폰을 적용할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+//                }
+
             }
             else if(rateDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
                 Optional<RateDiscountCoupon> rateDiscountCoupon = rateDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
@@ -175,7 +181,13 @@ public class OrderServiceImpl implements OrderService {
             Integer price = order.getOriginalPrice();
             if(fixDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
                 Optional<FixDiscountCoupon> fixDiscountCoupon = fixDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
-                price -= fixDiscountCoupon.get().getDiscountPrice();
+                if(fixDiscountCoupon.get().getDiscountPrice() < order.getOriginalPrice()){
+                    price -= fixDiscountCoupon.get().getDiscountPrice();
+                }
+//                else{
+//                    throw new BadRequestArgumentException("쿠폰을 적용할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+//                }
+
             }
             else if(rateDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
                 Optional<RateDiscountCoupon> rateDiscountCoupon = rateDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
