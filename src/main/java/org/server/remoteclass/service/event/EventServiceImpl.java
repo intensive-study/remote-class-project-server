@@ -76,6 +76,16 @@ public class EventServiceImpl implements EventService{
         eventRepository.deleteByEventId(eventId);
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public void quitEvent(Long eventId) {
+        Event event = eventRepository.findByEventId(eventId).orElseThrow(() -> new IdNotExistException("존재하는 이벤트가 없습니다", ErrorCode.ID_NOT_EXIST));
+        event.getCoupon().setCouponValid(false);
+    }
+
+    // 현재 미구현 상태입니다.
+>>>>>>> f82f2f7 (feat: 유효기간 만료된 엑세스 토큰 & 유효한 리프레쉬 토큰으로 토큰 재발급 및 요청한 서비스 응답 기능 구현)
     @Transactional
     @Override
     public void quitEvent(){

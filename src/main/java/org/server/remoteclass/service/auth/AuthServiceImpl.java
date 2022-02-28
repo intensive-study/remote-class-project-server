@@ -87,7 +87,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public ResponseTokenDto reissue(RequestTokenDto requestTokenDto){
         // 1. Refresh Token 검증
-        if(!tokenProvider.validateToken(requestTokenDto.getRefreshToken())){
+        if(tokenProvider.validateToken(requestTokenDto.getRefreshToken()) == 0){
             throw new UnauthorizedException("Refresh Token이 유효하지 않습니다.", ErrorCode.UNAUTHORIZED);
         }
         // 2. Access Token 에서 User Id 가져오기
@@ -101,10 +101,20 @@ public class AuthServiceImpl implements AuthService{
         }
         // 5. 새로운 토큰 생성
         ResponseTokenDto responseTokenDto = tokenProvider.createToken(authentication);
-        // 6. 저장소 정보 업데이트
-        RefreshToken newRefreshToken = refreshToken.updateValue(responseTokenDto.getRefreshToken());
-        refreshTokenRepository.save(newRefreshToken);
+
         return responseTokenDto;
     }
 
+    @Override
+    public void updateToken(RequestTokenDto requestTokenDto) {
+
+        // Access Token 에서 User Id 가져오기
+        Authentication authentication = tokenProvider.getAuthentication(requestTokenDto.getAccessToken());
+        // 저장소에서 User Id를 기반으로 Refresh Token 값 가져옴
+        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
+                .orElseThrow(() -> new ForbiddenException("로그아웃 된 사용자입니다.", ErrorCode.FORBIDDEN));
+        // 저장소 정보 업데이트
+        RefreshToken newRefreshToken = refreshToken.updateValue(requestTokenDto.getRefreshToken());
+        refreshTokenRepository.save(newRefreshToken);
+    }
 }
