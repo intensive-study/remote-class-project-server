@@ -125,6 +125,7 @@ public class EventServiceImpl implements EventService{
         event.getCoupon().setCouponValid(false);
     }
 
+    // 현재 미구현 상태입니다.
     @Transactional
     @Override
     public void quitEventByScheduler(){
