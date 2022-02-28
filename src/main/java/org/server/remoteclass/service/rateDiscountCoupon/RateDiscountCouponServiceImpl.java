@@ -30,13 +30,13 @@ public class RateDiscountCouponServiceImpl implements RateDiscountCouponService 
     }
 
     @Override
-    public void createRateDiscountCoupon(RequestRateDiscountCouponDto requestRateDiscountCouponDto) {
+    public ResponseRateDiscountCouponDto createRateDiscountCoupon(RequestRateDiscountCouponDto requestRateDiscountCouponDto) {
         RateDiscountCoupon rateDiscountCoupon = modelMapper.map(requestRateDiscountCouponDto, RateDiscountCoupon.class);
         rateDiscountCoupon.setCouponCode(UUID.randomUUID().toString());
         rateDiscountCoupon.setCouponValid(true);
         rateDiscountCoupon.setCouponValidDays(requestRateDiscountCouponDto.getCouponValidDays());
         rateDiscountCoupon.setDiscountRate(rateDiscountCoupon.getDiscountRate());
-        rateDiscountCouponRepository.save(rateDiscountCoupon);
+        return ResponseRateDiscountCouponDto.from(rateDiscountCouponRepository.save(rateDiscountCoupon));
     }
 
     @Override

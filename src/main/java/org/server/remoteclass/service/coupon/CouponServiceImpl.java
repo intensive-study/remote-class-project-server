@@ -17,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -91,16 +89,6 @@ public class CouponServiceImpl implements CouponService {
             throw new StatusDuplicateException("이미 해당 상태입니다.", ErrorCode.STATUS_DUPLICATION);
         }
         coupon.setCouponValid(false);
-    }
-
-    @Override
-    @Transactional
-    public ResponseCouponDto createCoupon(RequestCouponDto requestCouponDto) {
-        Coupon coupon = modelMapper.map(requestCouponDto, Coupon.class);
-        coupon.setCouponCode(UUID.randomUUID().toString());
-        coupon.setCouponValid(true);
-        coupon.setCouponValidDays(requestCouponDto.getCouponValidDays());
-        return ResponseCouponDto.from((Coupon) couponRepository.save(coupon));
     }
 
     @Override

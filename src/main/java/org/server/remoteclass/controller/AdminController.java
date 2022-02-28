@@ -304,10 +304,17 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @ApiOperation(value = "이벤트 수정", notes = "이벤트 번호를 파라미터로 넘겨 해당하는 이벤트를 수정한다.")
+    @ApiOperation(value = "이벤트 수정")
     @PutMapping("/events")
     public ResponseEntity updateEvent(@Valid @RequestBody RequestUpdateEventDto requestUpdateEventDto){
         eventService.updateEvent(requestUpdateEventDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "이벤트 종료하기(수동)", notes = "이벤트와 연관된 쿠폰을 정지시킨다.")
+    @PutMapping("/events/{eventId}")
+    public ResponseEntity quitEvent(@PathVariable("eventId") Long eventId){
+        eventService.quitEvent(eventId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

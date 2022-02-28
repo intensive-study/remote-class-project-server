@@ -18,6 +18,8 @@ public interface EventService {
     void updateEvent(RequestUpdateEventDto requestUpdateEventDto);
     // 이벤트 삭제
     void deleteEvent(Long eventId);
-    // 스케줄러로 이벤트 순회하며 종료시키기
-    void quitEvent();
+    // 이벤트 종료
+    void quitEvent(Long eventId);
+    // 스케줄러로 이벤트 순회하며 종료시키기(미구현)
+    void quitEventByScheduler();
 }
