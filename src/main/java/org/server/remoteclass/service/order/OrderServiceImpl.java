@@ -112,9 +112,9 @@ public class OrderServiceImpl implements OrderService {
                 if(fixDiscountCoupon.get().getDiscountPrice() < order.getOriginalPrice()){
                     price -= fixDiscountCoupon.get().getDiscountPrice();
                 }
-//                else{
-//                    throw new BadRequestArgumentException("쿠폰을 적용할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
-//                }
+                else{
+                    throw new BadRequestArgumentException("쿠폰을 적용할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+                }
 
             }
             else if(rateDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
@@ -184,9 +184,9 @@ public class OrderServiceImpl implements OrderService {
                 if(fixDiscountCoupon.get().getDiscountPrice() < order.getOriginalPrice()){
                     price -= fixDiscountCoupon.get().getDiscountPrice();
                 }
-//                else{
-//                    throw new BadRequestArgumentException("쿠폰을 적용할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
-//                }
+                else{
+                    throw new BadRequestArgumentException("쿠폰을 적용할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+                }
 
             }
             else if(rateDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
