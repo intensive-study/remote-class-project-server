@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -118,84 +119,104 @@ public class PurchaseServiceImpl implements PurchaseService{
     // 강의 부분 수강 취소
     @Override
     @Transactional
-    public void cancelPurchase(Long lectureId) {
+    public void cancelPurchase(Long purchaseId, List<Long> requestLectureIdList) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
-        Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new IdNotExistException("해당 강의가 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
+        //이전 주문번호와 이전 구매내역 모두 찾기
+        Optional<Purchase> prevPurchase = purchaseRepository.findById(purchaseId);
+        Optional<Order> prevOrder = orderRepository.findById(prevPurchase.get().getOrder().getOrderId());
 
-        //수강 신청한 강의이고 시작을 아직 안했을 경우
-        if(studentRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())
-                && lecture.getStartDate().isAfter(LocalDateTime.now())){
-            //lectureId가 포함된 order
-            Student student = studentRepository.findStudentByLecture_LectureId(lectureId);
-            Order prevOrder = orderRepository.findById(student.getOrder().getOrderId())
-                    .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
-            // 주문이 존재하면 해당 주문내역 부분취소로 표시
-            prevOrder.setOrderStatus(OrderStatus.PARTIAL_CANCEL);
-            // 같은주문에서 신청한 student는 모두 삭제
-            studentRepository.deleteByUser_UserIdAndOrder_OrderId(user.getUserId(), prevOrder.getOrderId());
-            //해당 구매내역 invalid로 표시
-            Purchase prevPurchase = purchaseRepository.findByOrder_OrderId(prevOrder.getOrderId())
-                    .orElseThrow(() -> new IdNotExistException("해당 구매내역이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
-            prevPurchase.setValidPurchase(false);
+        if(prevPurchase.get().isValidPurchase() == false){
+            throw new BadRequestArgumentException("취소 가능한 구매번호가 아닙니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+        }
+        if(prevOrder.get().getOrderStatus() != OrderStatus.COMPLETE){
+            throw new BadRequestArgumentException("취소 가능한 주문 상태가 아닙니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+        }
 
-            //주문 내역 다시 생성
-            Order order = new Order();
-            order.setUser(user);
-            order.setOrderStatus(OrderStatus.PENDING);
-            order.setPayment(prevOrder.getPayment());
-            if(prevOrder.getPayment() == Payment.BANK_ACCOUNT){
-                order.setBank(prevOrder.getBank());
-                order.setAccount(prevOrder.getAccount());
+        //이전 주문의 강의리스트 저장
+        List<Long> lectureList = new ArrayList<>();
+
+        //취소 요청한 강의가 있으면
+        for(OrderLecture orderLecture: prevOrder.get().getOrderLectures()){
+            lectureList.add(orderLecture.getLecture().getLectureId());
+        }
+
+        for(Long lectureId : requestLectureIdList){
+            Optional<Lecture> lecture = lectureRepository.findById(lectureId);
+            //취소할 강의리스트 중 강의가 신청 안했던 강의이면 x
+            if(!studentRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())){
+                throw new IdNotExistException("수강 취소할 수 없습니다.", ErrorCode.ID_NOT_EXIST);
             }
-            orderRepository.save(order);
-
-            List<OrderLecture> orderLectureList = order.getOrderLectures();
-            // 이전것에서 해당 lectureId만 빼고 다시 저장함
-            for(OrderLecture orderLecture : prevOrder.getOrderLectures()) {
-                //해당 lectureId가 아니면 저장
-                if(orderLecture.getLecture().getLectureId() != lectureId){
-                    OrderLecture newOrderLecture = new OrderLecture();
-                    Lecture newLecture = lectureRepository.findById(orderLecture.getLecture().getLectureId())
-                            .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ErrorCode.ID_NOT_EXIST));
-                    newOrderLecture.setLecture(newLecture);
-                    newOrderLecture.setOrder(order);
-                    orderLectureList.add(orderLectureRepository.save(newOrderLecture));
-                }
+            // 강의가 이미 시작했던 강의이면 x
+            if(lecture.get().getStartDate().isBefore(LocalDateTime.now())){
+                throw new BadRequestArgumentException("이미 시작한 강의는 취소할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
             }
-            //모두 삭제했을 경우
-            if(orderLectureList.isEmpty()){
-                orderRepository.delete(order);
-                throw new BadRequestArgumentException("더이상 수강 취소할 강의가 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+            //이전 주문의 강의리스트에서 삭제할 강의 하나씩 삭제
+            lectureList.remove(Long.valueOf(lectureId));
+        }
+        //취소 요청강의가 없는 경우 전체 취소임.
+        if(requestLectureIdList.isEmpty()){
+            lectureList = new ArrayList<>();
+        }
+
+        //모두 삭제했을 경우(5개 중 5개 모두 입력했을 경우)
+        if(lectureList.isEmpty()){
+            prevOrder.ifPresent(order -> order.setOrderStatus(OrderStatus.CANCEL));
+            prevPurchase.ifPresent(purchase -> purchase.setValidPurchase(false));
+            studentRepository.deleteByUser_UserIdAndOrder_OrderId(user.getUserId(), prevOrder.get().getOrderId());
+        }
+        if(lectureList.size()>0){ //모두 삭제하지 않았을 경우 하나라도 삭제 안하는 강의가 있을 때
+            studentRepository.deleteByUser_UserIdAndOrder_OrderId(user.getUserId(), prevOrder.get().getOrderId());
+            //주문을 부분취소로 표시
+            prevOrder.ifPresent(order -> order.setOrderStatus(OrderStatus.PARTIAL_CANCEL));
+            //구매내역도 invalid 로 표시
+            prevPurchase.ifPresent(purchase -> purchase.setValidPurchase(false));
+
+            //주문 다시 생성
+            Order newOrder = new Order();
+            newOrder.setUser(user);
+            newOrder.setOrderStatus(OrderStatus.PENDING);
+            newOrder.setPayment(prevOrder.get().getPayment());
+            if(prevOrder.get().getPayment() == Payment.BANK_ACCOUNT){
+                newOrder.setBank(prevOrder.get().getBank());
+                newOrder.setAccount(prevOrder.get().getAccount());
             }
-            order.setOriginalPrice(orderRepository.findSumOrderByOrderId(order.getOrderId()));
+            orderRepository.save(newOrder);
 
-            orderRepository.save(order);
+            List<OrderLecture> orderLectureList = newOrder.getOrderLectures();
+            // 이전것에서 해당 lectureId만 뺀 lectureList 다시 저장함
+            for(Long lectureId : lectureList){
+                OrderLecture newOrderLecture = new OrderLecture();
+                Optional<Lecture> lecture = lectureRepository.findById(lectureId);
+                newOrderLecture.setLecture(lecture.get());
+                newOrderLecture.setOrder(newOrder);
+                orderLectureList.add(orderLectureRepository.save(newOrderLecture));
+            }
 
-            //부분 취소 후에는 다시 구매
-            //구매내역 다시 생성
+            newOrder.setOriginalPrice(orderRepository.findSumOrderByOrderId(newOrder.getOrderId()));
+            orderRepository.save(newOrder);
+
+
+            // 구매 다시 생성
             Purchase purchase = new Purchase();
-            order.setOrderStatus(OrderStatus.COMPLETE);//해당 orderId의 주문에는 status를 complete로 변경하기
-            purchase.setOrder(order);
-            purchase.setPurchasePrice(order.getOriginalPrice());
+            newOrder.setOrderStatus(OrderStatus.COMPLETE);//해당 orderId의 주문에는 status를 complete로 변경하기
+            purchase.setOrder(newOrder);
+            purchase.setPurchasePrice(newOrder.getOriginalPrice());
             purchase.setValidPurchase(true);
             purchaseRepository.save(purchase);
-            log.info("새 구매내역 id: " + purchase.getPurchaseId());
-            for(OrderLecture orderLecture : order.getOrderLectures()){
+
+            for(OrderLecture orderLecture : newOrder.getOrderLectures()){
                 Student newStudent = new Student();
                 newStudent.setUser(user);
-                Lecture newLecture = lectureRepository.findById(orderLecture.getLecture().getLectureId())
-                        .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의입니다.", ErrorCode.ID_NOT_EXIST));
-                newStudent.setLecture(newLecture);
-                newStudent.setOrder(order);
+                Optional<Lecture> newLecture = lectureRepository.findById(orderLecture.getLecture().getLectureId());
+                newStudent.setLecture(newLecture.get());
+                newStudent.setOrder(newOrder);
                 studentRepository.save(newStudent);
             }
         }
-        else{
-            throw new IdNotExistException("취소할 강의가 없습니다.", ErrorCode.ID_NOT_EXIST);
-        }
+
+
     }
 
     @Override

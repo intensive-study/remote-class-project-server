@@ -9,7 +9,7 @@ import java.util.List;
 public interface PurchaseService {
 
     void createPurchase(RequestPurchaseDto requestPurchaseDto);
-    void cancelPurchase(Long lectureId);
+    void cancelPurchase(Long purchaseId, List<Long> lectureIdList);
     void cancelAllPurchases(Long purchaseId);
     List<ResponsePurchaseDto> getAllPurchasesByUserId();
     ResponsePurchaseDto getPurchaseByUserIdAndPurchaseId(Long purchaseId);

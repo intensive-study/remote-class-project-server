@@ -30,10 +30,10 @@ public class PurchaseController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @ApiOperation(value = "주문 부분 취소", notes = "학생이 신청했던 강의 일부를 취소할 수 있다.")
-    @DeleteMapping("/lecture/{lectureId}")
-    public ResponseEntity cancelPurchase(@PathVariable("lectureId") Long lectureId) {
-        purchaseService.cancelPurchase(lectureId);
+    @ApiOperation(value = "주문 부분 취소", notes = "학생이 신청했던 강의 일부를 입력받아 취소할 수 있다.")
+    @DeleteMapping("/lecture")
+    public ResponseEntity cancelPurchase(@RequestParam("purchaseId") Long purchaseId, @RequestParam(value = "lectureId", required = false, defaultValue = "") List<Long> lectureIdList) {
+        purchaseService.cancelPurchase(purchaseId, lectureIdList);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
