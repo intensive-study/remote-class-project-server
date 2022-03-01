@@ -90,12 +90,9 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setOriginalPrice(orderRepository.findSumOrderByOrderId(order.getOrderId()));
 
-        IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
-        if(requestOrderDto.getIssuedCouponId() == null){ //쿠폰값 입력 안했을때
-            order.setIssuedCoupon(null);
-            order.setSalePrice(null);
-        }
-        else {  //쿠폰값 입력했을때
+        Integer price = order.getOriginalPrice();
+        if(requestOrderDto.getIssuedCouponId() != null) {
+            IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
             if (issuedCoupon == null) {  //없는 쿠폰 입력했을 때
                 throw new IdNotExistException("존재하지 않는 쿠폰입니다", ErrorCode.ID_NOT_EXIST);
             }
@@ -106,25 +103,19 @@ public class OrderServiceImpl implements OrderService {
             order.setIssuedCoupon(issuedCoupon);
             issuedCoupon.setCouponUsed(true);
 
-            Integer price = order.getOriginalPrice();
             if(fixDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
                 Optional<FixDiscountCoupon> fixDiscountCoupon = fixDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
-                if(fixDiscountCoupon.get().getDiscountPrice() < order.getOriginalPrice()){
-                    price -= fixDiscountCoupon.get().getDiscountPrice();
-                }
-                else{
-                    throw new BadRequestArgumentException("쿠폰을 적용할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
-                }
-
+                if(fixDiscountCoupon.get().getDiscountPrice() > order.getOriginalPrice()) throw new BadRequestArgumentException("쿠폰을 적용할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+                price -= fixDiscountCoupon.get().getDiscountPrice();
             }
             else if(rateDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
                 Optional<RateDiscountCoupon> rateDiscountCoupon = rateDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
                 double ratePrice = ((100-rateDiscountCoupon.get().getDiscountRate())*0.01);
                 price = (int)(price * ratePrice);
             }
-            order.setSalePrice(price);
         }
 
+        order.setSalePrice(price);
         orderRepository.save(order);
 
     }
@@ -146,42 +137,26 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         List<Cart> cartList = new ArrayList<>();
-        //아예 장바구니가 비어있으면 에러
-        if(cartRepository.findByUser_UserIdOrderByCreatedDateDesc(user.getUserId()).isEmpty()){
-            throw new BadRequestArgumentException("장바구니가 비어있습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
-        }
-        List<OrderLecture> orderLectureList = order.getOrderLectures();
-        // 주문요청 입력 안하면 전체 카트에 있는 주문내역 다 집어넣는다
-        if(requestLectureIdList.isEmpty()) {
-            cartList = cartRepository.findByUser_UserIdOrderByCreatedDateDesc(user.getUserId());
+        for(Long lectureId : requestLectureIdList){
+            Cart cart = cartRepository.findByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())
+                    .orElseThrow(() -> new BadRequestArgumentException("장바구니에 없는 강의입니다.", ErrorCode.BAD_REQUEST_ARGUMENT));
+            cartList.add(cart);
         }
 
-        //주문요청한 강의번호들이 장바구니에 하나라도 존재하지 않으면
-        for(Long lectureId : requestLectureIdList){
-            if(!cartRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())){
-                throw new BadRequestArgumentException("장바구니에 없는 강의입니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
-            }
-            cartList.add(cartRepository.findByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId()));
-        }
+        List<OrderLecture> orderLectureList = order.getOrderLectures();
         //주문 요청 입력하면 선택한것만 주문한다.
         for(Cart cart : cartList){
             OrderLecture orderLecture = new OrderLecture();
-            Lecture lecture = lectureRepository.findById(cart.getLecture().getLectureId())
-                    .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ErrorCode.ID_NOT_EXIST));
-            orderLecture.setLecture(lecture);
+            orderLecture.setLecture(cart.getLecture());
             orderLecture.setOrder(order);
             orderLectureList.add(orderLectureRepository.save(orderLecture));
-            cartRepository.deleteByLecture_LectureIdAndUser_UserId(lecture.getLectureId(), user.getUserId());
+            cartRepository.deleteByLecture_LectureIdAndUser_UserId(cart.getLecture().getLectureId(), user.getUserId());
         }
-
         order.setOriginalPrice(orderRepository.findSumOrderByOrderId(order.getOrderId()));
 
-        IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderFromCartDto.getIssuedCouponId());
-        if(requestOrderFromCartDto.getIssuedCouponId() == null){ //쿠폰값 입력 안했을때
-            order.setIssuedCoupon(null);
-            order.setSalePrice(null);
-        }
-        else {  //쿠폰값 입력했을때
+        Integer price = order.getOriginalPrice();
+        if(requestOrderFromCartDto.getIssuedCouponId() != null) {
+            IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderFromCartDto.getIssuedCouponId());
             if (issuedCoupon == null) {  //없는 쿠폰 입력했을 때
                 throw new IdNotExistException("존재하지 않는 쿠폰입니다", ErrorCode.ID_NOT_EXIST);
             }
@@ -192,25 +167,19 @@ public class OrderServiceImpl implements OrderService {
             order.setIssuedCoupon(issuedCoupon);
             issuedCoupon.setCouponUsed(true);
 
-            Integer price = order.getOriginalPrice();
             if(fixDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
                 Optional<FixDiscountCoupon> fixDiscountCoupon = fixDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
-                if(fixDiscountCoupon.get().getDiscountPrice() < order.getOriginalPrice()){
-                    price -= fixDiscountCoupon.get().getDiscountPrice();
-                }
-                else{
-                    throw new BadRequestArgumentException("쿠폰을 적용할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
-                }
-
+                if(fixDiscountCoupon.get().getDiscountPrice() > order.getOriginalPrice()) throw new BadRequestArgumentException("쿠폰을 적용할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+                price -= fixDiscountCoupon.get().getDiscountPrice();
             }
             else if(rateDiscountCouponRepository.existsByCouponId(issuedCoupon.getCoupon().getCouponId())){
                 Optional<RateDiscountCoupon> rateDiscountCoupon = rateDiscountCouponRepository.findByCouponId(issuedCoupon.getCoupon().getCouponId());
                 double ratePrice = ((100-rateDiscountCoupon.get().getDiscountRate())*0.01);
                 price = (int)(price * ratePrice);
             }
-            order.setSalePrice(price);
         }
 
+        order.setSalePrice(price);
         orderRepository.save(order);
 
     }
