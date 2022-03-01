@@ -122,23 +122,23 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void createOrderFromCart(RequestOrderFromCartDto requestOrderFromCartDto, List<Long> requestLectureIdList) {
+    public void createOrderFromCart(RequestOrderDto requestOrderDto) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         Order order = new Order();
         order.setUser(user);
-        order.setPayment(requestOrderFromCartDto.getPayment());
-        if(requestOrderFromCartDto.getPayment() == Payment.BANK_ACCOUNT){
-            order.setBank(requestOrderFromCartDto.getBank());
-            order.setAccount(requestOrderFromCartDto.getAccount());
+        order.setPayment(requestOrderDto.getPayment());
+        if(requestOrderDto.getPayment() == Payment.BANK_ACCOUNT){
+            order.setBank(requestOrderDto.getBank());
+            order.setAccount(requestOrderDto.getAccount());
         }
 
         orderRepository.save(order);
 
         List<Cart> cartList = new ArrayList<>();
-        for(Long lectureId : requestLectureIdList){
-            Cart cart = cartRepository.findByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())
+        for(RequestOrderLectureDto requestOrderLectureDto : requestOrderDto.getOrderLectures()){
+            Cart cart = cartRepository.findByLecture_LectureIdAndUser_UserId(requestOrderLectureDto.getLectureId(), user.getUserId())
                     .orElseThrow(() -> new BadRequestArgumentException("장바구니에 없는 강의입니다.", ErrorCode.BAD_REQUEST_ARGUMENT));
             cartList.add(cart);
         }
@@ -155,8 +155,8 @@ public class OrderServiceImpl implements OrderService {
         order.setOriginalPrice(orderRepository.findSumOrderByOrderId(order.getOrderId()));
 
         Integer price = order.getOriginalPrice();
-        if(requestOrderFromCartDto.getIssuedCouponId() != null) {
-            IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderFromCartDto.getIssuedCouponId());
+        if(requestOrderDto.getIssuedCouponId() != null) {
+            IssuedCoupon issuedCoupon = issuedCouponRepository.findByIssuedCouponId(requestOrderDto.getIssuedCouponId());
             if (issuedCoupon == null) {  //없는 쿠폰 입력했을 때
                 throw new IdNotExistException("존재하지 않는 쿠폰입니다", ErrorCode.ID_NOT_EXIST);
             }
@@ -187,7 +187,7 @@ public class OrderServiceImpl implements OrderService {
     //    주문 취소
     @Override
     @Transactional
-    public void cancelOrder(Long orderId) throws IdNotExistException, ForbiddenException {
+    public void cancelOrder(Long orderId) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));

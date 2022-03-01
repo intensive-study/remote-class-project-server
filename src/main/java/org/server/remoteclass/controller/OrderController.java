@@ -3,7 +3,6 @@ package org.server.remoteclass.controller;
 
 import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.order.RequestOrderDto;
-import org.server.remoteclass.dto.order.RequestOrderFromCartDto;
 import org.server.remoteclass.dto.order.ResponseOrderDto;
 import org.server.remoteclass.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +36,8 @@ public class OrderController {
 
     @ApiOperation("장바구니 주문 신청")
     @PostMapping("/carts")
-    public ResponseEntity createOrder(@Valid @RequestBody RequestOrderFromCartDto requestOrderFromCartDto,
-                                      @RequestParam(value = "lectureId", required = false, defaultValue = "") List<Long> lectureIdList) {
-        orderService.createOrderFromCart(requestOrderFromCartDto, lectureIdList);
+    public ResponseEntity createOrderFromCart(@Valid @RequestBody RequestOrderDto requestOrderDto) {
+        orderService.createOrderFromCart(requestOrderDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
