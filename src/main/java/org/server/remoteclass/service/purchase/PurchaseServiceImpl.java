@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.server.remoteclass.constant.OrderStatus;
 import org.server.remoteclass.constant.Payment;
+import org.server.remoteclass.dto.order.RequestCancelPartialPurchaseDto;
+import org.server.remoteclass.dto.order.RequestOrderLectureDto;
 import org.server.remoteclass.dto.purchase.RequestPurchaseDto;
 import org.server.remoteclass.dto.purchase.ResponsePurchaseByAdminDto;
 import org.server.remoteclass.dto.purchase.ResponsePurchaseDto;
@@ -119,7 +121,7 @@ public class PurchaseServiceImpl implements PurchaseService{
     // 강의 부분 수강 취소
     @Override
     @Transactional
-    public void cancelPurchase(Long purchaseId, List<Long> requestLectureIdList) {
+    public void cancelPartialPurchases(Long purchaseId, RequestCancelPartialPurchaseDto requestCancelPartialPurchaseDto) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
@@ -134,18 +136,18 @@ public class PurchaseServiceImpl implements PurchaseService{
             throw new BadRequestArgumentException("취소 가능한 주문 상태가 아닙니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
 
-        //이전 주문의 강의리스트 저장
+        //주문의 강의리스트
         List<Long> lectureList = new ArrayList<>();
 
-        //취소 요청한 강의가 있으면
+        //취소 요청한 강의가 있으면 이전 주문의 강의들을 모두 lectureList에 저장
         for(OrderLecture orderLecture: prevOrder.get().getOrderLectures()){
             lectureList.add(orderLecture.getLecture().getLectureId());
         }
 
-        for(Long lectureId : requestLectureIdList){
-            Optional<Lecture> lecture = lectureRepository.findById(lectureId);
+        for(RequestOrderLectureDto requestOrderLectureDto : requestCancelPartialPurchaseDto.getOrderLectures()){
+            Optional<Lecture> lecture = lectureRepository.findById(requestOrderLectureDto.getLectureId());
             //취소할 강의리스트 중 강의가 신청 안했던 강의이면 x
-            if(!studentRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())){
+            if(!studentRepository.existsByLecture_LectureIdAndUser_UserId(requestOrderLectureDto.getLectureId(), user.getUserId())){
                 throw new IdNotExistException("수강 취소할 수 없습니다.", ErrorCode.ID_NOT_EXIST);
             }
             // 강의가 이미 시작했던 강의이면 x
@@ -153,11 +155,7 @@ public class PurchaseServiceImpl implements PurchaseService{
                 throw new BadRequestArgumentException("이미 시작한 강의는 취소할 수 없습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
             }
             //이전 주문의 강의리스트에서 삭제할 강의 하나씩 삭제
-            lectureList.remove(Long.valueOf(lectureId));
-        }
-        //취소 요청강의가 없는 경우 전체 취소임.
-        if(requestLectureIdList.isEmpty()){
-            lectureList = new ArrayList<>();
+            lectureList.remove(Long.valueOf(requestOrderLectureDto.getLectureId()));
         }
 
         //모두 삭제했을 경우(5개 중 5개 모두 입력했을 경우)

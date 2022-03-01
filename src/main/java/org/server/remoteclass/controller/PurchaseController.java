@@ -1,6 +1,7 @@
 package org.server.remoteclass.controller;
 
 import io.swagger.annotations.ApiOperation;
+import org.server.remoteclass.dto.order.RequestCancelPartialPurchaseDto;
 import org.server.remoteclass.dto.purchase.*;
 import org.server.remoteclass.service.purchase.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +31,16 @@ public class PurchaseController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @ApiOperation(value = "주문 부분 취소", notes = "학생이 신청했던 강의 일부를 입력받아 취소할 수 있다.")
-    @DeleteMapping("/lecture")
-    public ResponseEntity cancelPurchase(@RequestParam("purchaseId") Long purchaseId, @RequestParam(value = "lectureId", required = false, defaultValue = "") List<Long> lectureIdList) {
-        purchaseService.cancelPurchase(purchaseId, lectureIdList);
+    @ApiOperation(value = "주문 부분 취소", notes = "학생이 신청했던 강의 일부를 리스트로 입력받아 취소할 수 있다.")
+    @DeleteMapping("/partial/{purchaseId}")
+    public ResponseEntity cancelPartialPurchases(@PathVariable("purchaseId") Long purchaseId,
+                                         @RequestBody RequestCancelPartialPurchaseDto requestCancelPartialPurchaseDto) {
+        purchaseService.cancelPartialPurchases(purchaseId, requestCancelPartialPurchaseDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "주문 전체 취소", notes = "학생이 신청했던 강의 전체를 취소할 수 있다.")
-    @DeleteMapping("/purchase/{purchaseId}")
+    @DeleteMapping("/{purchaseId}")
     public ResponseEntity cancelAllPurchase(@PathVariable("purchaseId") Long purchaseId) {
         purchaseService.cancelAllPurchases(purchaseId);
         return ResponseEntity.status(HttpStatus.OK).build();
