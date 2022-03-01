@@ -7,7 +7,9 @@ import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.entity.Coupon;
 import org.server.remoteclass.entity.FixDiscountCoupon;
 import org.server.remoteclass.entity.RateDiscountCoupon;
+import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.exception.IdNotExistException;
+import org.server.remoteclass.exception.StatusDuplicateException;
 import org.server.remoteclass.jpa.CouponRepository;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -32,16 +33,14 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public ResponseCouponDto getCouponByCouponId(Long couponId) {
-        if (couponRepository.findByCouponId(couponId).orElse(null) instanceof FixDiscountCoupon) {
-            log.info("FixDiscount 타입입니다.");
-            return ResponseCouponDto.from((FixDiscountCoupon) couponRepository.findByCouponId(couponId).orElse(null));
-        }
 
-        log.info("RateDiscount 타입입니다.");
-        return ResponseCouponDto.from((RateDiscountCoupon) couponRepository.findByCouponId(couponId).orElse(null));
+        Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId).orElse(null);
+        if (coupon instanceof FixDiscountCoupon) {
+            return ResponseCouponDto.from((FixDiscountCoupon) coupon);
+        }
+        return ResponseCouponDto.from((RateDiscountCoupon) coupon);
 
     }
-
 
     @Override
     public List<ResponseCouponDto> getAllCoupons() {
@@ -49,42 +48,47 @@ public class CouponServiceImpl implements CouponService {
         List<ResponseCouponDto> list = new ArrayList<>();
 
         for (Coupon coupon : coupons) {
-            if(coupon instanceof FixDiscountCoupon){
+            if (coupon instanceof FixDiscountCoupon) {
                 list.add(ResponseCouponDto.from((FixDiscountCoupon) coupon));
             }
-            else {
+
+            else if(coupon instanceof RateDiscountCoupon){
                 list.add(ResponseCouponDto.from((RateDiscountCoupon) coupon));
             }
         }
-
         return list;
     }
 
     @Override
     @Transactional
-    public void deactivateCoupon(Long couponId) {
+    public void activateCoupon(Long couponId) {
         Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId).orElse(null);
-        coupon.setCouponValid(false);
-//        Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId)
-//                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다.", ResultCode.ID_NOT_EXIST)
-//        );
-//        coupon.setCouponValid(false);
-        // 스프링 데이터 JPA가 알아서 해 주는 것 같긴 한데, 일단 save로 업데이트 하였습니다.
-//        return CouponDto.from(couponRepository.save(coupon));
+
+        if(coupon == null){
+            throw new IdNotExistException("존재하지 않는 쿠폰입니다.", ErrorCode.ID_NOT_EXIST);
+        }
+
+        if(coupon.getCouponValid() == true){
+            throw new StatusDuplicateException("이미 해당 상태입니다.", ErrorCode.STATUS_DUPLICATION);
+        }
+        coupon.setCouponValid(true);
     }
 
     @Override
     @Transactional
-    public ResponseCouponDto createCoupon(RequestCouponDto requestCouponDto) {
-        // 0 이하 값이 들어온 경우 예외처리 필요. 나중에 통일시키겠습니다.
-        // 또한 mysql에는 Valid의 default값이 true로 잘 설정되는데, h2 테스트 시에만 false로 출력됩니다.
-        // 그래서 일단 서비스 단에서 true로 초기화 하도록 하겠습니다.
-        Coupon coupon = modelMapper.map(requestCouponDto, Coupon.class);
-        coupon.setCouponCode(UUID.randomUUID().toString());
-        coupon.setCouponValid(true);
-        coupon.setCouponValidDays(requestCouponDto.getCouponValidDays());
-        return ResponseCouponDto.from((Coupon) couponRepository.save(coupon));
-//        return CouponDto.from(couponRepository.save(coupon));
+    public void deactivateCoupon(Long couponId) {
+        //제너릭(?)으로 구현해서 orElseThrow 문법이 작동하지 않는 것 같습니다. 그래서 orElse 사용하여
+        //null 여부로 에러 처리를 해줬습니다.
+
+        Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId).orElse(null);
+        if(coupon == null){
+            throw new IdNotExistException("존재하지 않는 쿠폰입니다.", ErrorCode.ID_NOT_EXIST);
+        }
+
+        if(coupon.getCouponValid() == false){
+            throw new StatusDuplicateException("이미 해당 상태입니다.", ErrorCode.STATUS_DUPLICATION);
+        }
+        coupon.setCouponValid(false);
     }
 
     @Override
@@ -96,9 +100,11 @@ public class CouponServiceImpl implements CouponService {
     @Override
     @Transactional
     public void deleteCoupon(Long couponId) {
-//        Coupon coupon = (Coupon) couponRepository
-//                .findByCouponId(couponId)
-//                .orElseThrow(() -> new IdNotExistException("존재하지 않는 쿠폰 번호입니다", ResultCode.ID_NOT_EXIST));
+        //제너릭(?)으로 구현해서 orElseThrow 문법이 작동하지 않는 것 같습니다. 그래서 orElse 사용했습니다.
+        Coupon coupon = (Coupon) couponRepository.findByCouponId(couponId).orElse(null);
+        if(coupon == null){
+            throw new IdNotExistException("존재하지 않는 쿠폰입니다.", ErrorCode.ID_NOT_EXIST);
+        }
         couponRepository.deleteByCouponId(couponId);
     }
 

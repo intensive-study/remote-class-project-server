@@ -29,7 +29,7 @@ public class ResponseIssuedCouponDto {
         return ResponseIssuedCouponDto.builder()
                 .issuedCouponId(issuedCoupon.getIssuedCouponId())
                 .coupon(ResponseCouponDto.notIncludeIssuedCoupons(issuedCoupon.getCoupon()))
-                .couponUsed(issuedCoupon.isCouponUsed())
+                .couponUsed(issuedCoupon.getCouponUsed())
                 .couponValidDate(issuedCoupon.getCouponValidDate())
                 .build();
         // 쿠폰 종류를 식별할 수 있는 컬럼 필요.
@@ -39,7 +39,7 @@ public class ResponseIssuedCouponDto {
         if(issuedCoupon == null) return null;
         return ResponseIssuedCouponDto.builder()
                 .issuedCouponId(issuedCoupon.getIssuedCouponId())
-                .couponUsed(issuedCoupon.isCouponUsed())
+                .couponUsed(issuedCoupon.getCouponUsed())
                 .couponValidDate(issuedCoupon.getCouponValidDate())
                 .build();
     }

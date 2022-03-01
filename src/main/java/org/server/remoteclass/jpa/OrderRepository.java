@@ -4,6 +4,7 @@ import org.server.remoteclass.entity.Order;
 import org.server.remoteclass.entity.OrderLecture;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -16,13 +17,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "join fetch i.coupon c " +
             "where o.user.userId=:userId " +
             "order by o.orderDate desc ")
-    List<Order> findByUser_UserIdOrderByOrderDateDesc(Long userId);
+    List<Order> findByUser_UserIdOrderByOrderDateDesc(@Param("userId") Long userId);
 
     List<Order> findByOrderByOrderDateDesc();
 
     @Query("select sum(l.price) from OrderLecture o " +
             "join o.lecture l " +
             "where o.order.orderId=:orderId")
-    Integer findSumOrderByOrderId(Long orderId);
+    Integer findSumOrderByOrderId(@Param("orderId") Long orderId);
 
 }

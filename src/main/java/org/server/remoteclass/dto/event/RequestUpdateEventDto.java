@@ -1,10 +1,9 @@
 package org.server.remoteclass.dto.event;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -14,11 +13,14 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-@Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class RequestEventDto {
+public class RequestUpdateEventDto {
 
     //이벤트 관련 정보
+    @NotNull
+    @Min(1)
+    private Long eventId;
     @NotEmpty
     @Size(min = 4, max = 40)
     private String title;
@@ -31,18 +33,4 @@ public class RequestEventDto {
     @NotNull
     @Min(0)
     private Integer couponValidDays;
-
-    @NotNull
-    private String eventTitle;
-
-    @Min(0)
-    private Integer discountPrice;
-
-    @Range(min = 0, max = 100)
-    private Integer discountRate;
-
-    public RequestEventDto(){
-
-    }
-
 }

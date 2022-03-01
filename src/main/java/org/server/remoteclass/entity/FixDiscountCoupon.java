@@ -12,5 +12,5 @@ import javax.persistence.*;
 @NoArgsConstructor
 @DiscriminatorValue("F")
 public class FixDiscountCoupon extends Coupon{
-    private int discountPrice;
+    private Integer discountPrice;
 }

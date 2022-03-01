@@ -1,26 +1,29 @@
-package org.server.remoteclass.dto.rateDiscountCoupon;
+package org.server.remoteclass.dto.fixDiscountCoupon;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-@Getter
 @Setter
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-public class RequestRateDiscountCouponDto {
+@AllArgsConstructor
+public class RequestUpdateFixDiscountCouponDto {
+
+    @NotNull
+    @Min(1)
+    private Long couponId;
     @NotEmpty
     private String title;
     @NotNull
     @Min(0)
     private Integer couponValidDays;
     @NotNull
-    @Range(min = 0, max = 100)
-    private Integer discountRate;
+    @Min(0)
+    private Integer discountPrice;
 }
