@@ -5,6 +5,7 @@ import org.server.remoteclass.dto.auth.ResponseTokenDto;
 import org.server.remoteclass.exception.BadRequestArgumentException;
 import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.exception.ForbiddenException;
+import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.service.auth.AuthService;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -69,23 +70,32 @@ public class JwtFilter extends GenericFilterBean {
 
                 HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
                 // DB에 있는 refresh 토큰과 일치하지 않으면 이 부분에서 에러가 발생합니다.
-                ResponseTokenDto responseTokenDto = authService.reissue(new RequestTokenDto(jwt, jwt2));
-                httpServletResponse.addHeader("grantType", "bearer");
-                httpServletResponse.addHeader("accessToken", responseTokenDto.getAccessToken());
-                httpServletResponse.addHeader("refreshToken", responseTokenDto.getRefreshToken());
-                //헤더에는 Long 타입을 담을 수 없어 String으로 변환하였습니다. -> 굳이 반환이 필요하지 않을 것 같아 반환하지 않도록 하였습니다.
+                ResponseTokenDto responseTokenDto;
+                try {
+                    responseTokenDto = authService.reissue(new RequestTokenDto(jwt, jwt2));
+                    httpServletResponse.addHeader("grantType", "bearer");
+                    httpServletResponse.addHeader("accessToken", responseTokenDto.getAccessToken());
+                    httpServletResponse.addHeader("refreshToken", responseTokenDto.getRefreshToken());
+                    //헤더에는 Long 타입을 담을 수 없어 String으로 변환하였습니다. -> 굳이 반환이 필요하지 않을 것 같아 반환하지 않도록 하였습니다.
 //                httpServletResponse.addHeader("accessTokenExpireDate", responseTokenDto.getAccessTokenExpireDate().toString());
 
-                Authentication authentication = tokenProvider.getAuthentication(jwt);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                logger.debug("Security Context에 `{}` 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
-                // 토큰이 업데이트 후 DB에 저장하게 되면 servletRequest에 있는 토큰과 달라지게 되어 인증에 실패함.
-                // 그래서 토큰을 업데이트만 해놓고, 인증 처리 후 응답답 반환 시에 토큰을 B에 반영함.
-                filterChain.doFilter(servletRequest, servletResponse);
-                RequestTokenDto requestTokenDto = new RequestTokenDto();
-                requestTokenDto.setAccessToken(responseTokenDto.getAccessToken());
-                requestTokenDto.setRefreshToken(responseTokenDto.getRefreshToken());
-                authService.updateToken(requestTokenDto);
+                    Authentication authentication = tokenProvider.getAuthentication(jwt);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    logger.debug("Security Context에 `{}` 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+                    // 토큰이 업데이트 후 DB에 저장하게 되면 servletRequest에 있는 토큰과 달라지게 되어 인증에 실패함.
+                    // 그래서 토큰을 업데이트만 해놓고, 인증 처리 후 응답답 반환 시에 토큰을 B에 반영함.
+                    filterChain.doFilter(servletRequest, servletResponse);
+                    RequestTokenDto requestTokenDto = new RequestTokenDto();
+                    requestTokenDto.setAccessToken(responseTokenDto.getAccessToken());
+                    requestTokenDto.setRefreshToken(responseTokenDto.getRefreshToken());
+                    authService.updateToken(requestTokenDto);
+                }
+
+                catch (BadRequestArgumentException e){
+                    logger.info("e.printStackTrace");
+                    e.printStackTrace();
+                    throw new BadRequestArgumentException("예외 처리 부분", ErrorCode.BAD_REQUEST_ARGUMENT);
+                }
             }
 
             else{

@@ -7,7 +7,7 @@ import org.server.remoteclass.dto.auth.ResponseTokenDto;
 import org.server.remoteclass.dto.auth.RequestTokenDto;
 import org.server.remoteclass.dto.user.RequestUserDto;
 import org.server.remoteclass.dto.user.ResponseUserDto;
-import org.server.remoteclass.entity.RefreshToken;
+import org.server.remoteclass.entity.Token;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.constant.UserRole;
 import org.server.remoteclass.exception.*;
@@ -74,12 +74,13 @@ public class AuthServiceImpl implements AuthService{
         ResponseTokenDto responseTokenDto = tokenProvider.createToken(authentication);
         log.info("authentication getname" + authentication.getName());
         // 4. RefreshToken 저장
-        RefreshToken refreshToken = RefreshToken.builder()
+        Token token = Token.builder()
                 .key(authentication.getName()) // getName이 현재 로그인 하려고 하는 사람의 email입니다. 커스텀하지 않았다면 기본적으로는 username일 것 같습니다.
-                .value(responseTokenDto.getRefreshToken())
+                .accessToken(responseTokenDto.getAccessToken())
+                .refreshToken(responseTokenDto.getRefreshToken())
                 .build();
 
-        refreshTokenRepository.save(refreshToken);
+        refreshTokenRepository.save(token);
         // 5. 토큰 발급
         return responseTokenDto;
     }
@@ -93,11 +94,12 @@ public class AuthServiceImpl implements AuthService{
         // 2. Access Token 에서 User Id 가져오기
         Authentication authentication = tokenProvider.getAuthentication(requestTokenDto.getAccessToken());
         // 3. 저장소에서 User Id를 기반으로 Refresh Token 값 가져옴
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
+        Token token = refreshTokenRepository.findByKey(authentication.getName())
                 .orElseThrow(() -> new ForbiddenException("로그아웃 된 사용자입니다.", ErrorCode.FORBIDDEN));
         // 4. Refresh Token 일치하는 지 검사
-        if(!refreshToken.getValue().equals(requestTokenDto.getRefreshToken())){
-            throw new BadRequestArgumentException("리프레쉬 토큰의 정보가 일치하지 않습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+        if(!(token.getAccessToken().equals(requestTokenDto.getAccessToken()) &&
+        token.getRefreshToken().equals(requestTokenDto.getRefreshToken()))){
+            throw new BadRequestArgumentException("토큰의 정보가 일치하지 않습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
         // 5. 새로운 토큰 생성
         ResponseTokenDto responseTokenDto = tokenProvider.createToken(authentication);
@@ -111,10 +113,10 @@ public class AuthServiceImpl implements AuthService{
         // Access Token 에서 User Id 가져오기
         Authentication authentication = tokenProvider.getAuthentication(requestTokenDto.getAccessToken());
         // 저장소에서 User Id를 기반으로 Refresh Token 값 가져옴
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
+        Token token = refreshTokenRepository.findByKey(authentication.getName())
                 .orElseThrow(() -> new ForbiddenException("로그아웃 된 사용자입니다.", ErrorCode.FORBIDDEN));
         // 저장소 정보 업데이트
-        RefreshToken newRefreshToken = refreshToken.updateValue(requestTokenDto.getRefreshToken());
-        refreshTokenRepository.save(newRefreshToken);
+        Token newToken = token.updateValue(requestTokenDto.getAccessToken(), requestTokenDto.getRefreshToken());
+        refreshTokenRepository.save(newToken);
     }
 }
