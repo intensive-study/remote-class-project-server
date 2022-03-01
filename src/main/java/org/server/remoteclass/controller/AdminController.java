@@ -122,8 +122,8 @@ public class AdminController {
 
     @ApiOperation(value = "전체 강의 조회", notes = "현재까지 생성된 모든 강의를 조회할 수 있다.")
     @GetMapping("/lectures")
-    public ResponseEntity<List<ResponseLectureDto>> getAllLecture(){
-        return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByAll());
+    public ResponseEntity<List<ResponseLectureDto>> getAllLectures(){
+        return ResponseEntity.status(HttpStatus.OK).body(lectureService.getAllLectures());
     }
 
     @ApiOperation(value = "강의 조회", notes = "원하는 강의 번호로 강의를 조회할 수 있다.")
@@ -144,7 +144,7 @@ public class AdminController {
     @ApiOperation(value = "카테고리별 강의 조회", notes = "현재까지 생성된 강의를 카테고리별로 조회할 수 있다.")
     @GetMapping("/lectures/category/{categoryId}")
     public ResponseEntity<List<ResponseLectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) {
-        return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLectureByCategoryId(categoryId));
+        return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLecturesByCategoryId(categoryId));
     }
 
     /**
