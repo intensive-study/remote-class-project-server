@@ -1,7 +1,6 @@
 package org.server.remoteclass.service.purchase;
 
 import org.server.remoteclass.dto.order.RequestCancelPartialPurchaseDto;
-import org.server.remoteclass.dto.purchase.RequestPurchaseDto;
 import org.server.remoteclass.dto.purchase.ResponsePurchaseByAdminDto;
 import org.server.remoteclass.dto.purchase.ResponsePurchaseDto;
 
@@ -9,7 +8,7 @@ import java.util.List;
 
 public interface PurchaseService {
 
-    void createPurchase(RequestPurchaseDto requestPurchaseDto);
+    void createPurchase(Long orderId);
     void cancelPartialPurchases(Long purchaseId, RequestCancelPartialPurchaseDto requestCancelPartialPurchaseDto);
     void cancelAllPurchases(Long purchaseId);
     List<ResponsePurchaseDto> getAllPurchasesByUserId();

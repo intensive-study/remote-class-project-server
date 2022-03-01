@@ -13,6 +13,7 @@ import org.server.remoteclass.exception.ForbiddenException;
 import org.server.remoteclass.exception.IdNotExistException;
 import org.server.remoteclass.exception.ErrorCode;
 import org.server.remoteclass.jpa.*;
+import org.server.remoteclass.service.purchase.PurchaseService;
 import org.server.remoteclass.util.AccessVerification;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
@@ -40,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     private final IssuedCouponRepository issuedCouponRepository;
     private final AccessVerification accessVerification;
     private final ModelMapper modelMapper;
+    private final PurchaseService purchaseService;
 
     @Autowired
     public OrderServiceImpl(UserRepository userRepository,
@@ -51,7 +53,8 @@ public class OrderServiceImpl implements OrderService {
                             RateDiscountCouponRepository rateDiscountCouponRepository,
                             IssuedCouponRepository issuedCouponRepository,
                             BeanConfiguration beanConfiguration,
-                            AccessVerification accessVerification){
+                            AccessVerification accessVerification,
+                            PurchaseService purchaseService){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.orderRepository = orderRepository;
@@ -62,6 +65,7 @@ public class OrderServiceImpl implements OrderService {
         this.issuedCouponRepository = issuedCouponRepository;
         this.modelMapper = beanConfiguration.modelMapper();
         this.accessVerification = accessVerification;
+        this.purchaseService = purchaseService;
     }
 
 
@@ -203,6 +207,26 @@ public class OrderServiceImpl implements OrderService {
         else{
             throw new BadRequestArgumentException("취소 가능한 상태가 아닙니다", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
+    }
+
+    @Override
+    @Transactional
+    public void completeOrder(Long orderId) {
+        User user = SecurityUtil.getCurrentUserEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
+        if(user.getUserId() != order.getUser().getUserId()){
+            throw new ForbiddenException("주문 완료 권한이 없습니다", ErrorCode.FORBIDDEN);
+        }
+        if(order.getOrderStatus() != OrderStatus.PENDING) {
+            throw new BadRequestArgumentException("구매할 수 없는 주문입니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+        }
+        order.setOrderStatus(OrderStatus.COMPLETE);
+        purchaseService.createPurchase(orderId);
+
     }
 
     //사용자 본인것만 조회

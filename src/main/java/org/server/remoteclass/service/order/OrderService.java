@@ -11,6 +11,7 @@ public interface OrderService {
     void createOrder(RequestOrderDto requestOrderDto);
     void createOrderFromCart(RequestOrderDto requestOrderDto);
     void cancelOrder(Long orderId);
+    void completeOrder(Long orderId);
     List<ResponseOrderDto> getMyOrdersByUserId();
     List<ResponseOrderByAdminDto> getAllOrdersByAdmin();
     List<ResponseOrderByAdminDto> getOrderByUserIdByAdmin(Long userId);

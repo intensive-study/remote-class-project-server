@@ -24,12 +24,12 @@ public class PurchaseController {
         this.purchaseService = purchaseService;
     }
 
-    @ApiOperation(value = "구매 생성", notes = "구매 생성으로 구매 완료처리함.")
-    @PostMapping
-    public ResponseEntity createPurchase(@RequestBody @Valid RequestPurchaseDto requestPurchaseDto) {
-        purchaseService.createPurchase(requestPurchaseDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+//    @ApiOperation(value = "구매 생성", notes = "구매 생성으로 구매 완료처리함.")
+//    @PostMapping
+//    public ResponseEntity createPurchase(@RequestBody @Valid RequestPurchaseDto requestPurchaseDto) {
+//        purchaseService.createPurchase(requestPurchaseDto);
+//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    }
 
     @ApiOperation(value = "주문 부분 취소", notes = "학생이 신청했던 강의 일부를 리스트로 입력받아 취소할 수 있다.")
     @DeleteMapping("/partial/{purchaseId}")

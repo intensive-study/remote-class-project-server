@@ -53,4 +53,11 @@ public class OrderController {
         orderService.cancelOrder(orderId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @ApiOperation(value = "주문 완료 요청", notes = "구매하기 위해 해당 주문에 complete 요청")
+    @PutMapping("/complete/{orderId}")
+    public ResponseEntity completeOrder(@PathVariable("orderId") @Valid Long orderId) {
+        orderService.completeOrder(orderId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }

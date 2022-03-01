@@ -71,42 +71,32 @@ public class PurchaseServiceImpl implements PurchaseService{
 
     @Override
     @Transactional
-    public void createPurchase(RequestPurchaseDto requestPurchaseDto) {
+    public void createPurchase(Long orderId) {
 
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
         //orderId를 입력하면 order 객체 받아오기
-        Order order = orderRepository.findById(requestPurchaseDto.getOrderId())
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
 
-        // pending상태만 주문 가능. 취소되거나 이미 완료된 주문이면 더이상 구매하지 못함.
-        if(order.getOrderStatus() == OrderStatus.PENDING){
-            Purchase purchase = modelMapper.map(requestPurchaseDto, Purchase.class);
-            order.setOrderStatus(OrderStatus.COMPLETE);//해당 orderId의 주문에는 status를 complete로 변경하기
-            purchase.setOrder(order);
-            purchase.setValidPurchase(true);
-            purchase.setPurchasePrice(order.getSalePrice());
-            purchaseRepository.save(purchase);
-            /**
-             * 구매가 완료되면 수강생 테이블에 자동으로 삽입되어야함.
-             */
-            for(OrderLecture orderLecture : order.getOrderLectures()){
-                if(studentRepository.existsByLecture_LectureIdAndUser_UserId(orderLecture.getLecture().getLectureId(), user.getUserId())) {
-                    throw new BadRequestArgumentException("이미 수강하고 있는 강의입니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
-                }
-                Student student = new Student();
-                student.setUser(user);
-                student.setLecture(orderLecture.getLecture());
-                student.setOrder(order);
-                studentRepository.save(student);
+        Purchase purchase = new Purchase();
+        purchase.setOrder(order);
+        purchase.setValidPurchase(true);
+        purchase.setPurchasePrice(order.getSalePrice());
+        purchaseRepository.save(purchase);
+        //구매가 완료되면 수강생 테이블에 자동으로 삽입되어야함.
+        for(OrderLecture orderLecture : order.getOrderLectures()){
+            if(studentRepository.existsByLecture_LectureIdAndUser_UserId(orderLecture.getLecture().getLectureId(), user.getUserId())) {
+                throw new BadRequestArgumentException("이미 수강하고 있는 강의입니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
             }
+            Student student = new Student();
+            student.setUser(user);
+            student.setLecture(orderLecture.getLecture());
+            student.setOrder(order);
+            studentRepository.save(student);
         }
-        else{
-            throw new BadRequestArgumentException("주문 가능한 상태가 아닙니다", ErrorCode.BAD_REQUEST_ARGUMENT);
-        }
-
     }
 
     // 강의 부분 수강 취소
