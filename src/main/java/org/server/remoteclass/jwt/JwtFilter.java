@@ -46,37 +46,52 @@ public class JwtFilter extends GenericFilterBean {
         String jwt2 = resolveRefreshToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
-        if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt) == 1){
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            logger.debug("Security Context에 `{}` 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
-            filterChain.doFilter(servletRequest, servletResponse);
+        // 리프레쉬 토큰이 null 인경우(요청에 들어오지 않은 경우)
+        if(jwt2 == null){
+            if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt) == 1){
+                Authentication authentication = tokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                logger.debug("Security Context에 `{}` 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+                filterChain.doFilter(servletRequest, servletResponse);
+            }
+            else{
+                logger.debug("유효한 JWT 토큰이 없습니다. uri {}", requestURI);
+                filterChain.doFilter(servletRequest, servletResponse);
+            }
         }
 
-        else if(StringUtils.hasText(jwt) && StringUtils.hasText(jwt2) &&
-            tokenProvider.validateToken(jwt) == -1 && tokenProvider.validateToken(jwt2) == 1){
-
-            HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-            ResponseTokenDto responseTokenDto = authService.reissue(new RequestTokenDto(jwt, jwt2));
-            httpServletResponse.addHeader("grantType", "bearer");
-            httpServletResponse.addHeader("accessToken", responseTokenDto.getAccessToken());
-            httpServletResponse.addHeader("refreshToken", responseTokenDto.getRefreshToken());
-            //헤더에는 Long 타입을 담을 수 없어 String으로 변환하였습니다.
-            httpServletResponse.addHeader("accessTokenExpireDate", responseTokenDto.getAccessTokenExpireDate().toString());
-            // 다음 단계로 진입시켜주는 함수
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            logger.debug("Security Context에 `{}` 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
-            filterChain.doFilter(servletRequest, servletResponse);
-            RequestTokenDto requestTokenDto = new RequestTokenDto();
-            requestTokenDto.setAccessToken(responseTokenDto.getAccessToken());
-            requestTokenDto.setRefreshToken(responseTokenDto.getRefreshToken());
-            authService.updateToken(requestTokenDto);
-        }
-
+        // 리프레쉬 토큰이 들어온 경우, 리프레쉬 토큰이 유효하다면 토큰 재발급을 실행한다.
+        // 리프레쉬 토큰이 유효하지 않은 경우, 엑세스 토큰이 유효해도 예외가 발생한다.
         else{
-            logger.debug("유효한 JWT 토큰이 없습니다. uri {}", requestURI);
-            filterChain.doFilter(servletRequest, servletResponse);
+            if(StringUtils.hasText(jwt) && StringUtils.hasText(jwt2) && (
+                    tokenProvider.validateToken(jwt) == -1 || tokenProvider.validateToken(jwt) == 1)
+                    && tokenProvider.validateToken(jwt2) == 1) {
+
+                HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+                // DB에 있는 refresh 토큰과 일치하지 않으면 이 부분에서 에러가 발생합니다.
+                ResponseTokenDto responseTokenDto = authService.reissue(new RequestTokenDto(jwt, jwt2));
+                httpServletResponse.addHeader("grantType", "bearer");
+                httpServletResponse.addHeader("accessToken", responseTokenDto.getAccessToken());
+                httpServletResponse.addHeader("refreshToken", responseTokenDto.getRefreshToken());
+                //헤더에는 Long 타입을 담을 수 없어 String으로 변환하였습니다. -> 굳이 반환이 필요하지 않을 것 같아 반환하지 않도록 하였습니다.
+//                httpServletResponse.addHeader("accessTokenExpireDate", responseTokenDto.getAccessTokenExpireDate().toString());
+
+                Authentication authentication = tokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                logger.debug("Security Context에 `{}` 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+                // 토큰이 업데이트 후 DB에 저장하게 되면 servletRequest에 있는 토큰과 달라지게 되어 인증에 실패함.
+                // 그래서 토큰을 업데이트만 해놓고, 인증 처리 후 응답답 반환 시에 토큰을 B에 반영함.
+                filterChain.doFilter(servletRequest, servletResponse);
+                RequestTokenDto requestTokenDto = new RequestTokenDto();
+                requestTokenDto.setAccessToken(responseTokenDto.getAccessToken());
+                requestTokenDto.setRefreshToken(responseTokenDto.getRefreshToken());
+                authService.updateToken(requestTokenDto);
+            }
+
+            else{
+                logger.debug("유효한 JWT 토큰이 없습니다. uri {}", requestURI);
+                filterChain.doFilter(servletRequest, servletResponse);
+            }
         }
     }
 

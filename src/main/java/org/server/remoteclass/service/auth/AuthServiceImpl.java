@@ -97,7 +97,7 @@ public class AuthServiceImpl implements AuthService{
                 .orElseThrow(() -> new ForbiddenException("로그아웃 된 사용자입니다.", ErrorCode.FORBIDDEN));
         // 4. Refresh Token 일치하는 지 검사
         if(!refreshToken.getValue().equals(requestTokenDto.getRefreshToken())){
-            throw new BadRequestArgumentException("토큰의 유저 정보가 일치하지 않습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+            throw new BadRequestArgumentException("리프레쉬 토큰의 정보가 일치하지 않습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
         // 5. 새로운 토큰 생성
         ResponseTokenDto responseTokenDto = tokenProvider.createToken(authentication);
