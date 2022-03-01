@@ -16,3 +16,12 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3306:3306"
+  redis:
+    image: redis:alpine
+    container_name: redis
+    hostname: redis
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    ports:
+      - "6379:6379"

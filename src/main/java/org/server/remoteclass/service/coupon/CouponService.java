@@ -9,8 +9,8 @@ public interface CouponService {
 
     //일단 다 관리자 권한이라 가정하겠습니다.
     ResponseCouponDto getCouponByCouponId(Long couponId);
-    //쿠폰 생성
-    ResponseCouponDto createCoupon(RequestCouponDto requestCouponDto);
+    //쿠폰 활성화
+    void activateCoupon(Long couponId);
     //쿠폰 비활성화
     void deactivateCoupon(Long couponId);
     //모든 쿠폰 조회

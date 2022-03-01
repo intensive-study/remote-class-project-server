@@ -61,6 +61,15 @@ dependencies {
 	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
+	//web socket
+	implementation 'org.java-websocket:Java-WebSocket:1.3.0'
+
+	//session manager
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// transfer to json
+	implementation 'com.google.code.gson:gson:2.8.7'
+
 }
 
 tasks.named('test') {

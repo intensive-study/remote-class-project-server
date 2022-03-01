@@ -3,12 +3,15 @@ package org.server.remoteclass.controller;
 import io.swagger.annotations.ApiOperation;
 import org.server.remoteclass.dto.coupon.ResponseCouponDto;
 import org.server.remoteclass.dto.event.RequestEventDto;
+import org.server.remoteclass.dto.event.RequestUpdateEventDto;
 import org.server.remoteclass.dto.fixDiscountCoupon.RequestFixDiscountCouponDto;
+import org.server.remoteclass.dto.fixDiscountCoupon.RequestUpdateFixDiscountCouponDto;
 import org.server.remoteclass.dto.fixDiscountCoupon.ResponseFixDiscountCouponDto;
 import org.server.remoteclass.dto.lecture.ResponseLectureDto;
 import org.server.remoteclass.dto.lecture.ResponseLectureFromStudentDto;
 import org.server.remoteclass.dto.order.ResponseOrderByAdminDto;import org.server.remoteclass.dto.purchase.ResponsePurchaseByAdminDto;
 import org.server.remoteclass.dto.rateDiscountCoupon.RequestRateDiscountCouponDto;
+import org.server.remoteclass.dto.rateDiscountCoupon.RequestUpdateRateDiscountCouponDto;
 import org.server.remoteclass.dto.rateDiscountCoupon.ResponseRateDiscountCouponDto;
 import org.server.remoteclass.dto.student.ResponseStudentByLecturerDto;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
@@ -21,6 +24,7 @@ import org.server.remoteclass.service.order.OrderService;
 import org.server.remoteclass.service.purchase.PurchaseService;
 import org.server.remoteclass.service.rateDiscountCoupon.RateDiscountCouponService;
 import org.server.remoteclass.service.student.StudentService;
+import org.server.remoteclass.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +42,7 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final UserService userService;
     private final LectureService lectureService;
     private final StudentService studentService;
     private final OrderService orderService;
@@ -57,7 +62,9 @@ public class AdminController {
                            FixDiscountCouponService fixDiscountCouponService,
                            RateDiscountCouponService rateDiscountCouponService,
                            EventService eventService){
+
         this.adminService = adminService;
+        this.userService = userService;
         this.lectureService = lectureService;
         this.studentService = studentService;
         this.orderService = orderService;
@@ -90,6 +97,22 @@ public class AdminController {
     @GetMapping("/users/{userId}")
     public ResponseEntity<ResponseUserByAdminDto> getUser(@PathVariable("userId") Long userId){
         return ResponseEntity.status(HttpStatus.OK).body(adminService.getUser(userId));
+    }
+
+    //수강생 -> 강의자 변경 신청
+    @ApiOperation(value = "수강생에서 강의자로 역할 변경")
+    @PutMapping("/student/lecturer/{userId}")
+    public ResponseEntity fromStudentToLecturer(@PathVariable("userId") Long userId){
+        userService.fromStudentToLecturer(userId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    //강의자 -> 수강생 변경 신청
+    @ApiOperation(value = "강의자에서 수강생으로 역할 변경")
+    @PutMapping("/lecturer/student/{userId}")
+    public ResponseEntity fromLecturerToStudent(@PathVariable("userId") Long userId){
+        userService.fromLecturerToStudent(userId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
@@ -194,6 +217,8 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(couponService.getCouponByCouponId(couponId));
     }
 
+    // 정액 할인 부분
+
     // 정액 할인 쿠폰 생성(관리자 권한)
     @ApiOperation(value = "정액 할인 쿠폰 생성", notes = "새로운 쿠폰을 생성할 수 있다.")
     @PostMapping("/coupons/fix-discount")
@@ -215,6 +240,16 @@ public class AdminController {
     public ResponseEntity<ResponseFixDiscountCouponDto> getFixDiscountCoupon(@PathVariable("couponId") Long couponId){
         return ResponseEntity.status(HttpStatus.OK).body(fixDiscountCouponService.getFixDiscountCoupon(couponId));
     }
+
+    // 정액 할인 쿠폰 수정
+    @ApiOperation(value = "정액 할인 쿠폰 수정")
+    @PutMapping("/coupons/fix-discount")
+    public ResponseEntity updateFixDiscountCoupon(@Valid @RequestBody RequestUpdateFixDiscountCouponDto requestUpdateFixDiscountCouponDto){
+        fixDiscountCouponService.updateFixDiscountCoupon(requestUpdateFixDiscountCouponDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    // 정률 할인 부분
 
     // 정률 할인 쿠폰 생성(관리자 권한)
     @ApiOperation(value = "정률 할인 쿠폰 생성", notes = "새로운 쿠폰을 생성할 수 있다.")
@@ -238,10 +273,26 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(rateDiscountCouponService.getRateDiscountCoupon(couponId));
     }
 
+    // 정액 할인 쿠폰 수정
+    @ApiOperation(value = "정률 할인 쿠폰 수정")
+    @PutMapping("/coupons/rate-discount")
+    public ResponseEntity updateRateDiscountCoupon(@Valid @RequestBody RequestUpdateRateDiscountCouponDto requestUpdateRateDiscountCouponDto){
+        rateDiscountCouponService.updateRateDiscountCoupon(requestUpdateRateDiscountCouponDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    //쿠폰 활성화(관리자 권한)
+    @ApiOperation(value = "쿠폰 활성화")
+    @PutMapping("/coupons/activate/{couponId}")
+    public ResponseEntity activateCoupon(@PathVariable("couponId") Long couponId) {
+        couponService.activateCoupon(couponId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     //쿠폰 비활성화(관리자 권한)
     @ApiOperation(value = "쿠폰 비활성화", notes = "더 이상 쿠폰을 발급받을 수 없게 쿠폰을 비활성화 한다.")
     @PutMapping("/coupons/deactivate/{couponId}")
-    public ResponseEntity createCoupon(@PathVariable("couponId") Long couponId) {
+    public ResponseEntity deactivateCoupon(@PathVariable("couponId") Long couponId) {
         couponService.deactivateCoupon(couponId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -258,14 +309,28 @@ public class AdminController {
      * EVENT
      */
     @ApiOperation(value = "이벤트 생성", notes = "이벤트 생성과 동시에 이벤트와 연계된 쿠폰을 생성한다.")
-    @PostMapping
+    @PostMapping("/events")
     public ResponseEntity createEvent(@RequestBody @Valid RequestEventDto requestEventDto){
         eventService.createEvent(requestEventDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @ApiOperation(value = "이벤트 수정")
+    @PutMapping("/events")
+    public ResponseEntity updateEvent(@Valid @RequestBody RequestUpdateEventDto requestUpdateEventDto){
+        eventService.updateEvent(requestUpdateEventDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "이벤트 종료하기(수동)", notes = "이벤트와 연관된 쿠폰을 정지시킨다.")
+    @PutMapping("/events/{eventId}")
+    public ResponseEntity quitEvent(@PathVariable("eventId") Long eventId){
+        eventService.quitEvent(eventId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @ApiOperation(value = "이벤트 삭제", notes = "이벤트 번호를 파라미터로 넘겨 해당하는 이벤트를 삭제한다.")
-    @DeleteMapping("/{eventId}")
+    @DeleteMapping("/events/{eventId}")
     public ResponseEntity deleteEvent(@PathVariable("eventId") Long eventId){
         eventService.deleteEvent(eventId);
         return ResponseEntity.status(HttpStatus.OK).build();

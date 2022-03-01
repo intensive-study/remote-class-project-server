@@ -23,7 +23,6 @@ public class ResponseUserByAdminDto {
     private String password;
     private UserRole userRole;
     private LocalDateTime registerDate;
-    private Set<AuthorityDto> authorityDtoSet;
 
     public ResponseUserByAdminDto(){
 

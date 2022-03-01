@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -20,6 +21,6 @@ public class RequestRateDiscountCouponDto {
     @Min(0)
     private Integer couponValidDays;
     @NotNull
-    @Min(0)
+    @Range(min = 0, max = 100)
     private Integer discountRate;
 }
