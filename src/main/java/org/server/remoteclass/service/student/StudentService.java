@@ -19,4 +19,7 @@ public interface StudentService {
     //수강생의 수강 강의 조회
     List<ResponseLectureFromStudentDto> getLecturesByUserIdByAdmin(Long userId);
 
+    //수강생 인지 확인
+    Boolean checkIfUserIsStudentInLecture(Long lectureId, Long userId);
+
 }
