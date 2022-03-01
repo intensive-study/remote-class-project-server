@@ -87,12 +87,7 @@ public class PurchaseServiceImpl implements PurchaseService{
             order.setOrderStatus(OrderStatus.COMPLETE);//해당 orderId의 주문에는 status를 complete로 변경하기
             purchase.setOrder(order);
             purchase.setValidPurchase(true);
-            if(order.getSalePrice() == null){ // 할인가격이 없으면 원가만
-                purchase.setPurchasePrice(order.getOriginalPrice());
-            }
-            else{ //할인가격이 있으면 할인가격이 최종가격으로
-                purchase.setPurchasePrice(order.getSalePrice());
-            }
+            purchase.setPurchasePrice(order.getSalePrice());
             purchaseRepository.save(purchase);
             /**
              * 구매가 완료되면 수강생 테이블에 자동으로 삽입되어야함.
@@ -101,15 +96,11 @@ public class PurchaseServiceImpl implements PurchaseService{
                 if(studentRepository.existsByLecture_LectureIdAndUser_UserId(orderLecture.getLecture().getLectureId(), user.getUserId())) {
                     throw new BadRequestArgumentException("이미 수강하고 있는 강의입니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
                 }
-                else{
-                    Student student = new Student();
-                    student.setUser(user);
-                    Lecture lecture = lectureRepository.findById(orderLecture.getLecture().getLectureId())
-                            .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의입니다.", ErrorCode.ID_NOT_EXIST));
-                    student.setLecture(lecture);
-                    student.setOrder(order);
-                    studentRepository.save(student);
-                }
+                Student student = new Student();
+                student.setUser(user);
+                student.setLecture(orderLecture.getLecture());
+                student.setOrder(order);
+                studentRepository.save(student);
             }
         }
         else{
@@ -127,10 +118,13 @@ public class PurchaseServiceImpl implements PurchaseService{
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         //이전 주문번호와 이전 구매내역 모두 찾기
         Optional<Purchase> prevPurchase = purchaseRepository.findById(purchaseId);
-        Optional<Order> prevOrder = orderRepository.findById(prevPurchase.get().getOrder().getOrderId());
+        prevPurchase.orElseThrow(()->new IdNotExistException("취소 가능한 구매번호가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
-        if(prevPurchase.get().isValidPurchase() == false){
-            throw new BadRequestArgumentException("취소 가능한 구매번호가 아닙니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+        Optional<Order> prevOrder = orderRepository.findById(prevPurchase.get().getOrder().getOrderId());
+        prevOrder.orElseThrow(()->new IdNotExistException("취소 가능한 주문번호가 아닙니다.", ErrorCode.ID_NOT_EXIST));
+
+        if(!prevPurchase.get().isValidPurchase()){
+            throw new BadRequestArgumentException("취소 가능한 구매상태가 아닙니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
         if(prevOrder.get().getOrderStatus() != OrderStatus.COMPLETE){
             throw new BadRequestArgumentException("취소 가능한 주문 상태가 아닙니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
