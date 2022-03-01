@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -132,4 +133,11 @@ public class LectureServiceImpl implements LectureService{
         List<Lecture> lectures = lectureRepository.findByCategory_CategoryId(categoryId);
         return lectures.stream().map(lecture->ResponseLectureDto.from(lecture)).collect(Collectors.toList());
     }
+
+    @Override
+    public Boolean checkIfUserIsLecturerInLecture(Long lectureId, Long userId) {
+        Optional<Lecture> lecture = lectureRepository.findById(lectureId);
+        return lecture.isPresent() && lecture.get().getUser().getUserId().equals(userId);
+    }
+
 }

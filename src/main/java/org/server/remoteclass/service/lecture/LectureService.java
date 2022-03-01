@@ -26,4 +26,7 @@ public interface LectureService {
     //카테고리별 조회
     List<ResponseLectureDto> getLectureByCategoryId(Long CategoryId);
 
+    //사용자가 해당 강좌의 강사인지 조회
+    Boolean checkIfUserIsLecturerInLecture(Long lectureId, Long userId);
+
 }

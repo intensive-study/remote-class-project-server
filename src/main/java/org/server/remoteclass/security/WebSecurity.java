@@ -4,6 +4,7 @@ import org.server.remoteclass.jwt.JwtAccessDeniedHandler;
 import org.server.remoteclass.jwt.JwtAuthenticationEntryPoint;
 import org.server.remoteclass.jwt.JwtSecurityConfig;
 import org.server.remoteclass.jwt.TokenProvider;
+import org.server.remoteclass.service.auth.AuthService;
 import org.server.remoteclass.service.user.UserService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -24,6 +25,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private final UserService userService;
 
     private final TokenProvider tokenProvider;
+    private final AuthService authService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
@@ -33,7 +35,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
             UserService userService,
             TokenProvider tokenProvider,
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-            JwtAccessDeniedHandler jwtAccessDeniedHandler
+            JwtAccessDeniedHandler jwtAccessDeniedHandler,
+            AuthService authService
     ){
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.env = env;
@@ -41,6 +44,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         this.userService = userService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+        this.authService = authService;
     }
 
     @Override
@@ -78,6 +82,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/reissue").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider));
+                .apply(new JwtSecurityConfig(tokenProvider, authService));
     }
 }
