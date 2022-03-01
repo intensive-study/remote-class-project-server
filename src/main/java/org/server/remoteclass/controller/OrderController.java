@@ -48,7 +48,7 @@ public class OrderController {
     }
 
     @ApiOperation("주문 취소")
-    @PutMapping("/{orderId}")
+    @PutMapping("/cancel/{orderId}")
     public ResponseEntity cancelOrder(@PathVariable("orderId") @Valid Long orderId) {
         orderService.cancelOrder(orderId);
         return ResponseEntity.status(HttpStatus.OK).build();
