@@ -1,6 +1,7 @@
 package org.server.remoteclass.controller;
 
 import io.swagger.annotations.ApiOperation;
+import org.server.remoteclass.dto.user.RequestUpdateUserDto;
 import org.server.remoteclass.dto.user.ResponseUserByAdminDto;
 import org.server.remoteclass.dto.user.ResponseUserDto;
 import org.server.remoteclass.jpa.UserRepository;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -53,6 +55,13 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<ResponseUserDto>> getAllUsers(){
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUsersByAll());
+    }
+
+    @ApiOperation(value = "회원 정보 수정")
+    @PutMapping
+    public ResponseEntity updateUser(@RequestBody @Valid RequestUpdateUserDto requestUpdateUserDto){
+        userService.updateUser(requestUpdateUserDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }
