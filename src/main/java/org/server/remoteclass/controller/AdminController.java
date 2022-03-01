@@ -54,6 +54,7 @@ public class AdminController {
 
     @Autowired
     public AdminController(AdminService adminService,
+                           UserService userService,
                            LectureService lectureService,
                            StudentService studentService,
                            OrderService orderService,
