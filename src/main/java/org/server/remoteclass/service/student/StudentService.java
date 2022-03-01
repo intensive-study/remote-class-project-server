@@ -17,4 +17,7 @@ public interface StudentService {
     List<ResponseLectureFromStudentDto> getLecturesByUserIdByAdmin(Long userId);
     List<ResponseStudentByLecturerDto> getStudentsByLectureIdByAdmin(Long lectureId);
 
+    //수강생 인지 확인
+    Boolean checkIfUserIsStudentInLecture(Long lectureId, Long userId);
+
 }

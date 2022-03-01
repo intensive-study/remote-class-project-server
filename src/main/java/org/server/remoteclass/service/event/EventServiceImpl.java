@@ -76,6 +76,8 @@ public class EventServiceImpl implements EventService{
         eventRepository.deleteByEventId(eventId);
     }
 
+
+    // 현재 미구현 상태입니다.
     @Transactional
     @Override
     public void quitEvent(){
