@@ -31,4 +31,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
             "where c.user.userId=:userId")
     int findCountCartByUserId(Long userId);
 
+    Cart findByLecture_LectureIdAndUser_UserId(Long lectureId, Long userId);
+
 }

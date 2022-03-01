@@ -10,7 +10,7 @@ import java.util.List;
 public interface OrderService {
 
     void createOrder(RequestOrderDto requestOrderDto);
-    void createOrderFromCart(RequestOrderFromCartDto requestOrderFromCartDto);
+    void createOrderFromCart(RequestOrderFromCartDto requestOrderFromCartDto, List<Long> lectureIdList);
     void cancelOrder(Long orderId);
     List<ResponseOrderDto> getMyOrdersByUserId();
     List<ResponseOrderByAdminDto> getAllOrdersByAdmin();

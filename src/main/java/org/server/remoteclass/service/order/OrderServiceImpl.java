@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,6 +73,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         Order order = new Order();
         order.setUser(user);
+        order.setOrderStatus(OrderStatus.PENDING);
         order.setPayment(requestOrderDto.getPayment());
         if(requestOrderDto.getPayment() == Payment.BANK_ACCOUNT){
             order.setBank(requestOrderDto.getBank());
@@ -131,12 +133,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void createOrderFromCart(RequestOrderFromCartDto requestOrderFromCartDto) {
+    public void createOrderFromCart(RequestOrderFromCartDto requestOrderFromCartDto, List<Long> requestLectureIdList) {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         Order order = new Order();
         order.setUser(user);
+        order.setOrderStatus(OrderStatus.PENDING);
         order.setPayment(requestOrderFromCartDto.getPayment());
         if(requestOrderFromCartDto.getPayment() == Payment.BANK_ACCOUNT){
             order.setBank(requestOrderFromCartDto.getBank());
@@ -145,11 +148,25 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(order);
 
-        List<Cart> cartList = cartRepository.findByUser_UserIdOrderByCreatedDateDesc(user.getUserId());
-        if(cartList.isEmpty()){
+        List<Cart> cartList = new ArrayList<>();
+        //아예 장바구니가 비어있으면 에러
+        if(cartRepository.findByUser_UserIdOrderByCreatedDateDesc(user.getUserId()).isEmpty()){
             throw new BadRequestArgumentException("장바구니가 비어있습니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
         List<OrderLecture> orderLectureList = order.getOrderLectures();
+        // 주문요청 입력 안하면 전체 카트에 있는 주문내역 다 집어넣는다
+        if(requestLectureIdList.isEmpty()) {
+            cartList = cartRepository.findByUser_UserIdOrderByCreatedDateDesc(user.getUserId());
+        }
+
+        //주문요청한 강의번호들이 장바구니에 하나라도 존재하지 않으면
+        for(Long lectureId : requestLectureIdList){
+            if(!cartRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())){
+                throw new BadRequestArgumentException("장바구니에 없는 강의입니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
+            }
+            cartList.add(cartRepository.findByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId()));
+        }
+        //주문 요청 입력하면 선택한것만 주문한다.
         for(Cart cart : cartList){
             OrderLecture orderLecture = new OrderLecture();
             Lecture lecture = lectureRepository.findById(cart.getLecture().getLectureId())
@@ -157,7 +174,7 @@ public class OrderServiceImpl implements OrderService {
             orderLecture.setLecture(lecture);
             orderLecture.setOrder(order);
             orderLectureList.add(orderLectureRepository.save(orderLecture));
-            cartRepository.deleteAllByUser_UserId(user.getUserId());
+            cartRepository.deleteByLecture_LectureIdAndUser_UserId(lecture.getLectureId(), user.getUserId());
         }
 
         order.setOriginalPrice(orderRepository.findSumOrderByOrderId(order.getOrderId()));

@@ -37,8 +37,9 @@ public class OrderController {
 
     @ApiOperation("장바구니 주문 신청")
     @PostMapping("/carts")
-    public ResponseEntity createOrder(@Valid @RequestBody RequestOrderFromCartDto requestOrderFromCartDto) {
-        orderService.createOrderFromCart(requestOrderFromCartDto);
+    public ResponseEntity createOrder(@Valid @RequestBody RequestOrderFromCartDto requestOrderFromCartDto,
+                                      @RequestParam(value = "lectureId", required = false, defaultValue = "") List<Long> lectureIdList) {
+        orderService.createOrderFromCart(requestOrderFromCartDto, lectureIdList);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
