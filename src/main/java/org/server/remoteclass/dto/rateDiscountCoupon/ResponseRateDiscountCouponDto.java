@@ -14,17 +14,19 @@ public class ResponseRateDiscountCouponDto {
 
     private Long couponId;
     private String couponCode;
-    private boolean couponValid;
-    private int couponValidDays;
+    private String title;
+    private Boolean couponValid;
+    private Integer couponValidDays;
     private LocalDateTime createdDate;
-    private int discountRate;
+    private Integer discountRate;
 
     public static ResponseRateDiscountCouponDto from(RateDiscountCoupon rateDiscountCoupon){
         if(rateDiscountCoupon == null) return null;
         return ResponseRateDiscountCouponDto.builder()
                 .couponId(rateDiscountCoupon.getCouponId())
                 .couponCode(rateDiscountCoupon.getCouponCode())
-                .couponValid(rateDiscountCoupon.isCouponValid())
+                .title(rateDiscountCoupon.getTitle())
+                .couponValid(rateDiscountCoupon.getCouponValid())
                 .couponValidDays(rateDiscountCoupon.getCouponValidDays())
                 .createdDate(rateDiscountCoupon.getCreatedDate())
                 .discountRate(rateDiscountCoupon.getDiscountRate())

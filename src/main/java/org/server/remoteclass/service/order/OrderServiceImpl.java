@@ -189,7 +189,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new IdNotExistException("존재하지 않는 쿠폰입니다", ErrorCode.ID_NOT_EXIST);
             }
             // 이미 사용한 쿠폰 입력했을 때 or 유효하지 않는 쿠폰 입력했을 때
-            if (issuedCoupon.isCouponUsed() || LocalDateTime.now().isAfter(issuedCoupon.getCouponValidDate())) {
+            if (issuedCoupon.getCouponUsed() || LocalDateTime.now().isAfter(issuedCoupon.getCouponValidDate())) {
                 throw new BadRequestArgumentException("이미 사용했거나 유효하지 않은 쿠폰입니다", ErrorCode.BAD_REQUEST_ARGUMENT);
             }
             order.setIssuedCoupon(issuedCoupon);

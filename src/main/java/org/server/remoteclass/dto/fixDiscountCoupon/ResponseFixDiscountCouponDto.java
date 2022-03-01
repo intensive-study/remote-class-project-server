@@ -27,7 +27,7 @@ public class ResponseFixDiscountCouponDto {
         return ResponseFixDiscountCouponDto.builder()
                 .couponId(fixDiscountCoupon.getCouponId())
                 .couponCode(fixDiscountCoupon.getCouponCode())
-                .couponValid(fixDiscountCoupon.isCouponValid())
+                .couponValid(fixDiscountCoupon.getCouponValid())
                 .couponValidDays(fixDiscountCoupon.getCouponValidDays())
                 .createdDate(fixDiscountCoupon.getCreatedDate())
                 .title(fixDiscountCoupon.getTitle())
