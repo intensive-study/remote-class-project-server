@@ -73,13 +73,11 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         Order order = new Order();
         order.setUser(user);
-        order.setOrderStatus(OrderStatus.PENDING);
         order.setPayment(requestOrderDto.getPayment());
         if(requestOrderDto.getPayment() == Payment.BANK_ACCOUNT){
             order.setBank(requestOrderDto.getBank());
             order.setAccount(requestOrderDto.getAccount());
         }
-
         orderRepository.save(order);
 
         List<OrderLecture> orderLectureList = order.getOrderLectures();
@@ -139,7 +137,6 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
         Order order = new Order();
         order.setUser(user);
-        order.setOrderStatus(OrderStatus.PENDING);
         order.setPayment(requestOrderFromCartDto.getPayment());
         if(requestOrderFromCartDto.getPayment() == Payment.BANK_ACCOUNT){
             order.setBank(requestOrderFromCartDto.getBank());

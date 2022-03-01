@@ -176,7 +176,6 @@ public class PurchaseServiceImpl implements PurchaseService{
             //주문 다시 생성
             Order newOrder = new Order();
             newOrder.setUser(user);
-            newOrder.setOrderStatus(OrderStatus.PENDING);
             newOrder.setPayment(prevOrder.get().getPayment());
             if(prevOrder.get().getPayment() == Payment.BANK_ACCOUNT){
                 newOrder.setBank(prevOrder.get().getBank());
