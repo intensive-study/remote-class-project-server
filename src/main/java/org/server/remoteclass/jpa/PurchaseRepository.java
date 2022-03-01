@@ -21,4 +21,8 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
             "where p.purchaseId=:purchaseId")
     Optional<Purchase> findById(@Param("purchaseId") Long purchaseId);
 
+    @Query("select p from Purchase p " +
+            "join fetch p.order " +
+            "where p.order.orderId=:orderId ")
+    Optional<Purchase> findByOrder_OrderId(Long orderId);
 }

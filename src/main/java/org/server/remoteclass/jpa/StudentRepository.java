@@ -27,4 +27,12 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     //강의 아이디로 삭제
     void deleteByLecture_LectureIdAndUser_UserId(Long lectureId, Long userId);
 
+    @Query("select s from Student s " +
+            "join fetch s.order " +
+            "where s.lecture.lectureId =:lectureId")
+    Student findStudentByLecture_LectureId(Long lectureId);
+
+    //본인의 주문 아이디로 수강생 모두 삭제
+    void deleteByUser_UserIdAndOrder_OrderId(Long userId, Long orderId);
+
 }

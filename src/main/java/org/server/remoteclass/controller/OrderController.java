@@ -34,6 +34,13 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @ApiOperation("장바구니 주문 신청")
+    @PostMapping("/carts")
+    public ResponseEntity createOrderFromCart(@Valid @RequestBody RequestOrderDto requestOrderDto) {
+        orderService.createOrderFromCart(requestOrderDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
     @ApiOperation("사용자 본인 주문 목록 조회")
     @GetMapping
     public ResponseEntity<List<ResponseOrderDto>> getMyOrder() {
@@ -41,9 +48,16 @@ public class OrderController {
     }
 
     @ApiOperation("주문 취소")
-    @PutMapping("/{orderId}")
+    @PutMapping("/cancel/{orderId}")
     public ResponseEntity cancelOrder(@PathVariable("orderId") @Valid Long orderId) {
         orderService.cancelOrder(orderId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "주문 완료 요청", notes = "구매하기 위해 해당 주문에 complete 요청")
+    @PutMapping("/complete/{orderId}")
+    public ResponseEntity completeOrder(@PathVariable("orderId") @Valid Long orderId) {
+        orderService.completeOrder(orderId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

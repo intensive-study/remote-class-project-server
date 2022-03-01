@@ -40,16 +40,17 @@ public class ResponseOrderDto {
         this.payment = order.getPayment();
         this.bank = order.getBank();
         this.account = order.getAccount();
-        if(order.getIssuedCoupon() == null){
-            this.issuedCouponId = null;
-            this.salePrice = null;
-        }
-        else {
+        this.originalPrice = order.getOriginalPrice();
+
+        if(order.getIssuedCoupon() != null){
+//            this.issuedCouponId = null;
+//            this.issuedCouponName = null;
+//            this.salePrice = null;
+//        }
+//        else {
             this.issuedCouponId = order.getIssuedCoupon().getIssuedCouponId();
             this.issuedCouponName = order.getIssuedCoupon().getCoupon().getTitle();
             this.salePrice = order.getSalePrice();
         }
-        this.originalPrice = order.getOriginalPrice();
     }
-
 }

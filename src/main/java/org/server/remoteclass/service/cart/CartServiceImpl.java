@@ -6,6 +6,7 @@ import org.server.remoteclass.dto.cart.RequestCartDto;
 import org.server.remoteclass.dto.cart.ResponseCartDto;
 import org.server.remoteclass.dto.cart.ResponseCartListDto;
 import org.server.remoteclass.entity.Cart;
+import org.server.remoteclass.entity.Lecture;
 import org.server.remoteclass.entity.User;
 import org.server.remoteclass.exception.BadRequestArgumentException;
 import org.server.remoteclass.exception.ErrorCode;
@@ -37,9 +38,12 @@ public class CartServiceImpl implements CartService {
     private final AccessVerification accessVerification;
 
     @Autowired
-    public CartServiceImpl(UserRepository userRepository, LectureRepository lectureRepository,
-                           StudentRepository studentRepository, CartRepository cartRepository,
-                            BeanConfiguration beanConfiguration,AccessVerification accessVerification){
+    public CartServiceImpl(UserRepository userRepository,
+                           LectureRepository lectureRepository,
+                           StudentRepository studentRepository,
+                           CartRepository cartRepository,
+                           BeanConfiguration beanConfiguration,
+                           AccessVerification accessVerification){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.studentRepository = studentRepository;
@@ -64,8 +68,10 @@ public class CartServiceImpl implements CartService {
                 throw new BadRequestArgumentException("장바구니에 있는 강의입니다", ErrorCode.BAD_REQUEST_ARGUMENT);
             }
             else {
+                Lecture lecture = lectureRepository.findById(requestCartDto.getLectureId())
+                        .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ErrorCode.ID_NOT_EXIST));
                 cart.setUser(user);
-                cart.setLecture(lectureRepository.findById(requestCartDto.getLectureId()).orElse(null));
+                cart.setLecture(lecture);
                 cartRepository.save(cart);
             }
         }
@@ -109,10 +115,17 @@ public class CartServiceImpl implements CartService {
 
         ResponseCartListDto responseCartListDto = new ResponseCartListDto();
         List<Cart> carts = cartRepository.findByUser_UserIdOrderByCreatedDateDesc(user.getUserId());
-        responseCartListDto.setResponseCartDtoList(carts.stream()
-                .map(cart->ResponseCartDto.from(cart)).collect(Collectors.toList()));
-        responseCartListDto.setSumCart(cartRepository.findSumCartByUserId(user.getUserId()));
-        responseCartListDto.setCountCart(cartRepository.findCountCartByUserId(user.getUserId()));
+        if(carts.isEmpty()){
+            responseCartListDto.setResponseCartDtoList(null);
+            responseCartListDto.setSumCart(0);
+            responseCartListDto.setCountCart(0);
+        }
+        else{
+            responseCartListDto.setResponseCartDtoList(carts.stream()
+                    .map(cart->ResponseCartDto.from(cart)).collect(Collectors.toList()));
+            responseCartListDto.setSumCart(cartRepository.findSumCartByUserId(user.getUserId()));
+            responseCartListDto.setCountCart(cartRepository.findCountCartByUserId(user.getUserId()));
+        }
 
         return responseCartListDto;
     }

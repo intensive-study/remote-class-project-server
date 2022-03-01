@@ -8,27 +8,30 @@ import java.time.LocalDateTime;
 
 @Getter @Setter @Builder
 @AllArgsConstructor @NoArgsConstructor
-public class ResponsePurchaseDto {
+public class ResponsePurchaseByAdminDto {
 
     private Long purchaseId;
     private Long orderId;
     private Integer purchasePrice;
     private LocalDateTime purchaseDate;
+    private Long userId;
 
-    public ResponsePurchaseDto(Purchase purchase) {
+    public ResponsePurchaseByAdminDto(Purchase purchase) {
         this.purchaseId = purchase.getPurchaseId();
         this.orderId = purchase.getOrder().getOrderId();
         this.purchasePrice = purchase.getPurchasePrice();
         this.purchaseDate = purchase.getPurchaseDate();
+        this.userId = purchase.getOrder().getUser().getUserId();
     }
 
-    public static ResponsePurchaseDto from(Purchase purchase){
+    public static ResponsePurchaseByAdminDto from(Purchase purchase){
         if(purchase == null) return null;
-        return ResponsePurchaseDto.builder()
+        return ResponsePurchaseByAdminDto.builder()
                 .purchaseId(purchase.getPurchaseId())
                 .orderId(purchase.getOrder().getOrderId())
                 .purchasePrice(purchase.getPurchasePrice())
                 .purchaseDate(purchase.getPurchaseDate())
+                .userId(purchase.getOrder().getUser().getUserId())
                 .build();
     }
 
