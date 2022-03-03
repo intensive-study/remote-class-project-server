@@ -24,6 +24,7 @@ public class ResponseOrderByAdminDto {
     private String bank;  //입금은행
     private String account;  //예금주
     private Long issuedCouponId;       //적용하는 쿠폰 아이디
+    private String issuedCouponName;
     private Integer originalPrice;
     private Integer salePrice;
 
@@ -36,15 +37,12 @@ public class ResponseOrderByAdminDto {
         this.payment = order.getPayment();
         this.bank = order.getBank();
         this.account = order.getAccount();
-        if(order.getIssuedCoupon() == null){
-            this.issuedCouponId = null;
-            this.salePrice = null;
-        }
-        else {
-            this.issuedCouponId = order.getIssuedCoupon().getIssuedCouponId();
-            this.salePrice = order.getSalePrice();
-        }
         this.originalPrice = order.getOriginalPrice();
+        this.salePrice = order.getSalePrice();
+        if(order.getIssuedCoupon() != null){
+            this.issuedCouponId = order.getIssuedCoupon().getIssuedCouponId();
+            this.issuedCouponName = order.getIssuedCoupon().getCoupon().getTitle();
+        }
     }
 
 }

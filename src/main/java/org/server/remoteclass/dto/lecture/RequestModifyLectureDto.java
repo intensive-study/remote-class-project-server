@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 public class RequestModifyLectureDto {
 
     // 강의 수정에 사용하는 Dto
-    @NotNull
-    @Min(1)
-    private Long lectureId;
     @NotEmpty
     private String title;
     @NotEmpty
@@ -35,7 +32,6 @@ public class RequestModifyLectureDto {
     public static RequestModifyLectureDto from(Lecture lecture){
         if(lecture == null) return null;
         return RequestModifyLectureDto.builder()
-                .lectureId(lecture.getLectureId())
                 .title(lecture.getTitle())
                 .description(lecture.getDescription())
                 .price(lecture.getPrice())

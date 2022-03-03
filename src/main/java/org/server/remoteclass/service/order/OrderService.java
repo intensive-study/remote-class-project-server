@@ -16,5 +16,5 @@ public interface OrderService {
     List<ResponseOrderByAdminDto> getAllOrdersByAdmin();
     List<ResponseOrderByAdminDto> getOrderByUserIdByAdmin(Long userId);
     ResponseOrderByAdminDto getOrderByOrderIdByAdmin(Long orderId);
-
+    Boolean checkIfUserIsUserOfOrder(Long userId, Long orderId);
 }

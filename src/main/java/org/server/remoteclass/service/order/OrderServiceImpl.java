@@ -101,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new IdNotExistException("존재하지 않는 쿠폰입니다", ErrorCode.ID_NOT_EXIST);
             }
             // 이미 사용한 쿠폰 입력했을 때 or 유효하지 않는 쿠폰 입력했을 때
-            if (issuedCoupon.isCouponUsed() || LocalDateTime.now().isAfter(issuedCoupon.getCouponValidDate())) {
+            if (issuedCoupon.getCouponUsed() || LocalDateTime.now().isAfter(issuedCoupon.getCouponValidDate())) {
                 throw new BadRequestArgumentException("이미 사용했거나 유효하지 않은 쿠폰입니다", ErrorCode.BAD_REQUEST_ARGUMENT);
             }
             order.setIssuedCoupon(issuedCoupon);
@@ -196,17 +196,15 @@ public class OrderServiceImpl implements OrderService {
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
-        if(user.getUserId() != order.getUser().getUserId()){
+        Optional<Order> order = orderRepository.findById(orderId);
+        order.orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
+        if(!checkIfUserIsUserOfOrder(user.getUserId(), orderId)){
             throw new ForbiddenException("주문 취소 권한이 없습니다", ErrorCode.FORBIDDEN);
         }
-        if(order.getOrderStatus() == OrderStatus.PENDING) {
-            order.setOrderStatus(OrderStatus.CANCEL);
-        }
-        else{
+        if(order.get().getOrderStatus() != OrderStatus.PENDING) {
             throw new BadRequestArgumentException("취소 가능한 상태가 아닙니다", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
+        order.ifPresent(order1 -> order1.setOrderStatus(OrderStatus.CANCEL));
     }
 
     @Override
@@ -216,17 +214,16 @@ public class OrderServiceImpl implements OrderService {
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("현재 로그인 상태가 아닙니다.", ErrorCode.ID_NOT_EXIST));
 
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
-        if(user.getUserId() != order.getUser().getUserId()){
+        Optional<Order> order = orderRepository.findById(orderId);
+        order.orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
+        if(!checkIfUserIsUserOfOrder(user.getUserId(), orderId)){
             throw new ForbiddenException("주문 완료 권한이 없습니다", ErrorCode.FORBIDDEN);
         }
-        if(order.getOrderStatus() != OrderStatus.PENDING) {
+        if(order.get().getOrderStatus() != OrderStatus.PENDING) {
             throw new BadRequestArgumentException("구매할 수 없는 주문입니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
-        order.setOrderStatus(OrderStatus.COMPLETE);
+        order.ifPresent(order1 -> order1.setOrderStatus(OrderStatus.COMPLETE));
         purchaseService.createPurchase(orderId);
-
     }
 
     //사용자 본인것만 조회
@@ -242,28 +239,28 @@ public class OrderServiceImpl implements OrderService {
     //관리자 전체 조회
     @Override
     public List<ResponseOrderByAdminDto> getAllOrdersByAdmin() {
-
         List<Order> orders = orderRepository.findByOrderByOrderDateDesc();
-
         return orders.stream().map(ResponseOrderByAdminDto::new).collect(Collectors.toList());
     }
 
     //관리자가 사용자별로 조회
     @Override
     public List<ResponseOrderByAdminDto> getOrderByUserIdByAdmin(Long userId) {
-
         List<Order> orders = orderRepository.findByUser_UserIdOrderByOrderDateDesc(userId);
-
         return orders.stream().map(ResponseOrderByAdminDto::new).collect(Collectors.toList());
     }
 
     //관리자가 주문번호별로 조회
     @Override
     public ResponseOrderByAdminDto getOrderByOrderIdByAdmin(Long orderId) {
+        Optional<Order> order = orderRepository.findById(orderId);
+        order.orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
+        return new ResponseOrderByAdminDto(order.get());
+    }
 
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IdNotExistException("해당 주문이 존재하지 않습니다.", ErrorCode.ID_NOT_EXIST));
-
-        return new ResponseOrderByAdminDto(order);
+    @Override
+    public Boolean checkIfUserIsUserOfOrder(Long userId, Long orderId) {
+        Optional<Order> order = orderRepository.findById(orderId);
+        return order.isPresent() && order.get().getUser().getUserId().equals(userId);
     }
 }
