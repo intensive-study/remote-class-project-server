@@ -15,6 +15,7 @@ import org.server.remoteclass.jpa.CartRepository;
 import org.server.remoteclass.jpa.LectureRepository;
 import org.server.remoteclass.jpa.StudentRepository;
 import org.server.remoteclass.jpa.UserRepository;
+import org.server.remoteclass.service.student.StudentService;
 import org.server.remoteclass.util.AccessVerification;
 import org.server.remoteclass.util.BeanConfiguration;
 import org.server.remoteclass.util.SecurityUtil;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,6 +38,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final ModelMapper modelMapper;
     private final AccessVerification accessVerification;
+    private final StudentService studentService;
 
     @Autowired
     public CartServiceImpl(UserRepository userRepository,
@@ -43,13 +46,15 @@ public class CartServiceImpl implements CartService {
                            StudentRepository studentRepository,
                            CartRepository cartRepository,
                            BeanConfiguration beanConfiguration,
-                           AccessVerification accessVerification){
+                           AccessVerification accessVerification,
+                           StudentService studentService){
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.studentRepository = studentRepository;
         this.cartRepository = cartRepository;
         this.modelMapper = beanConfiguration.modelMapper();
         this.accessVerification = accessVerification;
+        this.studentService = studentService;
     }
 
     @Override
@@ -58,23 +63,18 @@ public class CartServiceImpl implements CartService {
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
 
-        //이미 수강한 수업이 아니면서 장바구니에 없는 강의일때 장바구니에 넣을 수 있습니다.
-        Cart cart = new Cart();
-        if(studentRepository.existsByLecture_LectureIdAndUser_UserId(requestCartDto.getLectureId(), user.getUserId())) {
+        if(studentService.checkIfUserIsStudentInLecture(requestCartDto.getLectureId(), user.getUserId())) {
             throw new BadRequestArgumentException("이미 수강한 강의입니다.", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
-        else{
-            if(cartRepository.existsByLecture_LectureIdAndUser_UserId(requestCartDto.getLectureId(), user.getUserId())) {
-                throw new BadRequestArgumentException("장바구니에 있는 강의입니다", ErrorCode.BAD_REQUEST_ARGUMENT);
-            }
-            else {
-                Lecture lecture = lectureRepository.findById(requestCartDto.getLectureId())
-                        .orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ErrorCode.ID_NOT_EXIST));
-                cart.setUser(user);
-                cart.setLecture(lecture);
-                cartRepository.save(cart);
-            }
+        if(checkIfLectureInCart(requestCartDto.getLectureId(), user.getUserId())) {
+            throw new BadRequestArgumentException("장바구니에 있는 강의입니다", ErrorCode.BAD_REQUEST_ARGUMENT);
         }
+        Optional<Lecture> lecture = lectureRepository.findById(requestCartDto.getLectureId());
+        lecture.orElseThrow(() -> new IdNotExistException("존재하지 않는 강의", ErrorCode.ID_NOT_EXIST));
+        Cart cart = new Cart();
+        cart.setUser(user);
+        cart.setLecture(lecture.get());
+        cartRepository.save(cart);
     }
 
     @Override
@@ -82,12 +82,10 @@ public class CartServiceImpl implements CartService {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
-        if(cartRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId())){
-            cartRepository.deleteByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId());
-        }
-        else{
+        if(!checkIfLectureInCart(lectureId, user.getUserId())){
             throw new IdNotExistException("장바구니에 없는 강의입니다.", ErrorCode.ID_NOT_EXIST);
         }
+        cartRepository.deleteByLecture_LectureIdAndUser_UserId(lectureId, user.getUserId());
     }
 
     @Override
@@ -95,20 +93,16 @@ public class CartServiceImpl implements CartService {
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
-        // 카트에 하나라도 상품 존재하면
-        if(cartRepository.existsByUser_UserId(user.getUserId())){
-            cartRepository.deleteAllByUser_UserId(user.getUserId());
-        }
-        else{
+        if(!checkIfUserInCart(user.getUserId())){
             throw new IdNotExistException("장바구니가 비어있습니다.", ErrorCode.ID_NOT_EXIST);
         }
+        cartRepository.deleteAllByUser_UserId(user.getUserId());
     }
 
     //현재 장바구니 전체 리스트 조회
     @Override
     @Transactional(readOnly = true)
     public ResponseCartListDto getCartsByUserId() {
-
         User user = SecurityUtil.getCurrentUserEmail()
                 .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new IdNotExistException("존재하지 않는 사용자", ErrorCode.ID_NOT_EXIST));
@@ -126,8 +120,17 @@ public class CartServiceImpl implements CartService {
             responseCartListDto.setSumCart(cartRepository.findSumCartByUserId(user.getUserId()));
             responseCartListDto.setCountCart(cartRepository.findCountCartByUserId(user.getUserId()));
         }
-
         return responseCartListDto;
+    }
+
+    @Override
+    public Boolean checkIfLectureInCart(Long lectureId, Long userId) {
+        return cartRepository.existsByLecture_LectureIdAndUser_UserId(lectureId, userId);
+    }
+
+    @Override
+    public Boolean checkIfUserInCart(Long userId){
+        return cartRepository.existsByUser_UserId(userId);
     }
 
 }
