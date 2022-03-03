@@ -49,8 +49,9 @@ public class LectureController {
     @ApiOperation(value = "강의 수정", notes = "강의 상세내용을 수정할 수 있다.")
     @PreAuthorize("@accessVerification.hasAccessOnlyLecturer()")
     @PutMapping
-    public ResponseEntity updateLecture(@RequestBody @Valid RequestModifyLectureDto requestModifyLectureDto) {
-        lectureService.updateLecture(requestModifyLectureDto);
+    public ResponseEntity updateLecture(@PathVariable("lectureId") Long lectureId,
+                                        @RequestBody @Valid RequestModifyLectureDto requestModifyLectureDto) {
+        lectureService.updateLecture(lectureId, requestModifyLectureDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -64,7 +65,7 @@ public class LectureController {
 
     @ApiOperation(value = "카테고리별 강의 조회", notes = "현재까지 생성된 강의를 카테고리별로 조회할 수 있다.")
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<ResponseLectureDto>> getLectureByCategory(@PathVariable("categoryId") Long categoryId) {
+    public ResponseEntity<List<ResponseLectureDto>> getLecturesByCategory(@PathVariable("categoryId") Long categoryId) {
         return ResponseEntity.status(HttpStatus.OK).body(lectureService.getLecturesByCategoryId(categoryId));
     }
 }
