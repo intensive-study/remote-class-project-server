@@ -59,6 +59,7 @@ public class AdminController {
                            OrderService orderService,
                            PurchaseService purchaseService,
                            CouponService couponService,
+                           UserService userService,
                            FixDiscountCouponService fixDiscountCouponService,
                            RateDiscountCouponService rateDiscountCouponService,
                            EventService eventService){
